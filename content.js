@@ -187,8 +187,35 @@
     }
   });
 
+  /**
+   * The conversation's message list is the nearest role="list" around its messages (.adn).
+   * Other lists in the pane (e.g. the Gemini summary chips) must keep Gmail's own layout.
+   */
+  function findMessageLists() {
+    const lists = new Set();
+    document.querySelectorAll('.gtr-thread .adn').forEach((message) => {
+      const list = message.closest('div[role="list"]');
+      if (list) lists.add(list);
+    });
+    return lists;
+  }
+
+  function resetList(list) {
+    list.classList.remove('gmail-thread-reversed');
+    Array.from(list.children).forEach((child) => {
+      if (child.style.order) child.style.order = '';
+      child.classList.remove('gmail-reply-top', 'gmail-reply-bottom');
+    });
+  }
+
   function applyThreadReversal() {
-    const lists = document.querySelectorAll('.gtr-thread div[role="list"]');
+    const lists = findMessageLists();
+
+    // Undo reversal on lists that are not message lists (left over from older versions)
+    document.querySelectorAll('.gmail-thread-reversed').forEach((list) => {
+      if (!lists.has(list)) resetList(list);
+    });
+
     lists.forEach((list) => {
       const children = Array.from(list.children);
       if (children.length < 2) return;
@@ -228,11 +255,7 @@
           }
         });
       } else {
-        list.classList.remove('gmail-thread-reversed');
-        children.forEach((child) => {
-          if (child.style.order) child.style.order = '';
-          child.classList.remove('gmail-reply-top', 'gmail-reply-bottom');
-        });
+        resetList(list);
       }
     });
   }
