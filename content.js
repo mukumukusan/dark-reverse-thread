@@ -594,21 +594,23 @@
   }
 
   /**
-   * Menus opened from a button in the conversation (e.g. a message's "⋮" menu) are built outside the
-   * thread, from a shared Google menu component that other parts of Gmail reuse. They are tagged only
-   * while their opener in the thread is expanded, so styles.css darkens them and nothing else.
+   * Menus opened from a button in the conversation (e.g. a message's "⋮" menu) or in the main toolbar
+   * above it (the checkbox "▾", "⋮") are built outside the thread from shared menu components that
+   * other parts of Gmail reuse. They are tagged only while such an opener is expanded, so styles.css
+   * darkens them and nothing else.
    */
-  const THREAD_MENU_CLASS = 'gtr-thread-menu';
+  const DARK_MENU_CLASS = 'gtr-dark-menu';
+  const MENU_OPENER = ':is(.gtr-thread, [gh="mtb"]) :is(button, [role="button"])[aria-expanded="true"]';
 
   function markThreadMenus() {
     const menus = new Set();
-    if (document.querySelector('.gtr-thread :is(button, [role="button"])[aria-expanded="true"]')) {
+    if (document.querySelector(MENU_OPENER)) {
       document.querySelectorAll('[role="menu"]').forEach((menu) => {
         if (menu.offsetParent === null || menu.closest('.gtr-thread, .Hd[role="dialog"]')) return;
         menus.add(menu.closest('.tB5Jxf-M-X') || menu);
       });
     }
-    syncClass(THREAD_MENU_CLASS, menus);
+    syncClass(DARK_MENU_CLASS, menus);
   }
 
   // A menu opens right after the click on its button; check once it is shown
