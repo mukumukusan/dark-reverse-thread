@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gmail Thread Reverser & Official Material Dark Mode (v1.5.9)
+   Gmail Thread Reverser & Official Material Dark Mode (v1.5.10)
    - Dark styling is scoped to the open conversation view only (.gtr-thread).
      Inbox list, sidebar, header and search bar are left to Gmail's own theme.
    - Official Google Material Dark Scheme (#1f1f1f / #28292c)
@@ -20,7 +20,7 @@
   flex-direction: column !important;
 }
 
-/* 返信欄「上」: 最新メッセージ内で返信欄（content.js が .gmail-reply-above を付ける）を本文より上に表示 */
+/* 返信欄「上」: 最新メッセージ内で返信の入力欄（content.js が .gmail-reply-above を付ける）を本文より上に表示 */
 .gmail-reply-host {
   display: flex !important;
   flex-direction: column !important;
@@ -29,6 +29,15 @@
 .gmail-reply-host > .gmail-reply-above {
   order: -1 !important;
   margin-bottom: 16px !important;
+}
+
+/* 返信・転送・リアクションのボタン欄（メッセージ一覧の外）を、メッセージ一覧の直前に表示（件名などはそのまま上） */
+.gmail-reply-host > .gmail-reply-footer {
+  order: 1 !important;
+}
+
+.gmail-reply-host > .gmail-reply-after {
+  order: 2 !important;
 }
 
 /* --------------------------------------------------------------------------

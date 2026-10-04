@@ -237,49 +237,78 @@
   }
 
   /**
-   * The reply area sits inside the newest message, below its content: the Reply / Forward /
-   * reaction footer (.amn, with .ams links) while closed, the inline composer (textbox) while open.
-   * For "top", the reply block (the ancestor that branches off from the message content) is shown
-   * first within that message via flex order; "bottom" keeps Gmail's own position.
+   * Reply area placement for "top" (above the newest email); "bottom" keeps Gmail's own layout.
+   * - Inline composer (textbox): inside the newest message, below its content. The composer block
+   *   (the ancestor that branches off from the message content) is shown first in that message.
+   * - Reply / Forward / reaction footer (.amn with .ams links): outside the message list, below it.
+   *   With newest-first order it is moved to just above the message list (= above the newest email).
+   * Both use flex order on the shared parent (.gmail-reply-host).
    */
-  const REPLY_ANCHORS = '[role="textbox"], .amn';
-
-  function findReplyBlock(anchor, item) {
-    for (let el = anchor; el.parentElement && el.parentElement !== item; el = el.parentElement) {
+  function findComposerBlock(textbox, item) {
+    for (let el = textbox; el.parentElement && el.parentElement !== item; el = el.parentElement) {
       if (el.parentElement.querySelector('.gs, .a3s')) return el;
     }
     return null;
   }
 
-  function applyReplyPosition(lists) {
-    const active = new Set();
-    lists.forEach((list) => {
-      list.querySelectorAll(REPLY_ANCHORS).forEach((anchor) => {
-        const item = Array.from(list.children).find((child) => child.contains(anchor));
-        const block = item && findReplyBlock(anchor, item);
-        // Flex layout is only safe on a plain block container, never on table parts
-        if (!block || block.parentElement.tagName !== 'DIV') return;
-        active.add(block);
+  function findFooterBlock(footer, lists) {
+    for (let el = footer; el.parentElement; el = el.parentElement) {
+      const host = el.parentElement;
+      if (lists.some((list) => host.contains(list) && !el.contains(list))) return el;
+      if (host.classList.contains('gtr-thread')) return null;
+    }
+    return null;
+  }
+
+  // Flex layout is only safe on a plain block container, never on table parts
+  const isFlexSafe = (block) => block && block.parentElement.tagName === 'DIV';
+
+  function syncClass(className, wanted) {
+    document.querySelectorAll('.' + className).forEach((el) => {
+      if (!wanted.has(el)) el.classList.remove(className);
+    });
+    wanted.forEach((el) => el.classList.add(className));
+  }
+
+  function applyReplyPosition(listSet) {
+    const lists = Array.from(listSet);
+    const composers = new Set();
+    const footers = new Set();
+    const afterFooter = new Set();
+
+    if (config.replyPosition === 'top') {
+      lists.forEach((list) => {
+        list.querySelectorAll('[role="textbox"]').forEach((textbox) => {
+          const item = Array.from(list.children).find((child) => child.contains(textbox));
+          const block = item && findComposerBlock(textbox, item);
+          if (isFlexSafe(block)) composers.add(block);
+        });
       });
-    });
 
-    document.querySelectorAll('.gmail-reply-above').forEach((block) => {
-      if (config.replyPosition !== 'top' || !active.has(block)) {
-        block.classList.remove('gmail-reply-above');
-        block.parentElement?.classList.remove('gmail-reply-host');
+      if (config.reverseOrder) {
+        document.querySelectorAll('.gtr-thread .amn').forEach((footer) => {
+          if (lists.some((list) => list.contains(footer))) return; // empty placeholder inside a message
+          const block = findFooterBlock(footer, lists);
+          if (!isFlexSafe(block)) return;
+          footers.add(block);
+          // Siblings from the message list onward follow the footer; earlier ones (subject etc.) stay first
+          const siblings = Array.from(block.parentElement.children);
+          const listIndex = siblings.findIndex((s) => s !== block && lists.some((list) => s.contains(list)));
+          siblings.forEach((s, i) => {
+            if (s !== block && listIndex !== -1 && i >= listIndex) afterFooter.add(s);
+          });
+        });
       }
-    });
+    }
 
-    // Hosts whose reply block was removed from the DOM go back to normal layout
-    document.querySelectorAll('.gmail-reply-host').forEach((host) => {
-      if (!host.querySelector(':scope > .gmail-reply-above')) host.classList.remove('gmail-reply-host');
-    });
+    syncClass('gmail-reply-above', composers);
+    syncClass('gmail-reply-footer', footers);
+    syncClass('gmail-reply-after', afterFooter);
 
-    if (config.replyPosition !== 'top') return;
-    active.forEach((block) => {
-      block.classList.add('gmail-reply-above');
-      block.parentElement.classList.add('gmail-reply-host');
-    });
+    const hosts = new Set();
+    composers.forEach((block) => hosts.add(block.parentElement));
+    footers.forEach((block) => hosts.add(block.parentElement));
+    syncClass('gmail-reply-host', hosts);
   }
 
   /**
