@@ -118,23 +118,23 @@
 /* --------------------------------------------------------------------------
    4. STAR ICON & TOP-RIGHT ACTION ICONS (星アイコン・操作ボタン)
    -------------------------------------------------------------------------- */
-/* 未スター時の星アイコン（.T-KT 自体を純白化し、クリック操作性を完全保持） */
-.gmail-dark-active .gtr-thread .adn .T-KT:not(.T-KT-Jp):not([aria-checked="true"]):not(.sA) {
+/* 未スター時の星アイコン（.T-KT 自体を純白化し、クリック操作性を完全保持）。開いたメール(.adn)と畳まれたメールの行(.kv)の両方 */
+.gmail-dark-active .gtr-thread :is(.adn, .kv) .T-KT:not(.T-KT-Jp):not([aria-checked="true"]):not(.sA) {
   filter: invert(100%) brightness(1.8) contrast(1.2) !important;
   opacity: 1 !important;
   cursor: pointer !important;
 }
 
 /* スター付き状態（フィルターを解除し、鮮やかなゴールドを表示） */
-.gmail-dark-active .gtr-thread .adn .T-KT.T-KT-Jp,
-.gmail-dark-active .gtr-thread .adn .T-KT[aria-checked="true"],
-.gmail-dark-active .gtr-thread .adn .T-KT.sA {
+.gmail-dark-active .gtr-thread :is(.adn, .kv) .T-KT.T-KT-Jp,
+.gmail-dark-active .gtr-thread :is(.adn, .kv) .T-KT[aria-checked="true"],
+.gmail-dark-active .gtr-thread :is(.adn, .kv) .T-KT.sA {
   filter: none !important;
   opacity: 1 !important;
   cursor: pointer !important;
 }
 
-.gmail-dark-active .gtr-thread .adn .T-KT * {
+.gmail-dark-active .gtr-thread :is(.adn, .kv) .T-KT * {
   cursor: pointer !important;
 }
 
