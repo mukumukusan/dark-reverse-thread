@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gmail Thread Reverser & Official Material Dark Mode (v1.5.1)
+   Gmail Thread Reverser & Official Material Dark Mode (v1.5.2)
    - Dark styling is scoped to the open conversation view only (.gtr-thread).
      Inbox list, sidebar, header and search bar are left to Gmail's own theme.
    - Official Google Material Dark Scheme (#1f1f1f / #28292c)
@@ -194,30 +194,17 @@
 
 /* --------------------------------------------------------------------------
    6. GEMINI AI SUMMARY CARD (AIによる概要カードの公式風ダーク化)
-   ※ aria-label の文言指定は補助。主は content.js が付ける .ai-summary-darkened とクラス指定。
+   .eJPjde はカード本体（見出しボタン「AI による概要」と要約本文を含む）。
+   文言ではなくクラスで指定し、Gmailの表示言語に依存しない。Geminiアイコン(svg)の色は維持。
    -------------------------------------------------------------------------- */
-.gmail-dark-active .gtr-thread .ai-summary-darkened,
-.gmail-dark-active .gtr-thread div[aria-label*="AI による概要"],
-.gmail-dark-active .gtr-thread div[aria-label*="AI summary"],
-.gmail-dark-active .gtr-thread .bt6,
-.gmail-dark-active .gtr-thread .bsu,
-.gmail-dark-active .gtr-thread .bta,
-.gmail-dark-active .gtr-thread .bty,
-.gmail-dark-active .gtr-thread .btz,
-.gmail-dark-active .gtr-thread .a9E,
-.gmail-dark-active .gtr-thread .a8u,
-.gmail-dark-active .gtr-thread .a8v {
+.gmail-dark-active .gtr-thread .eJPjde {
   background-color: #1f1f1f !important;
   color: #e3e3e3 !important;
   border: 1px solid #3c4043 !important;
   border-radius: 16px !important;
 }
 
-.gmail-dark-active .gtr-thread .ai-summary-darkened *,
-.gmail-dark-active .gtr-thread .bt6 *,
-.gmail-dark-active .gtr-thread .bsu *,
-.gmail-dark-active .gtr-thread .bta *,
-.gmail-dark-active .gtr-thread .a9E * {
+.gmail-dark-active .gtr-thread .eJPjde *:not(svg):not(svg *) {
   color: #e3e3e3 !important;
   background-color: transparent !important;
 }
@@ -435,7 +422,7 @@
   .gmail-dark-active h3,
   .gmail-dark-active .gtr-thread .ii.gt,
   .gmail-dark-active .gtr-thread .a3s,
-  .gmail-dark-active .gtr-thread .ai-summary-darkened,
+  .gmail-dark-active .gtr-thread .eJPjde,
   .gmail-dark-active div[role="main"],
   .gmail-dark-active div[role="listitem"] {
     background: #ffffff !important;
@@ -460,7 +447,7 @@
   .gmail-dark-active .gtr-thread div[role="listitem"],
   .gmail-dark-active .gtr-thread .adn.ads,
   .gmail-dark-active .gtr-thread .gs,
-  .gmail-dark-active .gtr-thread .ai-summary-darkened {
+  .gmail-dark-active .gtr-thread .eJPjde {
     border: 1px solid #e0e0e0 !important;
   }
 

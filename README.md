@@ -1,4 +1,4 @@
-# Gmail Thread Reverser & Dark Mode (v1.5.1)
+# Gmail Thread Reverser & Dark Mode (v1.5.2)
 
 Web版Gmailのスレッドを最新順に反転表示し、スレッド画面とメール本文を公式Google風マテリアルダークモードに対応させるChrome拡張機能（Manifest V3対応）です。
 A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation threads (newest emails first) and provides a polished Google Material Dark mode for threads, email bodies, AI summaries, and print workflows.
@@ -36,7 +36,7 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
 
 ## 構成ファイル一覧 / Included Files
 
-- `manifest.json`: 拡張機能定義ファイル / Extension manifest (Manifest V3, v1.5.1)
+- `manifest.json`: 拡張機能定義ファイル / Extension manifest (Manifest V3, v1.5.2)
 - `content.js`: スレッド並び替え・DOMスタイル制御・入力時軽量化スクリプト / Core script with keystroke filtering
 - `styles.css`: スレッド反転レイアウト、公式マテリアルダークCSS、印刷用スタイル / Stylesheet for layout, dark theme, and @media print
 - `popup.html` & `popup.js` & `popup.css`: ツールバー設定ポップアップ / Extension popup settings UI
@@ -52,8 +52,8 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
 - English: Copy `_locales/en/messages.json` to `_locales/<locale>/messages.json` (e.g. `fr`, `zh_CN`) and translate each `message`. The `description` fields are notes for translators. Keep `extName` within 75 and `extDescription` within 132 characters (Web Store limits).
 
 ### Gmailの表示言語への対応 / Gmail display language
-- 日本語: AI概要カードはGmail画面上の文言で検出しています。この文言は**ブラウザではなくGmailの表示言語**に従うため、`content.js` 冒頭の `GMAIL_UI_TEXT` に言語ごとの文言を追加してください（現在は英語・日本語）。未登録の言語でもスレッド反転と本文のダーク化は動作し、AI概要カードはクラス名による指定でのみ暗くなります。
-- English: The AI summary card is detected by on-screen text, which follows **Gmail's display language, not the browser's**. Add the strings for each language to `GMAIL_UI_TEXT` at the top of `content.js` (currently English and Japanese). In other languages thread reversal and body darkening still work; the AI summary card is darkened only through class-name selectors.
+- 日本語: Gmail画面上の要素はすべてクラス名や構造で判定しており、Gmail画面の文言には依存しません。Gmailをどの言語で表示していても、追加作業なしで動作します。
+- English: Gmail elements are matched by class names and structure only, never by on-screen text, so the extension works with any Gmail display language without extra work.
 
 ---
 

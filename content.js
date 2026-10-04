@@ -12,20 +12,6 @@
   'use strict';
 
   const EXTENSION_VERSION = 'v' + chrome.runtime.getManifest().version;
-  /**
-   * Gmail UI strings used to find elements that have no stable class name. They follow Gmail's
-   * display language (not the browser's), so every Gmail language needs its own entry here.
-   * To support another language, add its strings (see README "Adding a language").
-   */
-  const GMAIL_UI_TEXT = {
-    en: {
-      aiSummary: ['AI summary', 'AI Summary']
-    },
-    ja: {
-      aiSummary: ['AI による概要']
-    }
-  };
-  const AI_SUMMARY_LABELS = Object.values(GMAIL_UI_TEXT).flatMap((lang) => lang.aiSummary);
   const QUICK_BAR_ID = 'gmail-reverser-quick-toggle';
 
   let config = {
@@ -70,41 +56,6 @@
       if (!root.querySelector(THREAD_ANCHORS)) root.classList.remove('gtr-thread');
     });
     return newRoots;
-  }
-
-  /**
-   * Tag the Gemini AI summary card inside conversation views so styles.css can darken it.
-   * Only text nodes outside email bodies (.a3s) are inspected.
-   */
-  function markAISummaryCards(scopes) {
-    scopes.forEach((scope) => {
-      const root = scope.closest('.gtr-thread');
-      if (!root || scope.closest('.a3s, .ai-summary-darkened')) return;
-      const walker = document.createTreeWalker(scope, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
-        acceptNode(node) {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            return node.classList.contains('a3s') || node.classList.contains('ai-summary-darkened')
-              ? NodeFilter.FILTER_REJECT
-              : NodeFilter.FILTER_SKIP;
-          }
-          return AI_SUMMARY_LABELS.some((label) => node.nodeValue.includes(label))
-            ? NodeFilter.FILTER_ACCEPT
-            : NodeFilter.FILTER_SKIP;
-        }
-      });
-
-      let textNode;
-      while ((textNode = walker.nextNode())) {
-        // Pick the outermost ancestor that still looks like a card (wide enough, not the whole pane)
-        let card = null;
-        let el = textNode.parentElement;
-        while (el && el !== root && el.offsetHeight < 600) {
-          if (el.offsetWidth > 250 && el.offsetHeight > 50) card = el;
-          el = el.parentElement;
-        }
-        if (card) card.classList.add('ai-summary-darkened');
-      }
-    });
   }
 
   /**
@@ -213,7 +164,6 @@
     document.documentElement.classList.toggle('gmail-dark-active', !!config.smartDark);
     if (!config.smartDark) return;
 
-    markAISummaryCards(scopes);
     const bodies = new Set();
     scopes.forEach((scope) => emailBodiesIn(scope).forEach((body) => bodies.add(body)));
     darkenEmailBodies(bodies);
@@ -422,7 +372,7 @@
 
   /**
    * Incremental pass: only the nodes Gmail added inside conversation views since the last flush
-   * are scanned for AI summaries and email bodies. Inbox / sidebar updates never reach here.
+   * are scanned for email bodies. Inbox / sidebar updates never reach here.
    */
   const pendingNodes = new Set();
   let needFullPass = false;
@@ -484,7 +434,7 @@
       if (m.target.closest && m.target.closest('#' + QUICK_BAR_ID)) continue; // our own quick bar
 
       for (const node of m.addedNodes) {
-        // Text inserted into an existing element (e.g. a streamed AI summary) is scanned via its parent
+        // Text inserted into an existing element is handled via its parent
         const el = node.nodeType === Node.ELEMENT_NODE ? node : m.target;
         if (el.nodeType === Node.ELEMENT_NODE && isThreadNode(el)) {
           pendingNodes.add(el);
