@@ -90,6 +90,7 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
 - English: Zip all files including the `_locales` folder (exclude `.git`), e.g. `git archive --format=zip -o dark-reverse-thread.zip HEAD`.
 
 ### 3. ストア掲載情報と審査要件 / Store Listing & Review Requirements
+- **掲載用の文面と画像 / Listing text & images**: [`store/listing.md`](store/listing.md)、`store/screenshots/{ja,en}/`（`git archive` の ZIP には含まれません / excluded from the `git archive` ZIP）
 - **アイコン / Icons**: `icons/icon128.png` (128x128px)
 - **スクリーンショット / Screenshots**: 1280x800 または 640x400 ピクセル（Gmail上でスレッド反転やダークモードが動作している画面キャプチャを最低1枚）
 - **プライバシーポリシー / Privacy Policy**:

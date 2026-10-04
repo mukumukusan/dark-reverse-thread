@@ -1,0 +1,4 @@
+# Store listing material is not part of the extension package (git archive)
+store/ export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
