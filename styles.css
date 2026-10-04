@@ -342,6 +342,21 @@
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
+/* 返信欄の書式ツールバー（フォント・太字など）。背景を暗くし、画像のアイコンと文字は上と同じく反転して明るくする */
+.gmail-dark-active .gtr-thread .J-Z[role="toolbar"] {
+  background-color: #28292c !important;
+}
+
+.gmail-dark-active .gtr-thread .J-Z[role="toolbar"] > * {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* 返信欄の案内文の「/」キー表示 */
+.gmail-dark-active .gtr-thread .LbtP4e {
+  background-color: #3c4043 !important;
+  color: #e3e3e3 !important;
+}
+
 /* 添付ファイル欄の見出し（「添付ファイル N 件」・「すべてをドライブに追加」など）。
    Gmail のライトテーマの暗い文字色のままだと暗い背景で読めない */
 .gmail-dark-active .gtr-thread .hq.gt .aVW,

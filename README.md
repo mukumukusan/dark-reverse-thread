@@ -1,4 +1,4 @@
-# Gmail Thread Reverser & Dark Mode (v1.6.4)
+# Gmail Thread Reverser & Dark Mode (v1.6.5)
 
 Web版Gmailのスレッドを最新順に反転表示し、スレッド画面とメール本文を公式Google風マテリアルダークモードに対応させるChrome拡張機能（Manifest V3対応）です。
 A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation threads (newest emails first) and provides a polished Google Material Dark mode for threads, email bodies, AI summaries, and print workflows.
