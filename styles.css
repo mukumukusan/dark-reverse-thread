@@ -375,9 +375,15 @@
 
 .gmail-dark-active .gtr-thread .gE.iv.gt,
 .gmail-dark-active .gtr-thread .adn .gA,
-.gmail-dark-active .gtr-thread .adn .gH,
 .gmail-dark-active .gtr-thread .kv {
   background-color: #1f1f1f !important;
+  color: #c4c7c5 !important;
+}
+
+/* 右上の操作アイコン欄（日時・星・返信・⋮）はメールの枠より右にはみ出すので、
+   背景を塗ると枠の右の線が隠れる。背景は枠（.adn）の色をそのまま見せる */
+.gmail-dark-active .gtr-thread .adn .gH {
+  background-color: transparent !important;
   color: #c4c7c5 !important;
 }
 
