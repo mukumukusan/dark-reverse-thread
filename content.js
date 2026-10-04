@@ -524,17 +524,6 @@
     const t = (key) => chrome.i18n.getMessage(key);
     const onOff = (value) => (value ? 'ON' : 'OFF');
 
-    // Collapsed to this icon until hovered / focused (styles.css); a tap or click also opens it
-    const logo = document.createElement('button');
-    logo.className = 'gtr-logo';
-    logo.title = 'Dark Reverse Thread';
-    const logoImage = document.createElement('img');
-    logoImage.src = chrome.runtime.getURL('icons/icon48.png');
-    logoImage.alt = 'Dark Reverse Thread';
-    logo.appendChild(logoImage);
-    logo.onclick = () => bar.classList.toggle('gtr-open');
-    bar.onmouseleave = () => bar.classList.remove('gtr-open');
-
     const title = document.createElement('span');
     title.className = 'gtr-title';
     title.textContent = 'Dark Reverse Thread';
@@ -554,7 +543,6 @@
     };
 
     bar.replaceChildren(
-      logo,
       title,
       version,
       makeButton(`⇅ ${t('quickNewest')}: ${onOff(config.reverseOrder)}`, t('quickNewestTitle'), config.reverseOrder,
@@ -578,7 +566,6 @@
     hint.className = 'gtr-title';
     hint.textContent = RELOAD_HINT;
     bar.replaceChildren(hint);
-    bar.classList.add('gtr-hint'); // always shown open, so the hint is visible
   }
 
   // storage.onChanged applies the new value and re-renders the quick bar

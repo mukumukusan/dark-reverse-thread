@@ -37,7 +37,7 @@ Gmail のスレッドとメール本文を、元の色合いを保ったまま�
 ・返信・転送ボタンと返信欄は、最新のメールの直下（標準）または直上に置けます。
 
 ■ すぐに切り替え
-・画面右下のクイックバーから、ダーク・新しい順・返信欄の位置をワンクリックで切り替えられます（非表示にもできます）。
+・ツールバーの拡張機能アイコンから、ダーク・新しい順・返信欄の位置を切り替えられます。画面右下に切り替えボタン（クイックバー）を出すこともできます。
 ・印刷するときは、元の色と古い順に戻して印刷します。
 
 ■ プライバシー
@@ -67,7 +67,7 @@ Dark Reverse Thread gives Gmail a dark mode for threads and email bodies that ke
 • Place the Reply / Forward buttons and the reply box right below (default) or right above the newest email.
 
 ■ Quick switching
-• A small quick bar at the bottom right toggles dark mode, newest-first order and the reply position in one click (it can be hidden).
+• Toggle dark mode, newest-first order and the reply position from the extension's toolbar icon, or turn on a small quick bar at the bottom right for one-click switching.
 • Printing uses the original colors and oldest-first order.
 
 ■ Privacy

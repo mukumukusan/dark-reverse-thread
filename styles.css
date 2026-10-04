@@ -629,30 +629,6 @@
   color: #ffffff;
 }
 
-/* 普段は右下に小さなアイコンだけを出し、マウスを乗せる・フォーカスする・アイコンを押すとバーを開く */
-#gmail-reverser-quick-toggle .gtr-logo {
-  display: block;
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-  line-height: 0;
-}
-
-#gmail-reverser-quick-toggle .gtr-logo img {
-  width: 28px;
-  height: 28px;
-}
-
-#gmail-reverser-quick-toggle:not(:hover):not(:focus-within):not(.gtr-open):not(.gtr-hint) {
-  padding: 5px;
-  gap: 0;
-}
-
-#gmail-reverser-quick-toggle:not(:hover):not(:focus-within):not(.gtr-open):not(.gtr-hint) > :not(.gtr-logo) {
-  display: none;
-}
-
 #gmail-reverser-quick-toggle .gtr-version {
   font-size: 10px;
   font-weight: 600;
