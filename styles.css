@@ -402,6 +402,12 @@
   color: #c4c7c5 !important;
 }
 
+/* スレッドをスクロールしている枠（content.js が付ける目印）。速くスクロールしたときに、
+   まだ描かれていない部分が白く見えないよう、スレッドと同じ色を敷く */
+.gmail-dark-active .gtr-thread-scroller {
+  background-color: #1f1f1f !important;
+}
+
 /* メール本文（HTMLメールの白背景・固定文字色を上書き。bgcolor / color 属性もCSSで無効化される） */
 .gmail-dark-active .gtr-thread .ii.gt,
 .gmail-dark-active .gtr-thread .a3s {

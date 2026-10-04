@@ -51,7 +51,24 @@
     document.querySelectorAll('.gtr-thread').forEach((root) => {
       if (!root.querySelector(THREAD_ANCHORS)) root.classList.remove('gtr-thread');
     });
+    markThreadScrollers();
     return newRoots;
+  }
+
+  /**
+   * The pane that scrolls the open conversation is transparent. While scrolling fast, Chrome shows
+   * not-yet-drawn areas in the scroller's background color, which is white when it has none, so the
+   * scroller of a visible conversation is tagged and given the thread's dark color in styles.css.
+   * It also scrolls the inbox list, so the tag is removed as soon as the conversation is hidden.
+   */
+  function markThreadScrollers() {
+    const scrollers = new Set();
+    document.querySelectorAll('.gtr-thread').forEach((root) => {
+      if (root.offsetParent === null) return;
+      const scroller = findScrollContainer(root);
+      if (scroller && scroller !== document.scrollingElement) scrollers.add(scroller);
+    });
+    syncClass('gtr-thread-scroller', scrollers);
   }
 
   /**
