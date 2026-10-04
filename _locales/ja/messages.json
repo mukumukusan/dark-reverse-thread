@@ -24,13 +24,13 @@
     "message": "返信欄の位置"
   },
   "settingReplyDesc": {
-    "message": "スレッド内で返信欄を表示する位置"
+    "message": "返信を書くときの入力欄の位置"
   },
   "replyBottom": {
-    "message": "下（標準）"
+    "message": "最新メールの下（標準）"
   },
   "replyTop": {
-    "message": "上（最新メールの上）"
+    "message": "最新メールの上"
   },
   "settingQuickBar": {
     "message": "クイックバー"
@@ -60,7 +60,7 @@
     "message": "返信欄"
   },
   "quickReplyTitle": {
-    "message": "返信欄の位置を切り替え（上／下）"
+    "message": "返信欄を最新メールの上／下に切り替え"
   },
   "quickReplyTop": {
     "message": "上"

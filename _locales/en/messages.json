@@ -32,16 +32,16 @@
     "description": "Popup setting label: where the reply box is placed."
   },
   "settingReplyDesc": {
-    "message": "Where the reply area appears in the thread",
+    "message": "Where the reply box opens in the newest email",
     "description": "Popup setting description for reply box position."
   },
   "replyBottom": {
-    "message": "Bottom (Default)",
-    "description": "Reply box position option: bottom of the thread."
+    "message": "Below newest email (Default)",
+    "description": "Reply box position option: Gmail's own place, below the newest email."
   },
   "replyTop": {
-    "message": "Top (Above newest email)",
-    "description": "Reply box position option: top of the thread."
+    "message": "Above newest email",
+    "description": "Reply box position option: above the newest email."
   },
   "settingQuickBar": {
     "message": "Floating Quick Bar",
@@ -80,7 +80,7 @@
     "description": "Quick bar button: reply box position (followed by Top/Bottom). Keep short."
   },
   "quickReplyTitle": {
-    "message": "Move the reply box (top / bottom)",
+    "message": "Open the reply box above or below the newest email",
     "description": "Tooltip of the quick bar reply position button."
   },
   "quickReplyTop": {

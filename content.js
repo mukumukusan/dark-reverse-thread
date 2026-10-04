@@ -204,7 +204,7 @@
     list.classList.remove('gmail-thread-reversed');
     Array.from(list.children).forEach((child) => {
       if (child.style.order) child.style.order = '';
-      child.classList.remove('gmail-reply-top', 'gmail-reply-bottom');
+      child.classList.remove('gmail-reply-top', 'gmail-reply-bottom'); // classes from older versions
     });
   }
 
@@ -217,46 +217,65 @@
     });
 
     lists.forEach((list) => {
-      const children = Array.from(list.children);
-      if (children.length < 2) return;
-
-      const messageItems = [];
-      const replyBoxes = [];
-
-      children.forEach((child) => {
-        const isReply = child.classList.contains('g6') ||
-                        child.classList.contains('adB') ||
-                        child.classList.contains('aaq') ||
-                        child.querySelector('.g6, .adB');
-
-        if (isReply) {
-          replyBoxes.push(child);
-        } else {
-          messageItems.push(child);
-        }
-      });
-
-      if (config.reverseOrder) {
-        list.classList.add('gmail-thread-reversed');
-
-        const total = messageItems.length;
-        messageItems.forEach((item, index) => {
-          const order = (total - index).toString();
-          if (item.style.order !== order) item.style.order = order;
-        });
-
-        replyBoxes.forEach((rb) => {
-          if (config.replyPosition === 'top') {
-            rb.classList.add('gmail-reply-top');
-            rb.classList.remove('gmail-reply-bottom');
-          } else {
-            rb.classList.add('gmail-reply-bottom');
-            rb.classList.remove('gmail-reply-top');
-          }
-        });
-      } else {
+      if (!config.reverseOrder) {
         resetList(list);
+        return;
       }
+
+      // Every child of the message list is a message (expanded .h7 or collapsed .kv);
+      // the reply composer lives inside the newest message, not as a separate child.
+      const children = Array.from(list.children);
+      list.classList.add('gmail-thread-reversed');
+      children.forEach((child, index) => {
+        child.classList.remove('gmail-reply-top', 'gmail-reply-bottom'); // classes from older versions
+        const order = (children.length - index).toString();
+        if (child.style.order !== order) child.style.order = order;
+      });
+    });
+
+    applyReplyPosition(lists);
+  }
+
+  /**
+   * The inline reply composer sits inside the newest message, below its content. For "top", the
+   * composer block (the ancestor of the textbox that branches off from the message content) is
+   * shown first within that message via flex order; "bottom" keeps Gmail's own position.
+   */
+  function findComposerBlock(textbox, item) {
+    for (let el = textbox; el.parentElement && el.parentElement !== item; el = el.parentElement) {
+      if (el.parentElement.querySelector('.gs, .a3s')) return el;
+    }
+    return null;
+  }
+
+  function applyReplyPosition(lists) {
+    const active = new Set();
+    lists.forEach((list) => {
+      list.querySelectorAll('[role="textbox"]').forEach((textbox) => {
+        const item = Array.from(list.children).find((child) => child.contains(textbox));
+        const block = item && findComposerBlock(textbox, item);
+        // Flex layout is only safe on a plain block container, never on table parts
+        if (!block || block.parentElement.tagName !== 'DIV') return;
+        active.add(block);
+      });
+    });
+
+    document.querySelectorAll('.gmail-reply-above').forEach((block) => {
+      if (config.replyPosition !== 'top' || !active.has(block)) {
+        block.classList.remove('gmail-reply-above');
+        block.parentElement?.classList.remove('gmail-reply-host');
+      }
+    });
+
+    // Hosts whose composer was closed (removed from the DOM) go back to normal layout
+    document.querySelectorAll('.gmail-reply-host').forEach((host) => {
+      if (!host.querySelector(':scope > .gmail-reply-above')) host.classList.remove('gmail-reply-host');
+    });
+
+    if (config.replyPosition !== 'top') return;
+    active.forEach((block) => {
+      block.classList.add('gmail-reply-above');
+      block.parentElement.classList.add('gmail-reply-host');
     });
   }
 
