@@ -43,7 +43,6 @@
    -------------------------------------------------------------------------- */
 .gmail-dark-active .gtr-thread .hP {
   color: #ffffff !important;
-  font-weight: 600 !important;
 }
 
 /* 2.1 タイトル横のマーク（重要マーク・インジケーター）を青色(#8ab4f8)に復元
@@ -457,13 +456,17 @@
   color: #e3e3e3 !important;
 }
 
+/* メールの枠。大きさ・位置は Gmail のまま変えない（枠線は場所を取らない inset の影で、一番外側にだけ描く。
+   入れ子の 3 か所に border と余白を付けると、ダーク ON/OFF で中身の位置がずれる） */
 .gmail-dark-active .gtr-thread div[role="list"] > div[role="listitem"]:has(.adn),
 .gmail-dark-active .gtr-thread .adn.ads,
 .gmail-dark-active .gtr-thread .gs {
   background-color: #1f1f1f !important;
-  border: 1px solid #303134 !important;
+}
+
+.gmail-dark-active .gtr-thread div[role="list"] > div[role="listitem"]:has(.adn) {
+  box-shadow: inset 0 0 0 1px #303134 !important;
   border-radius: 12px !important;
-  margin-bottom: 10px !important;
 }
 
 .gmail-dark-active .gtr-thread .gE.iv.gt,
