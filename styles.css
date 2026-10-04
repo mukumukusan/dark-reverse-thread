@@ -389,6 +389,30 @@
   color: #9aa0a6 !important;
 }
 
+/* 宛先を入力したときの候補一覧（.afC）。作成ウィンドウの外（ページ直下）に作られるため個別に指定する */
+.gmail-dark-active .afC,
+.gmail-dark-active .afC .afA {
+  background-color: #28292c !important;
+}
+
+.gmail-dark-active .afC .agJ {
+  background-color: transparent !important;
+}
+
+.gmail-dark-active .afC .agJ.bjE,
+.gmail-dark-active .afC .agJ:hover {
+  background-color: #3c4043 !important;
+}
+
+.gmail-dark-active .afC .aL8 {
+  color: #e3e3e3 !important;
+}
+
+.gmail-dark-active .afC .aXS,
+.gmail-dark-active .afC .aXS * {
+  color: #c4c7c5 !important;
+}
+
 /* 添付ファイル欄の見出し（「添付ファイル N 件」・「すべてをドライブに追加」など）。
    Gmail のライトテーマの暗い文字色のままだと暗い背景で読めない */
 .gmail-dark-active .gtr-thread .hq.gt .aVW,
