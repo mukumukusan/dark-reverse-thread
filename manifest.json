@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Gmail Thread Reverser & Dark Mode",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Reverse Gmail thread order to show newest emails first, with a refined Material Dark mode for threads, email bodies, AI summaries, print optimization, and reply actions.",
   "icons": {
     "16": "icons/icon16.png",

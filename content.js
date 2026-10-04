@@ -15,6 +15,8 @@
   const AI_SUMMARY_LABELS = ['AI による概要', 'AI summary', 'AI Summary'];
   const SUMMARIZE_BUTTON_LABELS = ['このメールを要約', 'Summarize this email'];
   const AI_LABELS = AI_SUMMARY_LABELS.concat(SUMMARIZE_BUTTON_LABELS);
+  // Text label of the Summarize pill, e.g. <div class="b4qJse ...">このメールを要約</div>
+  const SUMMARIZE_LABEL_SELECTOR = '.b4qJse:not(.gtr-summarize-label)';
   const QUICK_BAR_ID = 'gmail-reverser-quick-toggle';
 
   let config = {
@@ -88,8 +90,7 @@
       let textNode;
       while ((textNode = walker.nextNode())) {
         if (SUMMARIZE_BUTTON_LABELS.some((label) => textNode.nodeValue.includes(label))) {
-          const button = textNode.parentElement.closest('button, [role="button"]') || textNode.parentElement;
-          button.classList.add('gtr-summarize-btn');
+          markSummarizeButton(textNode.parentElement);
           continue;
         }
 
@@ -102,6 +103,33 @@
         }
         if (card) card.classList.add('ai-summary-darkened');
       }
+    });
+  }
+
+  /**
+   * The Summarize label is a plain text div; the white pill around it is painted by an ancestor.
+   * Tag the outermost pill-sized ancestor that paints a background (or the enclosing button).
+   */
+  function markSummarizeButton(label) {
+    if (label.classList.contains('gtr-summarize-label')) return;
+
+    let pill = label.closest('button, [role="button"]');
+    if (!pill) {
+      let el = label;
+      for (let depth = 0; el && el !== document.body && depth < 5 && el.offsetHeight < 80; depth++) {
+        const bg = parseRGB(getComputedStyle(el).backgroundColor);
+        if (bg && bg.a > 0) pill = el;
+        el = el.parentElement;
+      }
+    }
+
+    label.classList.add('gtr-summarize-label');
+    (pill || label).classList.add('gtr-summarize-btn');
+  }
+
+  function markSummarizeButtons() {
+    document.querySelectorAll(SUMMARIZE_LABEL_SELECTOR).forEach((label) => {
+      if (SUMMARIZE_BUTTON_LABELS.some((text) => label.textContent.includes(text))) markSummarizeButton(label);
     });
   }
 
@@ -212,6 +240,7 @@
     if (!config.smartDark) return;
 
     markAISummaryCards(scopes);
+    markSummarizeButtons(); // may sit outside the conversation pane (e.g. the toolbar)
     const bodies = new Set();
     scopes.forEach((scope) => emailBodiesIn(scope).forEach((body) => bodies.add(body)));
     darkenEmailBodies(bodies);
@@ -420,6 +449,7 @@
    */
   const pendingNodes = new Set();
   let needFullPass = false;
+  let needSummarizeScan = false;
   let flushTimeout = null;
 
   function hasThreadAnchor(node) {
@@ -449,7 +479,10 @@
       applyDarkMode(Array.from(scopes));
       applyThreadReversal();
       scrollToNewestOnOpen();
+    } else if (needSummarizeScan && config.smartDark) {
+      markSummarizeButtons();
     }
+    needSummarizeScan = false;
     renderQuickBar();
   }
 
@@ -480,8 +513,12 @@
       for (const node of m.addedNodes) {
         // Text inserted into an existing element (e.g. a streamed AI summary) is scanned via its parent
         const el = node.nodeType === Node.ELEMENT_NODE ? node : m.target;
-        if (el.nodeType === Node.ELEMENT_NODE && isThreadNode(el)) {
+        if (el.nodeType !== Node.ELEMENT_NODE) continue;
+        if (isThreadNode(el)) {
           pendingNodes.add(el);
+          relevant = true;
+        } else if (el.matches(SUMMARIZE_LABEL_SELECTOR) || el.querySelector(SUMMARIZE_LABEL_SELECTOR)) {
+          needSummarizeScan = true; // the Summarize pill can render outside the conversation pane
           relevant = true;
         }
       }

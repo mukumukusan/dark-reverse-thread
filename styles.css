@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gmail Thread Reverser & Official Material Dark Mode (v1.4.5)
+   Gmail Thread Reverser & Official Material Dark Mode (v1.4.6)
    - Dark styling is scoped to the open conversation view only (.gtr-thread).
      Inbox list, sidebar, header and search bar are left to Gmail's own theme.
    - Official Google Material Dark Scheme (#1f1f1f / #28292c)
@@ -226,9 +226,10 @@
 }
 
 /* 6.1 「このメールを要約」(Summarize this email) ボタン
-   ラベル文字列で検出した .gtr-summarize-btn と、aria-label / tooltip での一致の両方を対象にする
+   ラベル(<div class="b4qJse">このメールを要約</div>)から背景を塗っている親要素を探して付けた
+   .gtr-summarize-btn と、aria-label / tooltip での一致の両方を対象にする
    （ボタン固有のラベルなので受信トレイ等には当たらない）。Geminiアイコン(svg)の色は維持。 */
-.gmail-dark-active .gtr-thread .gtr-summarize-btn,
+.gmail-dark-active .gtr-summarize-btn,
 .gmail-dark-active [aria-label*="このメールを要約"],
 .gmail-dark-active [aria-label*="Summarize this email"],
 .gmail-dark-active [data-tooltip*="このメールを要約"],
@@ -239,7 +240,7 @@
   box-shadow: none !important;
 }
 
-.gmail-dark-active .gtr-thread .gtr-summarize-btn:hover,
+.gmail-dark-active .gtr-summarize-btn:hover,
 .gmail-dark-active [aria-label*="このメールを要約"]:hover,
 .gmail-dark-active [aria-label*="Summarize this email"]:hover,
 .gmail-dark-active [data-tooltip*="このメールを要約"]:hover,
@@ -248,7 +249,7 @@
   color: #ffffff !important;
 }
 
-.gmail-dark-active .gtr-thread .gtr-summarize-btn *:not(svg):not(svg *),
+.gmail-dark-active .gtr-summarize-btn *:not(svg):not(svg *),
 .gmail-dark-active [aria-label*="このメールを要約"] *:not(svg):not(svg *),
 .gmail-dark-active [aria-label*="Summarize this email"] *:not(svg):not(svg *),
 .gmail-dark-active [data-tooltip*="このメールを要約"] *:not(svg):not(svg *),
