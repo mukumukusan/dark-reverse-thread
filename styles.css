@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gmail Thread Reverser & Official Material Dark Mode (v1.5.2)
+   Gmail Thread Reverser & Official Material Dark Mode (v1.5.3)
    - Dark styling is scoped to the open conversation view only (.gtr-thread).
      Inbox list, sidebar, header and search bar are left to Gmail's own theme.
    - Official Google Material Dark Scheme (#1f1f1f / #28292c)
@@ -152,31 +152,21 @@
 }
 
 /* --------------------------------------------------------------------------
-   5. TRIMMED QUOTE BUTTON ("...") (引用展開ボタンのピル化と明るい白ドット)
+   5. TRIMMED QUOTE BUTTON ("...") (引用展開ボタンの暗色化と明るい白ドット)
+   色だけを変え、サイズ・余白・文字サイズは Gmail のまま（枠線もレイアウトに影響しない inset の影で描く）。
    -------------------------------------------------------------------------- */
 .gmail-dark-active .gtr-thread .ajR {
   background-color: #333538 !important;
-  border: 1px solid #5f6368 !important;
-  border-radius: 6px !important;
-  padding: 2px 10px !important;
-  cursor: pointer !important;
-  display: inline-block !important;
-  margin: 6px 0 !important;
-  vertical-align: middle !important;
-  transition: all 0.15s ease !important;
+  box-shadow: inset 0 0 0 1px #5f6368 !important;
 }
 
 .gmail-dark-active .gtr-thread .ajR:hover {
   background-color: #44474b !important;
-  border-color: #8ab4f8 !important;
+  box-shadow: inset 0 0 0 1px #8ab4f8 !important;
 }
 
 .gmail-dark-active .gtr-thread .ajT {
   color: #ffffff !important;
-  font-weight: bold !important;
-  font-size: 13px !important;
-  letter-spacing: 2px !important;
-  line-height: 1 !important;
   background-color: transparent !important;
 }
 
