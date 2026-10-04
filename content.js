@@ -340,6 +340,8 @@
       });
     }
 
+    // Gmail scrolls to where it inserted a new composer (the bottom of the message); bring it into view at the top
+    const newComposers = Array.from(composers).filter((block) => !block.classList.contains('gmail-reply-above'));
     syncClass('gmail-reply-above', composers);
     syncClass('gmail-reply-footer', footers);
     syncClass('gmail-reply-after', afterFooter);
@@ -348,6 +350,8 @@
     composers.forEach((block) => hosts.add(block.parentElement));
     footers.forEach((block) => hosts.add(block.parentElement));
     syncClass('gmail-reply-host', hosts);
+
+    newComposers.forEach((block) => block.scrollIntoView({ block: 'nearest' }));
   }
 
   /**
@@ -479,6 +483,9 @@
   const pendingNodes = new Set();
   let needFullPass = false;
   let flushTimeout = null;
+  let flushDeadline = 0;
+  const FLUSH_DELAY = 150;
+  const FLUSH_MAX_WAIT = 300; // Gmail keeps updating the DOM for a while; don't let that postpone the work
 
   function hasThreadAnchor(node) {
     return node.matches(THREAD_ANCHORS) || node.querySelector(THREAD_ANCHORS) !== null;
@@ -486,6 +493,7 @@
 
   function flushPending() {
     flushTimeout = null;
+    flushDeadline = 0;
     if (needFullPass) {
       needFullPass = false;
       pendingNodes.clear();
@@ -512,8 +520,10 @@
   }
 
   function scheduleFlush() {
+    const now = Date.now();
+    if (!flushDeadline) flushDeadline = now + FLUSH_MAX_WAIT;
     if (flushTimeout) clearTimeout(flushTimeout);
-    flushTimeout = setTimeout(flushPending, 150);
+    flushTimeout = setTimeout(flushPending, Math.max(0, Math.min(FLUSH_DELAY, flushDeadline - now)));
   }
 
   function isThreadNode(node) {
@@ -532,6 +542,7 @@
     }
 
     let relevant = false;
+    let threadAdded = false;
     for (const m of mutations) {
       if (m.target.closest && m.target.closest('#' + QUICK_BAR_ID)) continue; // our own quick bar
 
@@ -541,6 +552,7 @@
         if (el.nodeType === Node.ELEMENT_NODE && isThreadNode(el)) {
           pendingNodes.add(el);
           relevant = true;
+          if (!threadAdded && !el.closest('.gtr-thread')) threadAdded = true;
         }
       }
 
@@ -554,6 +566,10 @@
         }
       }
     }
+
+    // Mark a newly shown conversation right away (before it is painted) so its dark styles apply
+    // without a white flash; the rest of the work stays batched. New roots are processed whole.
+    if (threadAdded) markThreadViews().forEach((root) => pendingNodes.add(root));
 
     if (relevant) scheduleFlush();
   });
