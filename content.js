@@ -5,6 +5,7 @@
  *   conversation view (.gtr-thread); this script only toggles classes.
  * - Print optimization (@media print)
  * - Typing & Keystroke performance optimization
+ * - Incremental processing: only nodes added inside conversation views are scanned
  */
 
 (function () {
@@ -12,6 +13,7 @@
 
   const EXTENSION_VERSION = 'v' + chrome.runtime.getManifest().version;
   const AI_SUMMARY_LABELS = ['AI による概要', 'AI summary', 'AI Summary'];
+  const QUICK_BAR_ID = 'gmail-reverser-quick-toggle';
 
   let config = {
     reverseOrder: true,
@@ -40,24 +42,32 @@
     return el && el !== document.body ? el : null;
   }
 
+  /** Returns the roots that were newly marked, so their whole contents can be processed. */
   function markThreadViews() {
+    const newRoots = new Set();
     document.querySelectorAll(THREAD_ANCHORS).forEach((anchor) => {
       const root = findThreadRoot(anchor);
-      if (root) root.classList.add('gtr-thread');
+      if (root && !root.classList.contains('gtr-thread')) {
+        root.classList.add('gtr-thread');
+        newRoots.add(root);
+      }
     });
 
     document.querySelectorAll('.gtr-thread').forEach((root) => {
       if (!root.querySelector(THREAD_ANCHORS)) root.classList.remove('gtr-thread');
     });
+    return newRoots;
   }
 
   /**
    * Tag the Gemini AI summary card inside conversation views so styles.css can darken it.
    * Only text nodes outside email bodies (.a3s) are inspected.
    */
-  function markAISummaryCards() {
-    document.querySelectorAll('.gtr-thread').forEach((root) => {
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
+  function markAISummaryCards(scopes) {
+    scopes.forEach((scope) => {
+      const root = scope.closest('.gtr-thread');
+      if (!root || scope.closest('.a3s, .ai-summary-darkened')) return;
+      const walker = document.createTreeWalker(scope, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
           if (node.nodeType === Node.ELEMENT_NODE) {
             return node.classList.contains('a3s') || node.classList.contains('ai-summary-darkened')
@@ -149,8 +159,13 @@
   // Background: light colors fold into 0.12-0.22 (white -> #1f1f1f), dark ones stay dark.
   const toDarkBackground = (l) => (l > 0.5 ? 0.12 + (1 - l) * 0.2 : Math.min(l, 0.22));
 
-  function darkenEmailBodies() {
-    document.querySelectorAll('.gtr-thread .a3s').forEach((body) => {
+  function emailBodiesIn(scope) {
+    const enclosing = scope.closest('.a3s');
+    return enclosing ? [enclosing] : scope.querySelectorAll('.a3s');
+  }
+
+  function darkenEmailBodies(bodies) {
+    bodies.forEach((body) => {
       const nodes = Array.from(body.querySelectorAll('*:not([data-gtr-c])'));
       if (nodes.length === 0) return;
 
@@ -181,12 +196,14 @@
     });
   }
 
-  function applyDarkMode() {
+  function applyDarkMode(scopes) {
     document.documentElement.classList.toggle('gmail-dark-active', !!config.smartDark);
-    if (config.smartDark) {
-      markAISummaryCards();
-      darkenEmailBodies();
-    }
+    if (!config.smartDark) return;
+
+    markAISummaryCards(scopes);
+    const bodies = new Set();
+    scopes.forEach((scope) => emailBodiesIn(scope).forEach((body) => bodies.add(body)));
+    darkenEmailBodies(bodies);
   }
 
   // Load saved settings from Chrome Storage
@@ -208,7 +225,7 @@
   });
 
   function applyThreadReversal() {
-    const lists = document.querySelectorAll('div[role="main"] div[role="list"]');
+    const lists = document.querySelectorAll('.gtr-thread div[role="list"]');
     lists.forEach((list) => {
       const children = Array.from(list.children);
       if (children.length < 2) return;
@@ -234,7 +251,8 @@
 
         const total = messageItems.length;
         messageItems.forEach((item, index) => {
-          item.style.order = (total - index).toString();
+          const order = (total - index).toString();
+          if (item.style.order !== order) item.style.order = order;
         });
 
         replyBoxes.forEach((rb) => {
@@ -249,7 +267,7 @@
       } else {
         list.classList.remove('gmail-thread-reversed');
         children.forEach((child) => {
-          child.style.order = '';
+          if (child.style.order) child.style.order = '';
           child.classList.remove('gmail-reply-top', 'gmail-reply-bottom');
         });
       }
@@ -277,14 +295,12 @@
   }
 
   function scrollToNewestOnOpen() {
-    if (!config.reverseOrder) return;
+    const threadKey = location.hash;
+    if (!config.reverseOrder || threadKey === lastScrolledThread) return;
 
     const list = Array.from(document.querySelectorAll('.gtr-thread .gmail-thread-reversed'))
       .find((el) => el.offsetParent !== null);
     if (!list) return;
-
-    const threadKey = location.hash;
-    if (threadKey === lastScrolledThread) return;
     lastScrolledThread = threadKey;
 
     if (cancelPendingScroll) cancelPendingScroll();
@@ -309,14 +325,14 @@
     if (!document.body) return;
 
     if (!config.showQuickBar) {
-      const existing = document.getElementById('gmail-reverser-quick-toggle');
+      const existing = document.getElementById(QUICK_BAR_ID);
       if (existing) existing.remove();
       lastQuickBarState = null;
       return;
     }
 
     const currentState = `${config.reverseOrder}-${config.smartDark}-${config.replyPosition}`;
-    const existingBar = document.getElementById('gmail-reverser-quick-toggle');
+    const existingBar = document.getElementById(QUICK_BAR_ID);
 
     if (existingBar && lastQuickBarState === currentState) {
       return; // State unchanged and DOM already present; skip re-rendering
@@ -326,7 +342,7 @@
     let bar = existingBar;
     if (!bar) {
       bar = document.createElement('div');
-      bar.id = 'gmail-reverser-quick-toggle';
+      bar.id = QUICK_BAR_ID;
       document.body.appendChild(bar);
     }
 
@@ -378,15 +394,63 @@
     });
   }
 
+  /** Full pass over every conversation view: initial load, setting changes and thread navigation. */
   function applyAll() {
     markThreadViews();
-    applyDarkMode();
+    applyDarkMode(Array.from(document.querySelectorAll('.gtr-thread')));
     applyThreadReversal();
     scrollToNewestOnOpen();
     renderQuickBar();
   }
 
-  let debounceTimeout = null;
+  /**
+   * Incremental pass: only the nodes Gmail added inside conversation views since the last flush
+   * are scanned for AI summaries and email bodies. Inbox / sidebar updates never reach here.
+   */
+  const pendingNodes = new Set();
+  let needFullPass = false;
+  let flushTimeout = null;
+
+  function hasThreadAnchor(node) {
+    return node.matches(THREAD_ANCHORS) || node.querySelector(THREAD_ANCHORS) !== null;
+  }
+
+  function flushPending() {
+    flushTimeout = null;
+    if (needFullPass) {
+      needFullPass = false;
+      pendingNodes.clear();
+      applyAll();
+      return;
+    }
+
+    const nodes = Array.from(pendingNodes).filter((node) => node.isConnected);
+    pendingNodes.clear();
+
+    // Nodes added before their conversation got marked would be missed, so a new root is processed whole
+    const scopes = nodes.some(hasThreadAnchor) ? markThreadViews() : new Set();
+    nodes.forEach((node) => {
+      if (node.closest('.gtr-thread')) scopes.add(node);
+      else node.querySelectorAll('.gtr-thread').forEach((root) => scopes.add(root));
+    });
+
+    if (scopes.size > 0) {
+      applyDarkMode(Array.from(scopes));
+      applyThreadReversal();
+      scrollToNewestOnOpen();
+    }
+    renderQuickBar();
+  }
+
+  function scheduleFlush() {
+    if (flushTimeout) clearTimeout(flushTimeout);
+    flushTimeout = setTimeout(flushPending, 150);
+  }
+
+  function isThreadNode(node) {
+    return node.closest('.gtr-thread') !== null || hasThreadAnchor(node);
+  }
+
   const observer = new MutationObserver((mutations) => {
     // Typing performance optimization:
     // If user is actively typing in a contenteditable compose box or input, ignore mutations strictly inside that field.
@@ -398,10 +462,37 @@
       }
     }
 
-    if (debounceTimeout) clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(() => {
-      applyAll();
-    }, 150);
+    let relevant = false;
+    for (const m of mutations) {
+      if (m.target.closest && m.target.closest('#' + QUICK_BAR_ID)) continue; // our own quick bar
+
+      for (const node of m.addedNodes) {
+        // Text inserted into an existing element (e.g. a streamed AI summary) is scanned via its parent
+        const el = node.nodeType === Node.ELEMENT_NODE ? node : m.target;
+        if (el.nodeType === Node.ELEMENT_NODE && isThreadNode(el)) {
+          pendingNodes.add(el);
+          relevant = true;
+        }
+      }
+
+      for (const node of m.removedNodes) {
+        if (node.nodeType !== Node.ELEMENT_NODE) continue;
+        if (node.id === QUICK_BAR_ID) {
+          relevant = true;
+        } else if (hasThreadAnchor(node)) {
+          needFullPass = true; // a conversation (or message) went away: re-evaluate thread roots
+          relevant = true;
+        }
+      }
+    }
+
+    if (relevant) scheduleFlush();
+  });
+
+  // Opening / leaving a conversation changes the hash (#inbox/<thread id>)
+  window.addEventListener('hashchange', () => {
+    needFullPass = true;
+    scheduleFlush();
   });
 
   if (document.body) {
