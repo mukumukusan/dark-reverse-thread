@@ -256,6 +256,7 @@
    7. BOTTOM FOOTER BUTTONS (返信・全員に返信・転送ボタン)
    -------------------------------------------------------------------------- */
 .gmail-dark-active .gtr-thread .amn,
+.gmail-dark-active .gtr-thread .amn .ams,
 .gmail-dark-active .gtr-thread .bkH,
 .gmail-dark-active .gtr-thread .bkj,
 .gmail-dark-active .gtr-thread .bkI,
@@ -323,6 +324,15 @@
 .gmail-dark-active .gtr-thread .IG [role="button"]:not([role="button"] [role="button"]),
 .gmail-dark-active .gtr-thread .btC [role="button"]:not(.T-I-atl):not([role="button"] [role="button"]) {
   filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* 添付ファイル欄の見出し（「添付ファイル N 件」・「すべてをドライブに追加」など）。
+   Gmail のライトテーマの暗い文字色のままだと暗い背景で読めない */
+.gmail-dark-active .gtr-thread .hq.gt .aVW,
+.gmail-dark-active .gtr-thread .hq.gt .aVW *,
+.gmail-dark-active .gtr-thread .hq.gt button,
+.gmail-dark-active .gtr-thread .hq.gt button * {
+  color: #c4c7c5 !important;
 }
 
 /* --------------------------------------------------------------------------
