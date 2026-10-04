@@ -1,11 +1,12 @@
 /**
- * Gmail Thread Reverser & Official Material Dark Mode - Content Script
- * Manifest V3 compatible
- * - Dark styling lives entirely in styles.css and is scoped to the open
- *   conversation view (.gtr-thread); this script only toggles classes.
- * - Print optimization (@media print)
- * - Typing & Keystroke performance optimization
- * - Incremental processing: only nodes added inside conversation views are scanned
+ * Gmail Thread Reverser & Official Material Dark Mode - Content Script (Manifest V3)
+ * - Marks the open conversation view (.gtr-thread); all dark styling in styles.css is scoped to it,
+ *   so the inbox list, sidebar and header are never touched.
+ * - Reverses the message list and places the reply area via flex order.
+ * - Adapts email body colors (hue kept, lightness remapped) through CSS variables, so turning
+ *   dark mode off restores the original colors.
+ * - Gmail elements are found by class names and structure only, never by on-screen text.
+ * - Incremental: only nodes added inside conversation views are processed; typing is ignored.
  */
 
 (function () {
@@ -14,12 +15,7 @@
   const EXTENSION_VERSION = 'v' + chrome.runtime.getManifest().version;
   const QUICK_BAR_ID = 'gmail-reverser-quick-toggle';
 
-  let config = {
-    reverseOrder: true,
-    smartDark: true,
-    replyPosition: 'bottom', // 'top' or 'bottom'
-    showQuickBar: true
-  };
+  const config = { ...GTR_DEFAULT_SETTINGS };
 
   let lastQuickBarState = null;
 
@@ -219,22 +215,18 @@
     darkenEmailBodies(bodies);
   }
 
-  // Load saved settings from Chrome Storage
-  chrome.storage.sync.get(config, (items) => {
-    if (items) {
-      config = Object.assign(config, items);
-      applyAll();
-    }
+  // Settings come from chrome.storage.sync; changes from the popup or the quick bar arrive here
+  chrome.storage.sync.get(GTR_DEFAULT_SETTINGS, (items) => {
+    Object.assign(config, items);
+    applyAll();
   });
 
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'sync') {
-      for (let key in changes) {
-        config[key] = changes[key].newValue;
-      }
-      lastQuickBarState = null; // force re-render on setting change
-      applyAll();
-    }
+    if (area !== 'sync') return;
+    Object.entries(changes).forEach(([key, { newValue }]) => {
+      config[key] = newValue;
+    });
+    applyAll();
   });
 
   /**
@@ -254,14 +246,13 @@
     list.classList.remove('gmail-thread-reversed');
     Array.from(list.children).forEach((child) => {
       if (child.style.order) child.style.order = '';
-      child.classList.remove('gmail-reply-top', 'gmail-reply-bottom'); // classes from older versions
     });
   }
 
   function applyThreadReversal() {
     const lists = findMessageLists();
 
-    // Undo reversal on lists that are not message lists (left over from older versions)
+    // Undo reversal on lists that are no longer message lists
     document.querySelectorAll('.gmail-thread-reversed').forEach((list) => {
       if (!lists.has(list)) resetList(list);
     });
@@ -277,7 +268,6 @@
       const children = Array.from(list.children);
       list.classList.add('gmail-thread-reversed');
       children.forEach((child, index) => {
-        child.classList.remove('gmail-reply-top', 'gmail-reply-bottom'); // classes from older versions
         const order = (children.length - index).toString();
         if (child.style.order !== order) child.style.order = order;
       });
@@ -456,35 +446,22 @@
     bar.replaceChildren(
       title,
       version,
-      makeButton(`⇅ ${t('quickNewest')}: ${onOff(config.reverseOrder)}`, t('quickNewestTitle'), config.reverseOrder, () => {
-        config.reverseOrder = !config.reverseOrder;
-        lastQuickBarState = null;
-        saveConfig({ reverseOrder: config.reverseOrder });
-      }),
-      makeButton(`🌙 ${t('quickDark')}: ${onOff(config.smartDark)}`, t('quickDarkTitle'), config.smartDark, () => {
-        config.smartDark = !config.smartDark;
-        lastQuickBarState = null;
-        saveConfig({ smartDark: config.smartDark });
-      }),
+      makeButton(`⇅ ${t('quickNewest')}: ${onOff(config.reverseOrder)}`, t('quickNewestTitle'), config.reverseOrder,
+        () => save({ reverseOrder: !config.reverseOrder })),
+      makeButton(`🌙 ${t('quickDark')}: ${onOff(config.smartDark)}`, t('quickDarkTitle'), config.smartDark,
+        () => save({ smartDark: !config.smartDark })),
       makeButton(
         `↩ ${t('quickReply')}: ${t(config.replyPosition === 'top' ? 'quickReplyTop' : 'quickReplyBottom')}`,
         t(config.reverseOrder ? 'quickReplyTitle' : 'replyNeedsReverse'),
         false,
-        () => {
-          config.replyPosition = config.replyPosition === 'top' ? 'bottom' : 'top';
-          lastQuickBarState = null;
-          saveConfig({ replyPosition: config.replyPosition });
-        },
+        () => save({ replyPosition: config.replyPosition === 'top' ? 'bottom' : 'top' }),
         !config.reverseOrder // the reply position only applies to newest-first threads
       )
     );
   }
 
-  function saveConfig(updated) {
-    chrome.storage.sync.set(updated, () => {
-      applyAll();
-    });
-  }
+  // storage.onChanged applies the new value and re-renders the quick bar
+  const save = (updated) => chrome.storage.sync.set(updated);
 
   /** Full pass over every conversation view: initial load, setting changes and thread navigation. */
   function applyAll() {

@@ -12,13 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const showQuickBar = document.getElementById('showQuickBar');
   const status = document.getElementById('status');
 
-  const defaultSettings = {
-    reverseOrder: true,
-    smartDark: true,
-    replyPosition: 'bottom',
-    showQuickBar: true
-  };
-
   // The reply position only applies to newest-first threads
   const replySetting = document.getElementById('replySetting');
   const replyDesc = document.getElementById('replyDesc');
@@ -28,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     replyDesc.textContent = chrome.i18n.getMessage(reverseOrder.checked ? 'settingReplyDesc' : 'replyNeedsReverse');
   }
 
-  chrome.storage.sync.get(defaultSettings, (items) => {
+  chrome.storage.sync.get(GTR_DEFAULT_SETTINGS, (items) => {
     reverseOrder.checked = items.reverseOrder;
     smartDark.checked = items.smartDark;
     replyPosition.value = items.replyPosition;
