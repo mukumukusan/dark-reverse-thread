@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gmail Thread Reverser & Official Material Dark Mode (v1.5.4)
+   Gmail Thread Reverser & Official Material Dark Mode (v1.5.5)
    - Dark styling is scoped to the open conversation view only (.gtr-thread).
      Inbox list, sidebar, header and search bar are left to Gmail's own theme.
    - Official Google Material Dark Scheme (#1f1f1f / #28292c)
@@ -184,12 +184,14 @@
 
 /* --------------------------------------------------------------------------
    6. GEMINI AI SUMMARY CARD (AIによる概要カードの公式風ダーク化)
-   .eJPjde はカード本体（見出しボタン「AI による概要」と要約本文を含む）。
-   文言ではなくクラスで指定し、Gmailの表示言語に依存しない。Geminiアイコン(svg)の色は維持。
+   .eJPjde は Gemini の要約エリア。文言ではなくクラスで指定し、Gmailの表示言語に依存しない。
+   - 要約後 (.eJPjde.TvN2Xc): .eJPjde 自体がカード本体なので、カード全体を暗くする
+   - 要約前 (「このメールを要約」): .eJPjde は透明な外枠で、色が付くのは中のボタン .mNKakd だけ。
+     外枠には何も付けず、ボタンだけを Gmail 本来の形・大きさのまま暗くする
+   Geminiアイコン(svg)の色は維持。
    -------------------------------------------------------------------------- */
-.gmail-dark-active .gtr-thread .eJPjde {
+.gmail-dark-active .gtr-thread .eJPjde.TvN2Xc {
   background-color: #1f1f1f !important;
-  color: #e3e3e3 !important;
   border: 1px solid #3c4043 !important;
   border-radius: 16px !important;
 }
@@ -197,6 +199,15 @@
 .gmail-dark-active .gtr-thread .eJPjde *:not(svg):not(svg *) {
   color: #e3e3e3 !important;
   background-color: transparent !important;
+}
+
+.gmail-dark-active .gtr-thread .eJPjde:not(.TvN2Xc) .mNKakd {
+  background-color: #28292c !important;
+  box-shadow: inset 0 0 0 1px #3c4043 !important;
+}
+
+.gmail-dark-active .gtr-thread .eJPjde:not(.TvN2Xc) .mNKakd:hover {
+  background-color: #35363a !important;
 }
 
 /* --------------------------------------------------------------------------
