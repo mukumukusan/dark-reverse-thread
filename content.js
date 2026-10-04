@@ -356,78 +356,93 @@
     wanted.forEach((el) => el.classList.add(className));
   }
 
+  /**
+   * The Reply / Forward footer blocks: the ancestor of each footer that sits next to the box holding
+   * the message list. Empty placeholders inside messages and unsafe (table) parents are skipped.
+   */
+  function findFooterBlocks(lists) {
+    const blocks = [];
+    document.querySelectorAll('.gtr-thread .amn').forEach((footer) => {
+      if (lists.some((list) => list.contains(footer))) return; // empty placeholder inside a message
+      const block = findFooterBlock(footer, lists);
+      if (isFlexSafe(block)) blocks.push(block);
+    });
+    return blocks;
+  }
+
+  // Element sets that get a class each; a plan fills only the sets its mode uses
+  const REPLY_CLASSES = {
+    composers: 'gmail-reply-above',
+    footers: 'gmail-reply-footer',
+    afterFooter: 'gmail-reply-after',
+    footersBelow: 'gmail-reply-below',
+    flattened: 'gmail-reply-flat',
+    leading: 'gmail-reply-lead',
+    trailing: 'gmail-reply-tail'
+  };
+
+  const emptyReplyPlan = () =>
+    Object.fromEntries(Object.keys(REPLY_CLASSES).map((key) => [key, new Set()]));
+
+  /** "top": composer first in the newest message, footer just above the message list. */
+  function planReplyTop(lists) {
+    const plan = emptyReplyPlan();
+    lists.forEach((list) => {
+      list.querySelectorAll('[role="textbox"]').forEach((textbox) => {
+        const item = Array.from(list.children).find((child) => child.contains(textbox));
+        const block = item && findComposerBlock(textbox, item);
+        if (isFlexSafe(block)) plan.composers.add(block);
+      });
+    });
+
+    findFooterBlocks(lists).forEach((block) => {
+      plan.footers.add(block);
+      // Siblings from the message list onward follow the footer; earlier ones (subject etc.) stay first
+      const siblings = Array.from(block.parentElement.children);
+      const listIndex = siblings.findIndex((s) => s !== block && lists.some((list) => s.contains(list)));
+      siblings.forEach((s, i) => {
+        if (s !== block && listIndex !== -1 && i >= listIndex) plan.afterFooter.add(s);
+      });
+    });
+    return plan;
+  }
+
+  /** "bottom": the boxes around the message list are flattened so the footer follows the newest message. */
+  function planReplyBelow(lists) {
+    const plan = emptyReplyPlan();
+    findFooterBlocks(lists).forEach((block) => {
+      const host = block.parentElement;
+      const list = lists.find((l) => host.contains(l));
+      const chain = [];
+      for (let el = list; el !== host; el = el.parentElement) chain.push(el);
+      if (!chain.every(isPlainBox)) return;
+
+      plan.footersBelow.add(block);
+      chain.forEach((el) => {
+        plan.flattened.add(el);
+        // Neighbours of the flattened boxes join the same column: those before the messages
+        // (subject, summary button) stay first, those after them go last
+        Array.from(el.parentElement.children).forEach((sibling) => {
+          if (sibling === el || sibling === block) return;
+          const before = sibling.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING;
+          (before ? plan.leading : plan.trailing).add(sibling);
+        });
+      });
+    });
+    return plan;
+  }
+
   function applyReplyPosition(listSet) {
     const lists = Array.from(listSet);
-    const composers = new Set();
-    const footers = new Set();
-    const afterFooter = new Set();
-    const footersBelow = new Set();
-    const flattened = new Set();
-    const leading = new Set();
-    const trailing = new Set();
-
-    if (config.replyPosition !== 'top' && config.reverseOrder) {
-      document.querySelectorAll('.gtr-thread .amn').forEach((footer) => {
-        if (lists.some((list) => list.contains(footer))) return; // empty placeholder inside a message
-        const block = findFooterBlock(footer, lists);
-        if (!isFlexSafe(block)) return;
-        const host = block.parentElement;
-        const list = lists.find((l) => host.contains(l));
-        const chain = [];
-        for (let el = list; el !== host; el = el.parentElement) chain.push(el);
-        if (!chain.every(isPlainBox)) return;
-
-        footersBelow.add(block);
-        chain.forEach((el) => {
-          flattened.add(el);
-          // Neighbours of the flattened boxes join the same column: those before the messages
-          // (subject, summary button) stay first, those after them go last
-          Array.from(el.parentElement.children).forEach((sibling) => {
-            if (sibling === el || sibling === block) return;
-            const before = sibling.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING;
-            (before ? leading : trailing).add(sibling);
-          });
-        });
-      });
-    }
-
-    if (config.replyPosition === 'top' && config.reverseOrder) {
-      lists.forEach((list) => {
-        list.querySelectorAll('[role="textbox"]').forEach((textbox) => {
-          const item = Array.from(list.children).find((child) => child.contains(textbox));
-          const block = item && findComposerBlock(textbox, item);
-          if (isFlexSafe(block)) composers.add(block);
-        });
-      });
-
-      document.querySelectorAll('.gtr-thread .amn').forEach((footer) => {
-        if (lists.some((list) => list.contains(footer))) return; // empty placeholder inside a message
-        const block = findFooterBlock(footer, lists);
-        if (!isFlexSafe(block)) return;
-        footers.add(block);
-        // Siblings from the message list onward follow the footer; earlier ones (subject etc.) stay first
-        const siblings = Array.from(block.parentElement.children);
-        const listIndex = siblings.findIndex((s) => s !== block && lists.some((list) => s.contains(list)));
-        siblings.forEach((s, i) => {
-          if (s !== block && listIndex !== -1 && i >= listIndex) afterFooter.add(s);
-        });
-      });
-    }
+    let plan = emptyReplyPlan();
+    if (config.reverseOrder) plan = config.replyPosition === 'top' ? planReplyTop(lists) : planReplyBelow(lists);
 
     // Gmail scrolls to where it inserted a new composer (the bottom of the message); bring it into view at the top
-    const newComposers = Array.from(composers).filter((block) => !block.classList.contains('gmail-reply-above'));
-    syncClass('gmail-reply-above', composers);
-    syncClass('gmail-reply-footer', footers);
-    syncClass('gmail-reply-after', afterFooter);
-    syncClass('gmail-reply-below', footersBelow);
-    syncClass('gmail-reply-flat', flattened);
-    syncClass('gmail-reply-lead', leading);
-    syncClass('gmail-reply-tail', trailing);
+    const newComposers = Array.from(plan.composers).filter((block) => !block.classList.contains(REPLY_CLASSES.composers));
+    Object.entries(REPLY_CLASSES).forEach(([key, className]) => syncClass(className, plan[key]));
 
     const hosts = new Set();
-    composers.forEach((block) => hosts.add(block.parentElement));
-    footers.forEach((block) => hosts.add(block.parentElement));
-    footersBelow.forEach((block) => hosts.add(block.parentElement));
+    [plan.composers, plan.footers, plan.footersBelow].forEach((set) => set.forEach((block) => hosts.add(block.parentElement)));
     syncClass('gmail-reply-host', hosts);
 
     newComposers.forEach((block) => block.scrollIntoView({ block: 'nearest' }));
