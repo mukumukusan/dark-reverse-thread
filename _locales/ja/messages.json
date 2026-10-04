@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "Gmail スレッド反転 & ダークモード"
+    "message": "Dark Reverse Thread"
   },
   "extDescription": {
-    "message": "Gmailのスレッドを新しい順に表示し、スレッドとメール本文を元の色味を保ったままマテリアルダークで表示します。"
+    "message": "Gmailのスレッドとメール本文を元の色味を保ったままダークモードで表示し、スレッドを新しい順に並べ替えます。"
   },
   "popupSubtitle": {
-    "message": "新しい順のスレッド表示 & マテリアルダーク"
+    "message": "Gmail のダークモード & 新しい順のスレッド表示"
   },
   "settingDark": {
     "message": "ダークモード"

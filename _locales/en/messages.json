@@ -1,14 +1,14 @@
 {
   "extName": {
-    "message": "Gmail Thread Reverser & Dark Mode",
+    "message": "Dark Reverse Thread",
     "description": "Extension name shown in Chrome and the Web Store (max 75 characters)."
   },
   "extDescription": {
-    "message": "Show Gmail conversations newest-first, with a Material Dark theme for threads and email bodies that keeps original colors.",
+    "message": "A dark mode for Gmail threads and email bodies that keeps their original colors, with conversations shown newest-first.",
     "description": "Extension description shown in Chrome and the Web Store (max 132 characters)."
   },
   "popupSubtitle": {
-    "message": "Newest-first threads & Material Dark",
+    "message": "Dark mode & newest-first threads for Gmail",
     "description": "Subtitle under the extension name in the popup."
   },
   "settingDark": {

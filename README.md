@@ -1,7 +1,10 @@
-# Gmail Thread Reverser & Dark Mode (v1.7.4)
+# Dark Reverse Thread (v1.8.0)
 
-Web版Gmailのスレッドを最新順に反転表示し、スレッド画面とメール本文を公式Google風マテリアルダークモードに対応させるChrome拡張機能（Manifest V3対応）です。
-A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation threads (newest emails first) and provides a polished Google Material Dark mode for threads, email bodies, AI summaries, and print workflows.
+Web版Gmailのスレッド画面・メール本文・作成ウィンドウを、元の色味を保ったままダークモードで表示し、スレッドを新しい順に並べ替える Chrome 拡張機能（Manifest V3）です。
+A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads, email bodies and the compose window that keeps original colors, plus newest-first conversation threads.
+
+※ 本拡張機能は Google とは関係のない個人開発のものです。Gmail は Google LLC の商標です。
+*This extension is an independent project, not affiliated with or endorsed by Google. Gmail is a trademark of Google LLC.*
 
 ---
 
@@ -10,9 +13,9 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
 1. **スレッド表示順の反転 / Thread Chronological Reversal**
    - 日本語: 最新のメッセージがスレッド最上部に並ぶように自動で並び替え、スレッドを開くと最新メッセージの位置（先頭）を表示します。
    - English: Reverses conversation threads so the newest messages appear at the very top, and opens each thread scrolled to the newest message.
-2. **公式Google風マテリアルダークモード / Official Material Dark Theme**
-   - 日本語: Google公式Gmailの上品なマテリアルダーク調（#1f1f1f / #28292c / #303134）に統一し、目に優しく洗練された表示を提供。新規作成ウィンドウ（右下・全画面）も暗く表示します。受信トレイ・サイドバー・ヘッダーには干渉せず、Gmail本体のテーマ設定をそのまま使います。
-   - English: Unified with Google's official Material Dark palette (#1f1f1f / #28292c / #303134) for an eye-friendly, native feel. Applied to the conversation view and the compose window (docked or full screen) only — the inbox list, sidebar and header are left to Gmail's own theme.
+2. **マテリアルダークモード / Material Dark Theme**
+   - 日本語: Gmail のダークテーマに馴染むマテリアルダーク調（#1f1f1f / #28292c / #303134）に統一し、目に優しく洗練された表示を提供。新規作成ウィンドウ（右下・全画面）も暗く表示します。受信トレイ・サイドバー・ヘッダーには干渉せず、Gmail本体のテーマ設定をそのまま使います。
+   - English: Uses a Material Dark palette that matches Gmail's own dark theme (#1f1f1f / #28292c / #303134) for an eye-friendly, native feel. Applied to the conversation view and the compose window (docked or full screen) only — the inbox list, sidebar and header are left to Gmail's own theme.
 3. **本文白飛びの根本解消 / Direct Email Body Darkening**
    - 日本語: HTMLメールの文字色・背景色を、色相と彩度を保ったまま明るさだけ暗い背景向けに調整（黒文字→明るい灰色、白背景→暗色、赤字や黄色のハイライトは色味を残す）。画像やロゴは本来の色を保護し、透過画像（黒いロゴなど）の背後には元のメールでの背景色を敷いて見えるように。印刷時は元の色で出力。
    - English: Adapts HTML email text and background colors for dark mode by remapping only their lightness, keeping the original hue and saturation (black text becomes light gray, white backgrounds turn dark, red text and highlights keep their color). Images keep their colors, transparent ones (e.g. dark logos) get their original backdrop back so they stay visible, and printing uses the original colors.
@@ -39,7 +42,7 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
 - `manifest.json`: 拡張機能定義ファイル / Extension manifest (Manifest V3)
 - `settings.js`: 設定の初期値（content.js と popup.js で共有） / Default settings shared by the content script and popup
 - `content.js`: スレッド並び替え・DOMスタイル制御・入力時軽量化スクリプト / Core script with keystroke filtering
-- `styles.css`: スレッド反転レイアウト、公式マテリアルダークCSS、印刷用スタイル / Stylesheet for layout, dark theme, and @media print
+- `styles.css`: スレッド反転レイアウト、マテリアルダークCSS、印刷用スタイル / Stylesheet for layout, dark theme, and @media print
 - `popup.html` & `popup.js` & `popup.css`: ツールバー設定ポップアップ / Extension popup settings UI
 - `_locales/<lang>/messages.json`: 表示文字列（英語 `en` が既定） / UI strings per language (`en` is the default)
 - `icons/`: アイコンアセット (16x16, 48x48, 128x128 PNG) / App icons
@@ -83,8 +86,8 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
 - English: Visit the Developer Dashboard and pay the one-time $5 USD registration fee.
 
 ### 2. ZIPアーカイブの作成 / Prepare ZIP Archive
-- 日本語: `_locales` フォルダを含む全ファイルをZIP形式で圧縮します（`.git` は含めない）。例: `git archive --format=zip -o gmail-thread-reverser.zip HEAD`
-- English: Zip all files including the `_locales` folder (exclude `.git`), e.g. `git archive --format=zip -o gmail-thread-reverser.zip HEAD`.
+- 日本語: `_locales` フォルダを含む全ファイルをZIP形式で圧縮します（`.git` は含めない）。例: `git archive --format=zip -o dark-reverse-thread.zip HEAD`
+- English: Zip all files including the `_locales` folder (exclude `.git`), e.g. `git archive --format=zip -o dark-reverse-thread.zip HEAD`.
 
 ### 3. ストア掲載情報と審査要件 / Store Listing & Review Requirements
 - **アイコン / Icons**: `icons/icon128.png` (128x128px)

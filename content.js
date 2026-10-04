@@ -1,5 +1,5 @@
 /**
- * Gmail Thread Reverser & Official Material Dark Mode - Content Script (Manifest V3)
+ * Dark Reverse Thread (dark mode & newest-first threads for Gmail) - Content Script (Manifest V3)
  * - Marks the open conversation view (.gtr-thread); all dark styling in styles.css is scoped to it,
  *   so the inbox list, sidebar and header are never touched.
  * - Reverses the message list and places the reply area via flex order.
@@ -463,7 +463,7 @@
 
     const title = document.createElement('span');
     title.className = 'gtr-title';
-    title.textContent = 'Gmail Reverser';
+    title.textContent = 'Dark Reverse Thread';
 
     const version = document.createElement('span');
     version.className = 'gtr-version';

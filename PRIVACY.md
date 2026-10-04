@@ -1,6 +1,6 @@
 # プライバシーポリシー / Privacy Policy
 
-**Gmail Thread Reverser & Dark Mode**
+**Dark Reverse Thread**
 最終更新日 / Last updated: 2026-10-04
 
 ---
