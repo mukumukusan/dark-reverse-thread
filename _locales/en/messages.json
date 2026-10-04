@@ -60,7 +60,7 @@
     "description": "Shown briefly in the popup after a setting changes."
   },
   "footerTagline": {
-    "message": "Print & typing optimized",
+    "message": "A comfortable dark Gmail",
     "description": "Popup footer text shown after the version number."
   },
   "quickNewest": {

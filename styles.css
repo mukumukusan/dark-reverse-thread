@@ -520,8 +520,9 @@
 /* --------------------------------------------------------------------------
    9. QUICK FLOATING TOGGLE (右下クイック操作バー ＆ バージョンバッジ)
    -------------------------------------------------------------------------- */
-/* 作成ウィンドウ（右下・全画面）が開いている間は隠す。右下に畳んだ作成ウィンドウや送信欄に重なるため */
-body:has(.Hd[role="dialog"]) #gmail-reverser-quick-toggle {
+/* 作成ウィンドウ（右下・全画面）が開いている間は隠す。右下に畳んだ作成ウィンドウや送信欄に重なるため
+   （content.js が .gtr-compose-open を付ける。body:has() はページの書き換えのたびに全体を調べ直して重い） */
+.gtr-compose-open #gmail-reverser-quick-toggle {
   display: none !important;
 }
 
@@ -614,9 +615,17 @@ body:has(.Hd[role="dialog"]) #gmail-reverser-quick-toggle {
     order: initial !important;
   }
 
-  /* 返信エリアの非表示 */
+  /* 返信エリアの非表示と、上に移したボタン欄などを元の並びに戻す */
   .gmail-reply-above {
     display: none !important;
+  }
+
+  .gmail-reply-host {
+    display: block !important;
+  }
+
+  .gmail-reply-host > * {
+    order: initial !important;
   }
 
   /* インク節約・読みやすさのため純白背景＆黒文字に強制復帰 */

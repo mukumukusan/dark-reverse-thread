@@ -256,7 +256,7 @@
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'sync') return;
     Object.entries(changes).forEach(([key, { newValue }]) => {
-      config[key] = newValue;
+      config[key] = newValue === undefined ? GTR_DEFAULT_SETTINGS[key] : newValue; // undefined = key removed
     });
     applyAll();
   });
@@ -518,8 +518,21 @@
     }
   };
 
+  /**
+   * While a compose window (docked or full screen) is open, the quick bar is hidden (styles.css) so it
+   * doesn't cover the minimized compose bar or the send row. Checked on every DOM change; cheap.
+   */
+  const COMPOSE_DIALOG = '.Hd[role="dialog"]';
+
+  function syncComposeOpen() {
+    const open = document.querySelector(COMPOSE_DIALOG) !== null;
+    const root = document.documentElement;
+    if (root.classList.contains('gtr-compose-open') !== open) root.classList.toggle('gtr-compose-open', open);
+  }
+
   /** Full pass over every conversation view: initial load, setting changes and thread navigation. */
   function applyAll() {
+    syncComposeOpen();
     markThreadViews();
     applyDarkMode(Array.from(document.querySelectorAll('.gtr-thread')));
     applyThreadReversal();
@@ -591,6 +604,8 @@
         return; // Skip execution while user is actively typing
       }
     }
+
+    syncComposeOpen();
 
     let relevant = false;
     let threadAdded = false;
