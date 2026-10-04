@@ -596,30 +596,20 @@
   /**
    * Menus opened from a button in the conversation (e.g. a message's "⋮" menu) or in the main toolbar
    * above it (the checkbox "▾", "⋮") are built outside the thread from shared menu components that
-   * other parts of Gmail reuse. They are tagged only while such an opener is expanded, so styles.css
-   * darkens them and nothing else.
+   * other parts of Gmail reuse. Gmail opens them on mouse/pointer down, so the source of the press is
+   * noted on <html> before Gmail handles it; styles.css darkens menus only while that note is set, and
+   * they are never painted white first.
    */
-  const DARK_MENU_CLASS = 'gtr-dark-menu';
-  const MENU_OPENER = ':is(.gtr-thread, [gh="mtb"]) :is(button, [role="button"])[aria-expanded="true"]';
+  const MENU_SOURCE_CLASS = 'gtr-menu-source';
 
-  function markThreadMenus() {
-    const menus = new Set();
-    if (document.querySelector(MENU_OPENER)) {
-      document.querySelectorAll('[role="menu"]').forEach((menu) => {
-        if (menu.offsetParent === null || menu.closest('.gtr-thread, .Hd[role="dialog"]')) return;
-        menus.add(menu.closest('.tB5Jxf-M-X') || menu);
-      });
-    }
-    syncClass(DARK_MENU_CLASS, menus);
-  }
-
-  // A menu opens right after the click on its button; check once it is shown
-  document.addEventListener('click', () => setTimeout(markThreadMenus, 50), true);
+  document.addEventListener('pointerdown', (event) => {
+    const fromDarkArea = event.target instanceof Element && event.target.closest('.gtr-thread, [gh="mtb"]') !== null;
+    document.documentElement.classList.toggle(MENU_SOURCE_CLASS, fromDarkArea);
+  }, true);
 
   /** Full pass over every conversation view: initial load, setting changes and thread navigation. */
   function applyAll() {
     syncComposeOpen();
-    markThreadMenus();
     markThreadViews();
     applyDarkMode(Array.from(document.querySelectorAll('.gtr-thread')));
     applyThreadReversal();
@@ -693,7 +683,6 @@
     }
 
     syncComposeOpen();
-    markThreadMenus();
 
     let relevant = false;
     let threadAdded = false;

@@ -464,30 +464,31 @@
 }
 
 /* スレッド内のボタン（メールの「⋮」など）と上のツールバー（チェックボックスの「▾」、「⋮」）から開いたメニュー。
-   スレッドの外に作られる共通部品のため、content.js が開いている間だけ .gtr-dark-menu を付ける。
+   スレッドの外に作られる共通部品のため、content.js がボタンを押した瞬間（メニューが開く前）に
+   <html> に .gtr-menu-source を付け、その間に表示されるメニューだけを暗くする（白く描かれるちらつきを防ぐ）。
    新しい部品（role 属性）と従来の部品（.J-M / .J-N）の両方。アイコンは画像なので反転して明るくする */
-.gmail-dark-active .gtr-dark-menu {
+.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) {
   background-color: #28292c !important;
   border-color: #3c4043 !important;
   color: #e3e3e3 !important;
 }
 
-.gmail-dark-active .gtr-dark-menu :is([role="menuitem"], [role="menuitemcheckbox"], .J-N),
-.gmail-dark-active .gtr-dark-menu :is([role="menuitem"], [role="menuitemcheckbox"], .J-N) * {
+.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is([role="menuitem"], [role="menuitemcheckbox"], .J-N),
+.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is([role="menuitem"], [role="menuitemcheckbox"], .J-N) * {
   color: #e3e3e3 !important;
 }
 
-.gmail-dark-active .gtr-dark-menu :is([role="menuitem"], [role="menuitemcheckbox"]):hover,
-.gmail-dark-active .gtr-dark-menu .J-N.J-N-JT {
+.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is([role="menuitem"], [role="menuitemcheckbox"]):hover,
+.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) .J-N.J-N-JT {
   background-color: #3c4043 !important;
 }
 
-.gmail-dark-active .gtr-dark-menu :is([role="separator"], .J-Kh) {
+.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is([role="separator"], .J-Kh) {
   background-color: #3c4043 !important;
   border-color: #3c4043 !important;
 }
 
-.gmail-dark-active .gtr-dark-menu :is(.aqdrmf-Kf-KkROqb, .J-N-JX, .J-Ph-hFsbo) {
+.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is(.aqdrmf-Kf-KkROqb, .J-N-JX, .J-Ph-hFsbo) {
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
