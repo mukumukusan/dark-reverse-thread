@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gmail Thread Reverser & Official Material Dark Mode (v1.5.12)
+   Gmail Thread Reverser & Official Material Dark Mode (v1.5.13)
    - Dark styling is scoped to the open conversation view only (.gtr-thread).
      Inbox list, sidebar, header and search bar are left to Gmail's own theme.
    - Official Google Material Dark Scheme (#1f1f1f / #28292c)
@@ -230,6 +230,23 @@
 
 .gmail-dark-active .gtr-thread .eJPjde:not(.TvN2Xc) .mNKakd:hover {
   background-color: #35363a !important;
+}
+
+/* 6.1 件名下の Gemini 提案チップ（「カレンダーに追加」など）
+   Rju2Ue-auk は Google 共通のチップ部品なので、Gmail 側の SsJGwb と組み合わせてスレッド内に限定。
+   形・大きさは Gmail のまま、色だけ変える（枠線は inset の影で描きサイズに影響させない） */
+.gmail-dark-active .gtr-thread .Rju2Ue-auk.SsJGwb {
+  background-color: #28292c !important;
+  color: #e3e3e3 !important;
+  box-shadow: inset 0 0 0 1px #3c4043 !important;
+}
+
+.gmail-dark-active .gtr-thread .Rju2Ue-auk.SsJGwb:hover {
+  background-color: #35363a !important;
+}
+
+.gmail-dark-active .gtr-thread .Rju2Ue-auk.SsJGwb *:not(svg):not(svg *) {
+  color: #e3e3e3 !important;
 }
 
 /* --------------------------------------------------------------------------
