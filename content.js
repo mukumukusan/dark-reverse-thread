@@ -12,11 +12,20 @@
   'use strict';
 
   const EXTENSION_VERSION = 'v' + chrome.runtime.getManifest().version;
-  const AI_SUMMARY_LABELS = ['AI による概要', 'AI summary', 'AI Summary'];
-  const SUMMARIZE_BUTTON_LABELS = ['このメールを要約', 'Summarize this email'];
-  const AI_LABELS = AI_SUMMARY_LABELS.concat(SUMMARIZE_BUTTON_LABELS);
-  // Text label of the Summarize pill, e.g. <div class="b4qJse ...">このメールを要約</div>
-  const SUMMARIZE_LABEL_SELECTOR = '.b4qJse:not(.gtr-summarize-label)';
+  /**
+   * Gmail UI strings used to find elements that have no stable class name. They follow Gmail's
+   * display language (not the browser's), so every Gmail language needs its own entry here.
+   * To support another language, add its strings (see README "Adding a language").
+   */
+  const GMAIL_UI_TEXT = {
+    en: {
+      aiSummary: ['AI summary', 'AI Summary']
+    },
+    ja: {
+      aiSummary: ['AI による概要']
+    }
+  };
+  const AI_SUMMARY_LABELS = Object.values(GMAIL_UI_TEXT).flatMap((lang) => lang.aiSummary);
   const QUICK_BAR_ID = 'gmail-reverser-quick-toggle';
 
   let config = {
@@ -64,9 +73,8 @@
   }
 
   /**
-   * Tag the Gemini AI summary card and the "このメールを要約" (Summarize this email) button inside
-   * conversation views so styles.css can darken them. Only text nodes outside email bodies (.a3s)
-   * are inspected.
+   * Tag the Gemini AI summary card inside conversation views so styles.css can darken it.
+   * Only text nodes outside email bodies (.a3s) are inspected.
    */
   function markAISummaryCards(scopes) {
     scopes.forEach((scope) => {
@@ -75,13 +83,11 @@
       const walker = document.createTreeWalker(scope, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
           if (node.nodeType === Node.ELEMENT_NODE) {
-            return node.classList.contains('a3s') ||
-              node.classList.contains('ai-summary-darkened') ||
-              node.classList.contains('gtr-summarize-btn')
+            return node.classList.contains('a3s') || node.classList.contains('ai-summary-darkened')
               ? NodeFilter.FILTER_REJECT
               : NodeFilter.FILTER_SKIP;
           }
-          return AI_LABELS.some((label) => node.nodeValue.includes(label))
+          return AI_SUMMARY_LABELS.some((label) => node.nodeValue.includes(label))
             ? NodeFilter.FILTER_ACCEPT
             : NodeFilter.FILTER_SKIP;
         }
@@ -89,11 +95,6 @@
 
       let textNode;
       while ((textNode = walker.nextNode())) {
-        if (SUMMARIZE_BUTTON_LABELS.some((label) => textNode.nodeValue.includes(label))) {
-          markSummarizeButton(textNode.parentElement);
-          continue;
-        }
-
         // Pick the outermost ancestor that still looks like a card (wide enough, not the whole pane)
         let card = null;
         let el = textNode.parentElement;
@@ -103,33 +104,6 @@
         }
         if (card) card.classList.add('ai-summary-darkened');
       }
-    });
-  }
-
-  /**
-   * The Summarize label is a plain text div; the white pill around it is painted by an ancestor.
-   * Tag the outermost pill-sized ancestor that paints a background (or the enclosing button).
-   */
-  function markSummarizeButton(label) {
-    if (label.classList.contains('gtr-summarize-label')) return;
-
-    let pill = label.closest('button, [role="button"]');
-    if (!pill) {
-      let el = label;
-      for (let depth = 0; el && el !== document.body && depth < 5 && el.offsetHeight < 80; depth++) {
-        const bg = parseRGB(getComputedStyle(el).backgroundColor);
-        if (bg && bg.a > 0) pill = el;
-        el = el.parentElement;
-      }
-    }
-
-    label.classList.add('gtr-summarize-label');
-    (pill || label).classList.add('gtr-summarize-btn');
-  }
-
-  function markSummarizeButtons() {
-    document.querySelectorAll(SUMMARIZE_LABEL_SELECTOR).forEach((label) => {
-      if (SUMMARIZE_BUTTON_LABELS.some((text) => label.textContent.includes(text))) markSummarizeButton(label);
     });
   }
 
@@ -240,7 +214,6 @@
     if (!config.smartDark) return;
 
     markAISummaryCards(scopes);
-    markSummarizeButtons(); // may sit outside the conversation pane (e.g. the toolbar)
     const bodies = new Set();
     scopes.forEach((scope) => emailBodiesIn(scope).forEach((body) => bodies.add(body)));
     darkenEmailBodies(bodies);
@@ -386,46 +359,50 @@
       document.body.appendChild(bar);
     }
 
-    bar.innerHTML = `
-      <span class="gtr-title">Gmail Reverser</span>
-      <span class="gtr-version">${EXTENSION_VERSION}</span>
-      <button class="gtr-btn ${config.reverseOrder ? 'active' : ''}" id="gtr-toggle-reverse" title="Reverse thread order (Newest first)">
-        ⇅ Newest: ${config.reverseOrder ? 'ON' : 'OFF'}
-      </button>
-      <button class="gtr-btn ${config.smartDark ? 'active' : ''}" id="gtr-toggle-dark" title="Toggle Material Dark Mode">
-        🌙 Dark: ${config.smartDark ? 'ON' : 'OFF'}
-      </button>
-      <button class="gtr-btn" id="gtr-toggle-reply" title="Toggle reply box position (Top / Bottom)">
-        ↩ Reply: ${config.replyPosition === 'top' ? 'Top' : 'Bottom'}
-      </button>
-    `;
+    const t = (key) => chrome.i18n.getMessage(key);
+    const onOff = (value) => (value ? 'ON' : 'OFF');
 
-    const btnReverse = document.getElementById('gtr-toggle-reverse');
-    if (btnReverse) {
-      btnReverse.onclick = () => {
+    const title = document.createElement('span');
+    title.className = 'gtr-title';
+    title.textContent = 'Gmail Reverser';
+
+    const version = document.createElement('span');
+    version.className = 'gtr-version';
+    version.textContent = EXTENSION_VERSION;
+
+    const makeButton = (label, tooltip, active, onClick) => {
+      const button = document.createElement('button');
+      button.className = active ? 'gtr-btn active' : 'gtr-btn';
+      button.title = tooltip;
+      button.textContent = label;
+      button.onclick = onClick;
+      return button;
+    };
+
+    bar.replaceChildren(
+      title,
+      version,
+      makeButton(`⇅ ${t('quickNewest')}: ${onOff(config.reverseOrder)}`, t('quickNewestTitle'), config.reverseOrder, () => {
         config.reverseOrder = !config.reverseOrder;
         lastQuickBarState = null;
         saveConfig({ reverseOrder: config.reverseOrder });
-      };
-    }
-
-    const btnDark = document.getElementById('gtr-toggle-dark');
-    if (btnDark) {
-      btnDark.onclick = () => {
+      }),
+      makeButton(`🌙 ${t('quickDark')}: ${onOff(config.smartDark)}`, t('quickDarkTitle'), config.smartDark, () => {
         config.smartDark = !config.smartDark;
         lastQuickBarState = null;
         saveConfig({ smartDark: config.smartDark });
-      };
-    }
-
-    const btnReply = document.getElementById('gtr-toggle-reply');
-    if (btnReply) {
-      btnReply.onclick = () => {
-        config.replyPosition = config.replyPosition === 'top' ? 'bottom' : 'top';
-        lastQuickBarState = null;
-        saveConfig({ replyPosition: config.replyPosition });
-      };
-    }
+      }),
+      makeButton(
+        `↩ ${t('quickReply')}: ${t(config.replyPosition === 'top' ? 'quickReplyTop' : 'quickReplyBottom')}`,
+        t('quickReplyTitle'),
+        false,
+        () => {
+          config.replyPosition = config.replyPosition === 'top' ? 'bottom' : 'top';
+          lastQuickBarState = null;
+          saveConfig({ replyPosition: config.replyPosition });
+        }
+      )
+    );
   }
 
   function saveConfig(updated) {
@@ -449,7 +426,6 @@
    */
   const pendingNodes = new Set();
   let needFullPass = false;
-  let needSummarizeScan = false;
   let flushTimeout = null;
 
   function hasThreadAnchor(node) {
@@ -479,10 +455,7 @@
       applyDarkMode(Array.from(scopes));
       applyThreadReversal();
       scrollToNewestOnOpen();
-    } else if (needSummarizeScan && config.smartDark) {
-      markSummarizeButtons();
     }
-    needSummarizeScan = false;
     renderQuickBar();
   }
 
@@ -513,12 +486,8 @@
       for (const node of m.addedNodes) {
         // Text inserted into an existing element (e.g. a streamed AI summary) is scanned via its parent
         const el = node.nodeType === Node.ELEMENT_NODE ? node : m.target;
-        if (el.nodeType !== Node.ELEMENT_NODE) continue;
-        if (isThreadNode(el)) {
+        if (el.nodeType === Node.ELEMENT_NODE && isThreadNode(el)) {
           pendingNodes.add(el);
-          relevant = true;
-        } else if (el.matches(SUMMARIZE_LABEL_SELECTOR) || el.querySelector(SUMMARIZE_LABEL_SELECTOR)) {
-          needSummarizeScan = true; // the Summarize pill can render outside the conversation pane
           relevant = true;
         }
       }

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>Gmail Thread Reverser & Dark Mode Settings</title>
+  <title data-i18n="extName">Gmail Thread Reverser & Dark Mode</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="header">
     <div class="title-row">
-      <img src="icons/icon48.png" alt="icon" class="logo">
+      <img src="icons/icon48.png" alt="" class="logo">
       <div>
-        <h2>Gmail Reverser & Dark</h2>
-        <span class="sub">Thread Reverser & Material Dark Mode (v1.4.6)</span>
+        <h2 data-i18n="extName"></h2>
+        <span class="sub" data-i18n="popupSubtitle"></span>
       </div>
     </div>
   </div>
@@ -19,43 +19,43 @@
   <div class="content">
     <div class="setting-item">
       <div class="label-group">
-        <label for="smartDark">Enable Dark Mode</label>
-        <span class="desc">Official Material Dark scheme (#1f1f1f / #28292c)</span>
+        <label for="smartDark" data-i18n="settingDark"></label>
+        <span class="desc" data-i18n="settingDarkDesc"></span>
       </div>
       <input type="checkbox" id="smartDark" class="toggle">
     </div>
 
     <div class="setting-item">
       <div class="label-group">
-        <label for="reverseOrder">Reverse Thread Order</label>
-        <span class="desc">Display newest emails at the top</span>
+        <label for="reverseOrder" data-i18n="settingReverse"></label>
+        <span class="desc" data-i18n="settingReverseDesc"></span>
       </div>
       <input type="checkbox" id="reverseOrder" class="toggle">
     </div>
 
     <div class="setting-item">
       <div class="label-group">
-        <label for="replyPosition">Reply Box Position</label>
-        <span class="desc">Location of the reply compose area</span>
+        <label for="replyPosition" data-i18n="settingReply"></label>
+        <span class="desc" data-i18n="settingReplyDesc"></span>
       </div>
       <select id="replyPosition" class="select-box">
-        <option value="bottom">Bottom (Default)</option>
-        <option value="top">Top (Above newest email)</option>
+        <option value="bottom" data-i18n="replyBottom"></option>
+        <option value="top" data-i18n="replyTop"></option>
       </select>
     </div>
 
     <div class="setting-item">
       <div class="label-group">
-        <label for="showQuickBar">Floating Quick Bar</label>
-        <span class="desc">Show quick toggle bar in bottom-right corner</span>
+        <label for="showQuickBar" data-i18n="settingQuickBar"></label>
+        <span class="desc" data-i18n="settingQuickBarDesc"></span>
       </div>
       <input type="checkbox" id="showQuickBar" class="toggle">
     </div>
   </div>
 
   <div class="footer">
-    <span>v1.4.6 | Print & Typing Optimized</span>
-    <span class="status" id="status">Settings saved</span>
+    <span><span id="version"></span> | <span data-i18n="footerTagline"></span></span>
+    <span class="status" id="status" data-i18n="statusSaved"></span>
   </div>
 
   <script src="popup.js"></script>

@@ -1,4 +1,4 @@
-# Gmail Thread Reverser & Dark Mode (v1.4.6)
+# Gmail Thread Reverser & Dark Mode (v1.5.0)
 
 Web版Gmailのスレッドを最新順に反転表示し、スレッド画面とメール本文を公式Google風マテリアルダークモードに対応させるChrome拡張機能（Manifest V3対応）です。
 A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation threads (newest emails first) and provides a polished Google Material Dark mode for threads, email bodies, AI summaries, and print workflows.
@@ -25,19 +25,35 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
 6. **印刷・PDF出力の最適化 (@media print) / Print Optimization**
    - 日本語: 印刷・PDF保存時は自動で白背景・黒文字（インク節約仕様）・正順表示に戻ります。
    - English: Automatically reverts to a white background with sharp black text and natural chronological order when printing or exporting to PDF.
-7. **世界共通の英語クイック操作バー / International Quick Toggle Bar**
-   - 日本語: 画面右下に世界中のユーザーが直感的に操作できるコンパクトな英語クイックバーを表示。
+7. **クイック操作バー / Floating Quick Toggle Bar**
+   - 日本語: 画面右下にコンパクトな切り替えバーを表示。
    - English: Features a sleek, floating quick bar in the bottom-right corner for instant toggles.
+8. **多言語対応 / Internationalization**
+   - 日本語: 拡張機能名・説明・ポップアップ・クイックバーはブラウザの言語に合わせて表示（現在は英語・日本語。その他の言語は英語）。
+   - English: Extension name, description, popup and quick bar follow the browser language (English and Japanese included; other languages fall back to English).
 
 ---
 
 ## 構成ファイル一覧 / Included Files
 
-- `manifest.json`: 拡張機能定義ファイル / Extension manifest (Manifest V3, v1.4.6)
+- `manifest.json`: 拡張機能定義ファイル / Extension manifest (Manifest V3, v1.5.0)
 - `content.js`: スレッド並び替え・DOMスタイル制御・入力時軽量化スクリプト / Core script with keystroke filtering
 - `styles.css`: スレッド反転レイアウト、公式マテリアルダークCSS、印刷用スタイル / Stylesheet for layout, dark theme, and @media print
-- `popup.html` & `popup.js` & `popup.css`: ツールバー設定ポップアップ（英語UI） / Extension popup settings UI (Global edition)
+- `popup.html` & `popup.js` & `popup.css`: ツールバー設定ポップアップ / Extension popup settings UI
+- `_locales/<lang>/messages.json`: 表示文字列（英語 `en` が既定） / UI strings per language (`en` is the default)
 - `icons/`: アイコンアセット (16x16, 48x48, 128x128 PNG) / App icons
+
+---
+
+## 言語の追加 / Adding a language
+
+### 拡張機能の表示文字列 / Extension UI strings
+- 日本語: `_locales/en/messages.json` を `_locales/<言語コード>/messages.json`（例: `fr`, `zh_CN`）にコピーし、各 `message` を翻訳します。`description` は翻訳者向けの説明で、翻訳は不要です。ストアの制限により `extName` は75文字、`extDescription` は132文字以内にしてください。
+- English: Copy `_locales/en/messages.json` to `_locales/<locale>/messages.json` (e.g. `fr`, `zh_CN`) and translate each `message`. The `description` fields are notes for translators. Keep `extName` within 75 and `extDescription` within 132 characters (Web Store limits).
+
+### Gmailの表示言語への対応 / Gmail display language
+- 日本語: AI概要カードはGmail画面上の文言で検出しています。この文言は**ブラウザではなくGmailの表示言語**に従うため、`content.js` 冒頭の `GMAIL_UI_TEXT` に言語ごとの文言を追加してください（現在は英語・日本語）。未登録の言語でもスレッド反転と本文のダーク化は動作し、AI概要カードはクラス名による指定でのみ暗くなります。
+- English: The AI summary card is detected by on-screen text, which follows **Gmail's display language, not the browser's**. Add the strings for each language to `GMAIL_UI_TEXT` at the top of `content.js` (currently English and Japanese). In other languages thread reversal and body darkening still work; the AI summary card is darkened only through class-name selectors.
 
 ---
 
@@ -66,8 +82,8 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
 - English: Visit the Developer Dashboard and pay the one-time $5 USD registration fee.
 
 ### 2. ZIPアーカイブの作成 / Prepare ZIP Archive
-- 日本語: `extension` フォルダ内の全ファイルを選択し、ZIP形式で圧縮します（例: `gmail-thread-reverser-latest.zip`）。
-- English: Zip the contents of the `extension` folder into a single archive (e.g. `gmail-thread-reverser-latest.zip`).
+- 日本語: `_locales` フォルダを含む全ファイルをZIP形式で圧縮します（`.git` は含めない）。例: `git archive --format=zip -o gmail-thread-reverser.zip HEAD`
+- English: Zip all files including the `_locales` folder (exclude `.git`), e.g. `git archive --format=zip -o gmail-thread-reverser.zip HEAD`.
 
 ### 3. ストア掲載情報と審査要件 / Store Listing & Review Requirements
 - **アイコン / Icons**: `icons/icon128.png` (128x128px)

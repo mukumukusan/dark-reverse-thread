@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Fill UI text from _locales/<lang>/messages.json
+  document.documentElement.lang = chrome.i18n.getUILanguage();
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    el.textContent = chrome.i18n.getMessage(el.dataset.i18n);
+  });
+  document.getElementById('version').textContent = 'v' + chrome.runtime.getManifest().version;
+
   const reverseOrder = document.getElementById('reverseOrder');
   const smartDark = document.getElementById('smartDark');
   const replyPosition = document.getElementById('replyPosition');

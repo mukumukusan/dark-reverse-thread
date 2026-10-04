@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gmail Thread Reverser & Official Material Dark Mode (v1.4.6)
+   Gmail Thread Reverser & Official Material Dark Mode (v1.5.0)
    - Dark styling is scoped to the open conversation view only (.gtr-thread).
      Inbox list, sidebar, header and search bar are left to Gmail's own theme.
    - Official Google Material Dark Scheme (#1f1f1f / #28292c)
@@ -39,7 +39,8 @@
   font-weight: 600 !important;
 }
 
-/* 2.1 タイトル横のマーク（重要マーク・インジケーター）を青色(#8ab4f8)に復元 */
+/* 2.1 タイトル横のマーク（重要マーク・インジケーター）を青色(#8ab4f8)に復元
+   ※ aria-label / data-tooltip の文言指定は補助（Gmail表示言語が日本語・英語の場合のみ一致）。主はクラス指定。 */
 .gmail-dark-active .gtr-thread .ha .pG,
 .gmail-dark-active .gtr-thread .ha .pH,
 .gmail-dark-active .gtr-thread .ha .pI,
@@ -155,6 +156,7 @@
 
 /* --------------------------------------------------------------------------
    5. TRIMMED QUOTE BUTTON ("...") (引用展開ボタンのピル化と明るい白ドット)
+   ※ aria-label の文言指定は補助。主は .ajR クラス指定。
    -------------------------------------------------------------------------- */
 .gmail-dark-active .gtr-thread .ajR,
 .gmail-dark-active .gtr-thread div[aria-label*="引用テキストを表示"],
@@ -198,6 +200,7 @@
 
 /* --------------------------------------------------------------------------
    6. GEMINI AI SUMMARY CARD (AIによる概要カードの公式風ダーク化)
+   ※ aria-label の文言指定は補助。主は content.js が付ける .ai-summary-darkened とクラス指定。
    -------------------------------------------------------------------------- */
 .gmail-dark-active .gtr-thread .ai-summary-darkened,
 .gmail-dark-active .gtr-thread div[aria-label*="AI による概要"],
@@ -223,39 +226,6 @@
 .gmail-dark-active .gtr-thread .a9E * {
   color: #e3e3e3 !important;
   background-color: transparent !important;
-}
-
-/* 6.1 「このメールを要約」(Summarize this email) ボタン
-   ラベル(<div class="b4qJse">このメールを要約</div>)から背景を塗っている親要素を探して付けた
-   .gtr-summarize-btn と、aria-label / tooltip での一致の両方を対象にする
-   （ボタン固有のラベルなので受信トレイ等には当たらない）。Geminiアイコン(svg)の色は維持。 */
-.gmail-dark-active .gtr-summarize-btn,
-.gmail-dark-active [aria-label*="このメールを要約"],
-.gmail-dark-active [aria-label*="Summarize this email"],
-.gmail-dark-active [data-tooltip*="このメールを要約"],
-.gmail-dark-active [data-tooltip*="Summarize this email"] {
-  background-color: #28292c !important;
-  border: 1px solid #3c4043 !important;
-  color: #e3e3e3 !important;
-  box-shadow: none !important;
-}
-
-.gmail-dark-active .gtr-summarize-btn:hover,
-.gmail-dark-active [aria-label*="このメールを要約"]:hover,
-.gmail-dark-active [aria-label*="Summarize this email"]:hover,
-.gmail-dark-active [data-tooltip*="このメールを要約"]:hover,
-.gmail-dark-active [data-tooltip*="Summarize this email"]:hover {
-  background-color: #35363a !important;
-  color: #ffffff !important;
-}
-
-.gmail-dark-active .gtr-summarize-btn *:not(svg):not(svg *),
-.gmail-dark-active [aria-label*="このメールを要約"] *:not(svg):not(svg *),
-.gmail-dark-active [aria-label*="Summarize this email"] *:not(svg):not(svg *),
-.gmail-dark-active [data-tooltip*="このメールを要約"] *:not(svg):not(svg *),
-.gmail-dark-active [data-tooltip*="Summarize this email"] *:not(svg):not(svg *) {
-  background-color: transparent !important;
-  color: inherit !important;
 }
 
 /* --------------------------------------------------------------------------

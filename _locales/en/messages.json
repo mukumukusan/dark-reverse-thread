@@ -1,0 +1,94 @@
+{
+  "extName": {
+    "message": "Gmail Thread Reverser & Dark Mode",
+    "description": "Extension name shown in Chrome and the Web Store (max 75 characters)."
+  },
+  "extDescription": {
+    "message": "Show Gmail conversations newest-first, with a Material Dark theme for threads and email bodies that keeps original colors.",
+    "description": "Extension description shown in Chrome and the Web Store (max 132 characters)."
+  },
+  "popupSubtitle": {
+    "message": "Newest-first threads & Material Dark",
+    "description": "Subtitle under the extension name in the popup."
+  },
+  "settingDark": {
+    "message": "Enable Dark Mode",
+    "description": "Popup setting label: dark mode on/off."
+  },
+  "settingDarkDesc": {
+    "message": "Darken conversations and email bodies, keeping their colors",
+    "description": "Popup setting description for dark mode."
+  },
+  "settingReverse": {
+    "message": "Reverse Thread Order",
+    "description": "Popup setting label: newest-first thread order on/off."
+  },
+  "settingReverseDesc": {
+    "message": "Show the newest email at the top",
+    "description": "Popup setting description for thread reversal."
+  },
+  "settingReply": {
+    "message": "Reply Box Position",
+    "description": "Popup setting label: where the reply box is placed."
+  },
+  "settingReplyDesc": {
+    "message": "Where the reply area appears in the thread",
+    "description": "Popup setting description for reply box position."
+  },
+  "replyBottom": {
+    "message": "Bottom (Default)",
+    "description": "Reply box position option: bottom of the thread."
+  },
+  "replyTop": {
+    "message": "Top (Above newest email)",
+    "description": "Reply box position option: top of the thread."
+  },
+  "settingQuickBar": {
+    "message": "Floating Quick Bar",
+    "description": "Popup setting label: show the floating quick toggle bar."
+  },
+  "settingQuickBarDesc": {
+    "message": "Show quick toggles in the bottom-right corner",
+    "description": "Popup setting description for the quick bar."
+  },
+  "statusSaved": {
+    "message": "Settings saved",
+    "description": "Shown briefly in the popup after a setting changes."
+  },
+  "footerTagline": {
+    "message": "Print & typing optimized",
+    "description": "Popup footer text shown after the version number."
+  },
+  "quickNewest": {
+    "message": "Newest",
+    "description": "Quick bar button: thread reversal toggle (followed by ON/OFF). Keep short."
+  },
+  "quickNewestTitle": {
+    "message": "Reverse thread order (newest first)",
+    "description": "Tooltip of the quick bar thread reversal button."
+  },
+  "quickDark": {
+    "message": "Dark",
+    "description": "Quick bar button: dark mode toggle (followed by ON/OFF). Keep short."
+  },
+  "quickDarkTitle": {
+    "message": "Toggle dark mode",
+    "description": "Tooltip of the quick bar dark mode button."
+  },
+  "quickReply": {
+    "message": "Reply",
+    "description": "Quick bar button: reply box position (followed by Top/Bottom). Keep short."
+  },
+  "quickReplyTitle": {
+    "message": "Move the reply box (top / bottom)",
+    "description": "Tooltip of the quick bar reply position button."
+  },
+  "quickReplyTop": {
+    "message": "Top",
+    "description": "Quick bar: reply box is at the top."
+  },
+  "quickReplyBottom": {
+    "message": "Bottom",
+    "description": "Quick bar: reply box is at the bottom."
+  }
+}

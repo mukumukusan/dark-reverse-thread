@@ -1,0 +1,71 @@
+{
+  "extName": {
+    "message": "Gmail スレッド反転 & ダークモード"
+  },
+  "extDescription": {
+    "message": "Gmailのスレッドを新しい順に表示し、スレッドとメール本文を元の色味を保ったままマテリアルダークで表示します。"
+  },
+  "popupSubtitle": {
+    "message": "新しい順のスレッド表示 & マテリアルダーク"
+  },
+  "settingDark": {
+    "message": "ダークモード"
+  },
+  "settingDarkDesc": {
+    "message": "スレッドとメール本文を色味を保ったまま暗く表示"
+  },
+  "settingReverse": {
+    "message": "スレッドを新しい順に表示"
+  },
+  "settingReverseDesc": {
+    "message": "最新のメールを一番上に表示"
+  },
+  "settingReply": {
+    "message": "返信欄の位置"
+  },
+  "settingReplyDesc": {
+    "message": "スレッド内で返信欄を表示する位置"
+  },
+  "replyBottom": {
+    "message": "下（標準）"
+  },
+  "replyTop": {
+    "message": "上（最新メールの上）"
+  },
+  "settingQuickBar": {
+    "message": "クイックバー"
+  },
+  "settingQuickBarDesc": {
+    "message": "画面右下に切り替えボタンを表示"
+  },
+  "statusSaved": {
+    "message": "設定を保存しました"
+  },
+  "footerTagline": {
+    "message": "印刷・入力に最適化"
+  },
+  "quickNewest": {
+    "message": "新しい順"
+  },
+  "quickNewestTitle": {
+    "message": "スレッドを新しい順に表示"
+  },
+  "quickDark": {
+    "message": "ダーク"
+  },
+  "quickDarkTitle": {
+    "message": "ダークモードの切り替え"
+  },
+  "quickReply": {
+    "message": "返信欄"
+  },
+  "quickReplyTitle": {
+    "message": "返信欄の位置を切り替え（上／下）"
+  },
+  "quickReplyTop": {
+    "message": "上"
+  },
+  "quickReplyBottom": {
+    "message": "下"
+  }
+}
