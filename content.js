@@ -237,11 +237,12 @@
   }
 
   /**
-   * Reply area placement for "top" (above the newest email); "bottom" keeps Gmail's own layout.
+   * Reply area placement for "top" (above the newest email, newest-first order only);
+   * "bottom" keeps Gmail's own layout.
    * - Inline composer (textbox): inside the newest message, below its content. The composer block
    *   (the ancestor that branches off from the message content) is shown first in that message.
    * - Reply / Forward / reaction footer (.amn with .ams links): outside the message list, below it.
-   *   With newest-first order it is moved to just above the message list (= above the newest email).
+   *   It is moved to just above the message list (= above the newest email).
    * Both use flex order on the shared parent (.gmail-reply-host).
    */
   function findComposerBlock(textbox, item) {
@@ -276,7 +277,7 @@
     const footers = new Set();
     const afterFooter = new Set();
 
-    if (config.replyPosition === 'top') {
+    if (config.replyPosition === 'top' && config.reverseOrder) {
       lists.forEach((list) => {
         list.querySelectorAll('[role="textbox"]').forEach((textbox) => {
           const item = Array.from(list.children).find((child) => child.contains(textbox));
@@ -285,20 +286,18 @@
         });
       });
 
-      if (config.reverseOrder) {
-        document.querySelectorAll('.gtr-thread .amn').forEach((footer) => {
-          if (lists.some((list) => list.contains(footer))) return; // empty placeholder inside a message
-          const block = findFooterBlock(footer, lists);
-          if (!isFlexSafe(block)) return;
-          footers.add(block);
-          // Siblings from the message list onward follow the footer; earlier ones (subject etc.) stay first
-          const siblings = Array.from(block.parentElement.children);
-          const listIndex = siblings.findIndex((s) => s !== block && lists.some((list) => s.contains(list)));
-          siblings.forEach((s, i) => {
-            if (s !== block && listIndex !== -1 && i >= listIndex) afterFooter.add(s);
-          });
+      document.querySelectorAll('.gtr-thread .amn').forEach((footer) => {
+        if (lists.some((list) => list.contains(footer))) return; // empty placeholder inside a message
+        const block = findFooterBlock(footer, lists);
+        if (!isFlexSafe(block)) return;
+        footers.add(block);
+        // Siblings from the message list onward follow the footer; earlier ones (subject etc.) stay first
+        const siblings = Array.from(block.parentElement.children);
+        const listIndex = siblings.findIndex((s) => s !== block && lists.some((list) => s.contains(list)));
+        siblings.forEach((s, i) => {
+          if (s !== block && listIndex !== -1 && i >= listIndex) afterFooter.add(s);
         });
-      }
+      });
     }
 
     syncClass('gmail-reply-above', composers);
@@ -394,11 +393,12 @@
     version.className = 'gtr-version';
     version.textContent = EXTENSION_VERSION;
 
-    const makeButton = (label, tooltip, active, onClick) => {
+    const makeButton = (label, tooltip, active, onClick, disabled = false) => {
       const button = document.createElement('button');
       button.className = active ? 'gtr-btn active' : 'gtr-btn';
       button.title = tooltip;
       button.textContent = label;
+      button.disabled = disabled;
       button.onclick = onClick;
       return button;
     };
@@ -418,13 +418,14 @@
       }),
       makeButton(
         `↩ ${t('quickReply')}: ${t(config.replyPosition === 'top' ? 'quickReplyTop' : 'quickReplyBottom')}`,
-        t('quickReplyTitle'),
+        t(config.reverseOrder ? 'quickReplyTitle' : 'replyNeedsReverse'),
         false,
         () => {
           config.replyPosition = config.replyPosition === 'top' ? 'bottom' : 'top';
           lastQuickBarState = null;
           saveConfig({ replyPosition: config.replyPosition });
-        }
+        },
+        !config.reverseOrder // the reply position only applies to newest-first threads
       )
     );
   }

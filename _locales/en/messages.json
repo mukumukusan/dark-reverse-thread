@@ -43,6 +43,10 @@
     "message": "Above newest email",
     "description": "Reply box position option: above the newest email."
   },
+  "replyNeedsReverse": {
+    "message": "Available when Reverse Thread Order is on",
+    "description": "Shown instead of the reply position description (and as the quick bar tooltip) while newest-first order is off."
+  },
   "settingQuickBar": {
     "message": "Floating Quick Bar",
     "description": "Popup setting label: show the floating quick toggle bar."

@@ -91,6 +91,12 @@ label {
   border-color: #8ab4f8;
 }
 
+.setting-item.disabled label,
+.setting-item.disabled .select-box {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .footer {
   padding: 10px 16px;
   background-color: #2d2f31;

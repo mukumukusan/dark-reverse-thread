@@ -32,6 +32,9 @@
   "replyTop": {
     "message": "最新メールの上"
   },
+  "replyNeedsReverse": {
+    "message": "「スレッドを新しい順に表示」がONのときに有効"
+  },
   "settingQuickBar": {
     "message": "クイックバー"
   },

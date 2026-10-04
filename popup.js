@@ -19,11 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
     showQuickBar: true
   };
 
+  // The reply position only applies to newest-first threads
+  const replySetting = document.getElementById('replySetting');
+  const replyDesc = document.getElementById('replyDesc');
+  function updateReplyAvailability() {
+    replyPosition.disabled = !reverseOrder.checked;
+    replySetting.classList.toggle('disabled', !reverseOrder.checked);
+    replyDesc.textContent = chrome.i18n.getMessage(reverseOrder.checked ? 'settingReplyDesc' : 'replyNeedsReverse');
+  }
+
   chrome.storage.sync.get(defaultSettings, (items) => {
     reverseOrder.checked = items.reverseOrder;
     smartDark.checked = items.smartDark;
     replyPosition.value = items.replyPosition;
     showQuickBar.checked = items.showQuickBar;
+    updateReplyAvailability();
   });
 
   function save() {
@@ -42,7 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  reverseOrder.addEventListener('change', save);
+  reverseOrder.addEventListener('change', () => {
+    updateReplyAvailability();
+    save();
+  });
   smartDark.addEventListener('change', save);
   replyPosition.addEventListener('change', save);
   showQuickBar.addEventListener('change', save);
