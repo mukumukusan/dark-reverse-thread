@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gmail Thread Reverser & Official Material Dark Mode (v1.5.6)
+   Gmail Thread Reverser & Official Material Dark Mode (v1.5.7)
    - Dark styling is scoped to the open conversation view only (.gtr-thread).
      Inbox list, sidebar, header and search bar are left to Gmail's own theme.
    - Official Google Material Dark Scheme (#1f1f1f / #28292c)
@@ -152,7 +152,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   5. TRIMMED QUOTE BUTTON ("...") (引用展開ボタンの暗色化と明るい白ドット)
+   5. TRIMMED QUOTE BUTTON ("...") (引用展開ボタンの暗色化と白ドット)
    色だけを変え、サイズ・余白・文字サイズは Gmail のまま（枠線もレイアウトに影響しない inset の影で描く）。
    -------------------------------------------------------------------------- */
 .gmail-dark-active .gtr-thread .ajR {
@@ -166,12 +166,8 @@
 }
 
 .gmail-dark-active .gtr-thread .ajT {
-  color: #ffffff !important;
   background-color: transparent !important;
-}
-
-.gmail-dark-active .gtr-thread .ajR:hover .ajT {
-  color: #8ab4f8 !important;
+  filter: invert(1) !important; /* 点は画像なので反転して白くする */
 }
 
 /* メール本文内の引用（リンク色は本文の色調整で元の色相のまま明るくなる） */
@@ -263,9 +259,25 @@
 .gmail-dark-active .gtr-thread .btC,
 .gmail-dark-active .gtr-thread .gU.Up,
 .gmail-dark-active .gtr-thread .aDh,
-.gmail-dark-active .gtr-thread .IZ {
+.gmail-dark-active .gtr-thread .IZ,
+.gmail-dark-active .gtr-thread .I5,
+.gmail-dark-active .gtr-thread .IG,
+.gmail-dark-active .gtr-thread .Ap {
   background-color: #1f1f1f !important;
   border-color: #3c4043 !important;
+}
+
+/* 宛先行（.IG）の文字。アイコンボタンは下の反転で明るくするので文字色は付けない */
+.gmail-dark-active .gtr-thread .IG,
+.gmail-dark-active .gtr-thread .IG *:not([role="button"]):not([role="button"] *):not(svg):not(svg *) {
+  color: #e3e3e3 !important;
+}
+
+/* 返信欄のアイコン（宛先行・ツールバー）は画像のため、明度を反転して明るくする
+   （hue-rotate で色付きアイコンの色相は維持）。青い送信ボタン(.T-I-atl)は対象外 */
+.gmail-dark-active .gtr-thread .IG [role="button"]:not([role="button"] [role="button"]),
+.gmail-dark-active .gtr-thread .btC [role="button"]:not(.T-I-atl):not([role="button"] [role="button"]) {
+  filter: invert(1) hue-rotate(180deg) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -453,7 +465,8 @@
     border: 1px solid #e0e0e0 !important;
   }
 
-  .gmail-dark-active .T-KT {
+  .gmail-dark-active .T-KT,
+  .gmail-dark-active .gtr-thread .ajT {
     filter: none !important;
   }
 
