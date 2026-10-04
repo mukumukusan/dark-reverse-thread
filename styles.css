@@ -227,15 +227,15 @@
 /* --------------------------------------------------------------------------
    6. GEMINI AI SUMMARY CARD (AIによる概要カードの公式風ダーク化)
    .eJPjde は Gemini の要約エリア。文言ではなくクラスで指定し、Gmailの表示言語に依存しない。
-   - 要約後 (.eJPjde.TvN2Xc): .eJPjde 自体がカード本体なので、カード全体を暗くする
+   - 要約後 (.eJPjde.TvN2Xc): 色付きの枠は内側の .DC5CAd。外側には枠を付けない（付けると下の注意書きまで囲んで縦長になる）
    - 要約前 (「このメールを要約」): .eJPjde は透明な外枠で、色が付くのは中のボタン .mNKakd だけ。
      外枠には何も付けず、ボタンだけを Gmail 本来の形・大きさのまま暗くする
    Geminiアイコン(svg)の色は維持。
    -------------------------------------------------------------------------- */
-.gmail-dark-active .gtr-thread .eJPjde.TvN2Xc {
-  background-color: #1f1f1f !important;
-  border: 1px solid #3c4043 !important;
-  border-radius: 16px !important;
+/* 要約後の色付きの枠は内側の .DC5CAd（見出しと箇条書きだけ）。下の「Gemini が作成…」の行は枠の外に置く */
+.gmail-dark-active .gtr-thread .eJPjde .DC5CAd {
+  background-color: #28292c !important;
+  box-shadow: inset 0 0 0 1px #3c4043 !important;
 }
 
 .gmail-dark-active .gtr-thread .eJPjde *:not(svg):not(svg *) {
@@ -627,6 +627,30 @@
 #gmail-reverser-quick-toggle .gtr-title {
   font-weight: 600;
   color: #ffffff;
+}
+
+/* 普段は右下に小さなアイコンだけを出し、マウスを乗せる・フォーカスする・アイコンを押すとバーを開く */
+#gmail-reverser-quick-toggle .gtr-logo {
+  display: block;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+}
+
+#gmail-reverser-quick-toggle .gtr-logo img {
+  width: 28px;
+  height: 28px;
+}
+
+#gmail-reverser-quick-toggle:not(:hover):not(:focus-within):not(.gtr-open):not(.gtr-hint) {
+  padding: 5px;
+  gap: 0;
+}
+
+#gmail-reverser-quick-toggle:not(:hover):not(:focus-within):not(.gtr-open):not(.gtr-hint) > :not(.gtr-logo) {
+  display: none;
 }
 
 #gmail-reverser-quick-toggle .gtr-version {
