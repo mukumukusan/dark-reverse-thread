@@ -347,6 +347,13 @@
   border-color: #3c4043 !important;
 }
 
+/* スレッド内の返信欄では、下のツールバーの段は透明にする。枠（.I5）は角丸 16px で同じ色を塗っており、
+   四角い段に色を塗るとその角が枠線の丸い角を覆って欠けて見える。
+   画面下に張り付いたときの背景は .aDj::after（下で暗くしている）が受け持つ */
+.gmail-dark-active .gtr-thread .M9 :is(.btC, .IZ, .aDh) {
+  background-color: transparent !important;
+}
+
 /* 宛先行（.IG）の文字。アイコンボタンは下の反転で明るくするので文字色は付けない */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG *:not([role="button"]):not([role="button"] *):not(svg):not(svg *) {
