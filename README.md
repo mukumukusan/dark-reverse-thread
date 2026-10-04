@@ -1,4 +1,4 @@
-# Gmail Thread Reverser & Dark Mode (v1.6.7)
+# Gmail Thread Reverser & Dark Mode (v1.6.8)
 
 Web版Gmailのスレッドを最新順に反転表示し、スレッド画面とメール本文を公式Google風マテリアルダークモードに対応させるChrome拡張機能（Manifest V3対応）です。
 A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation threads (newest emails first) and provides a polished Google Material Dark mode for threads, email bodies, AI summaries, and print workflows.
@@ -11,8 +11,8 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
    - 日本語: 最新のメッセージがスレッド最上部に並ぶように自動で並び替え、スレッドを開くと最新メッセージの位置（先頭）を表示します。
    - English: Reverses conversation threads so the newest messages appear at the very top, and opens each thread scrolled to the newest message.
 2. **公式Google風マテリアルダークモード / Official Material Dark Theme**
-   - 日本語: Google公式Gmailの上品なマテリアルダーク調（#1f1f1f / #28292c / #303134）に統一し、目に優しく洗練された表示を提供。受信トレイ・サイドバー・ヘッダーには干渉せず、Gmail本体のテーマ設定をそのまま使います。
-   - English: Unified with Google's official Material Dark palette (#1f1f1f / #28292c / #303134) for an eye-friendly, native feel. Applied to the conversation view only — the inbox list, sidebar and header are left to Gmail's own theme.
+   - 日本語: Google公式Gmailの上品なマテリアルダーク調（#1f1f1f / #28292c / #303134）に統一し、目に優しく洗練された表示を提供。新規作成ウィンドウ（右下・全画面）も暗く表示します。受信トレイ・サイドバー・ヘッダーには干渉せず、Gmail本体のテーマ設定をそのまま使います。
+   - English: Unified with Google's official Material Dark palette (#1f1f1f / #28292c / #303134) for an eye-friendly, native feel. Applied to the conversation view and the compose window (docked or full screen) only — the inbox list, sidebar and header are left to Gmail's own theme.
 3. **本文白飛びの根本解消 / Direct Email Body Darkening**
    - 日本語: HTMLメールの文字色・背景色を、色相と彩度を保ったまま明るさだけ暗い背景向けに調整（黒文字→明るい灰色、白背景→暗色、赤字や黄色のハイライトは色味を残す）。画像やロゴは本来の色を保護し、透過画像（黒いロゴなど）の背後には元のメールでの背景色を敷いて見えるように。印刷時は元の色で出力。
    - English: Adapts HTML email text and background colors for dark mode by remapping only their lightness, keeping the original hue and saturation (black text becomes light gray, white backgrounds turn dark, red text and highlights keep their color). Images keep their colors, transparent ones (e.g. dark logos) get their original backdrop back so they stay visible, and printing uses the original colors.
