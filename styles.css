@@ -463,6 +463,30 @@
   color: #c4c7c5 !important;
 }
 
+/* スレッド内のボタン（メールの「⋮」など）から開いたメニュー。スレッドの外に作られる Google 共通部品のため、
+   content.js が開いている間だけ .gtr-thread-menu を付ける。アイコンは画像なので反転して明るくする */
+.gmail-dark-active .gtr-thread-menu {
+  background-color: #28292c !important;
+  color: #e3e3e3 !important;
+}
+
+.gmail-dark-active .gtr-thread-menu [role="menuitem"],
+.gmail-dark-active .gtr-thread-menu [role="menuitem"] * {
+  color: #e3e3e3 !important;
+}
+
+.gmail-dark-active .gtr-thread-menu [role="menuitem"]:hover {
+  background-color: #3c4043 !important;
+}
+
+.gmail-dark-active .gtr-thread-menu [role="separator"] {
+  background-color: #3c4043 !important;
+}
+
+.gmail-dark-active .gtr-thread-menu .aqdrmf-Kf-KkROqb {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
 /* 添付ファイル欄の見出し（「添付ファイル N 件」・「すべてをドライブに追加」など）。
    Gmail のライトテーマの暗い文字色のままだと暗い背景で読めない */
 .gmail-dark-active .gtr-thread .hq.gt .aVW,

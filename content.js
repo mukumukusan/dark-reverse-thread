@@ -593,9 +593,31 @@
     if (root.classList.contains('gtr-compose-open') !== open) root.classList.toggle('gtr-compose-open', open);
   }
 
+  /**
+   * Menus opened from a button in the conversation (e.g. a message's "⋮" menu) are built outside the
+   * thread, from a shared Google menu component that other parts of Gmail reuse. They are tagged only
+   * while their opener in the thread is expanded, so styles.css darkens them and nothing else.
+   */
+  const THREAD_MENU_CLASS = 'gtr-thread-menu';
+
+  function markThreadMenus() {
+    const menus = new Set();
+    if (document.querySelector('.gtr-thread :is(button, [role="button"])[aria-expanded="true"]')) {
+      document.querySelectorAll('[role="menu"]').forEach((menu) => {
+        if (menu.offsetParent === null || menu.closest('.gtr-thread, .Hd[role="dialog"]')) return;
+        menus.add(menu.closest('.tB5Jxf-M-X') || menu);
+      });
+    }
+    syncClass(THREAD_MENU_CLASS, menus);
+  }
+
+  // A menu opens right after the click on its button; check once it is shown
+  document.addEventListener('click', () => setTimeout(markThreadMenus, 50), true);
+
   /** Full pass over every conversation view: initial load, setting changes and thread navigation. */
   function applyAll() {
     syncComposeOpen();
+    markThreadMenus();
     markThreadViews();
     applyDarkMode(Array.from(document.querySelectorAll('.gtr-thread')));
     applyThreadReversal();
@@ -669,6 +691,7 @@
     }
 
     syncComposeOpen();
+    markThreadMenus();
 
     let relevant = false;
     let threadAdded = false;
