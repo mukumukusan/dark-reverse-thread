@@ -360,6 +360,12 @@
   color: #e3e3e3 !important;
 }
 
+/* 宛先行の「他 N 人」のチップ。Gmail の明るい背景の上に上の明るい文字色が乗って読めなくなるので、背景を暗くする */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG .aDp {
+  background-color: #3c4043 !important;
+  color: #e3e3e3 !important;
+}
+
 /* 返信欄のアイコン（宛先行・ツールバー）は画像のため、明度を反転して明るくする
    （hue-rotate で色付きアイコンの色相は維持）。青い送信ボタン(.T-I-atl)は対象外 */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG [role="button"]:not([role="button"] [role="button"]),
