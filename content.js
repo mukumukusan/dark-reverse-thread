@@ -192,10 +192,28 @@
     });
   }
 
+  /**
+   * Label chips next to the subject get dark text (#202124) for Gmail's light chip colors; chips the
+   * user colored dark are tagged so styles.css gives them light text instead. The chip's background
+   * may be painted by the chip itself or by an inner element.
+   */
+  const LABEL_CHIP_SELECTOR = '.gtr-thread :is(.ha, .hN) :is(.ar, [data-label-name])';
+
+  function markDarkLabelChips() {
+    document.querySelectorAll(LABEL_CHIP_SELECTOR).forEach((chip) => {
+      const painted = [chip, ...chip.querySelectorAll('*')]
+        .map((el) => parseRGB(getComputedStyle(el).backgroundColor))
+        .find((bg) => bg && bg.a >= 0.5);
+      const dark = !!painted && rgbToHsl(painted).l < 0.5;
+      if (chip.hasAttribute('data-gtr-dark-chip') !== dark) chip.toggleAttribute('data-gtr-dark-chip', dark);
+    });
+  }
+
   function applyDarkMode(scopes) {
     document.documentElement.classList.toggle('gmail-dark-active', !!config.smartDark);
     if (!config.smartDark) return;
 
+    markDarkLabelChips();
     const bodies = new Set();
     scopes.forEach((scope) => emailBodiesIn(scope).forEach((body) => bodies.add(body)));
     darkenEmailBodies(bodies);

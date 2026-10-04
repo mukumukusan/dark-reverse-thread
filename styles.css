@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gmail Thread Reverser & Official Material Dark Mode (v1.5.15)
+   Gmail Thread Reverser & Official Material Dark Mode (v1.5.16)
    - Dark styling is scoped to the open conversation view only (.gtr-thread).
      Inbox list, sidebar, header and search bar are left to Gmail's own theme.
    - Official Google Material Dark Scheme (#1f1f1f / #28292c)
@@ -88,6 +88,12 @@
 .gmail-dark-active .gtr-thread .ha .aw,
 .gmail-dark-active .gtr-thread .hN .aw {
   color: #5f6368 !important;
+}
+
+/* ユーザーが濃い色を付けたラベル（content.js が背景の明るさを見て data-gtr-dark-chip を付ける）は白文字 */
+.gmail-dark-active .gtr-thread :is(.ha, .hN) [data-gtr-dark-chip],
+.gmail-dark-active .gtr-thread :is(.ha, .hN) [data-gtr-dark-chip] * {
+  color: #ffffff !important;
 }
 
 /* --------------------------------------------------------------------------
