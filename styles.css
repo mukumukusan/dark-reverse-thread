@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gmail Thread Reverser & Official Material Dark Mode (v1.5.0)
+   Gmail Thread Reverser & Official Material Dark Mode (v1.5.1)
    - Dark styling is scoped to the open conversation view only (.gtr-thread).
      Inbox list, sidebar, header and search bar are left to Gmail's own theme.
    - Official Google Material Dark Scheme (#1f1f1f / #28292c)
@@ -40,7 +40,7 @@
 }
 
 /* 2.1 タイトル横のマーク（重要マーク・インジケーター）を青色(#8ab4f8)に復元
-   ※ aria-label / data-tooltip の文言指定は補助（Gmail表示言語が日本語・英語の場合のみ一致）。主はクラス指定。 */
+   .bns は重要マークのボタン本体（aria-label="重要な理由: ..."）。文言ではなくクラスで指定し、表示言語に依存しない。 */
 .gmail-dark-active .gtr-thread .ha .pG,
 .gmail-dark-active .gtr-thread .ha .pH,
 .gmail-dark-active .gtr-thread .ha .pI,
@@ -48,10 +48,7 @@
 .gmail-dark-active .gtr-thread .ha .asX,
 .gmail-dark-active .gtr-thread .ha .asY,
 .gmail-dark-active .gtr-thread .ha .bnc,
-.gmail-dark-active .gtr-thread .ha [aria-label*="重要"],
-.gmail-dark-active .gtr-thread .ha [aria-label*="Important"],
-.gmail-dark-active .gtr-thread .ha [data-tooltip*="重要"],
-.gmail-dark-active .gtr-thread .ha [data-tooltip*="Important"],
+.gmail-dark-active .gtr-thread .ha .bns,
 .gmail-dark-active .gtr-thread .ha .hP + span,
 .gmail-dark-active .gtr-thread .ha .hP + div,
 .gmail-dark-active .gtr-thread .ha svg:not(.ar svg):not(.hN svg),
@@ -156,11 +153,8 @@
 
 /* --------------------------------------------------------------------------
    5. TRIMMED QUOTE BUTTON ("...") (引用展開ボタンのピル化と明るい白ドット)
-   ※ aria-label の文言指定は補助。主は .ajR クラス指定。
    -------------------------------------------------------------------------- */
-.gmail-dark-active .gtr-thread .ajR,
-.gmail-dark-active .gtr-thread div[aria-label*="引用テキストを表示"],
-.gmail-dark-active .gtr-thread div[aria-label*="Show trimmed content"] {
+.gmail-dark-active .gtr-thread .ajR {
   background-color: #333538 !important;
   border: 1px solid #5f6368 !important;
   border-radius: 6px !important;
