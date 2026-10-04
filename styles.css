@@ -351,6 +351,28 @@
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
+/* 返信欄・作成ウィンドウの下のツールバーの後ろに Gmail が敷く白い背景（左右に 8px はみ出して白い線に見える） */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aDj::after,
+.gmail-dark-active .gtr-thread .aC2 {
+  background-color: #1f1f1f !important;
+}
+
+/* 差出人を選ぶメニュー（返信欄・作成ウィンドウの中に作られる） */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] {
+  background-color: #28292c !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 0 0 1px #3c4043 !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N * {
+  color: #e3e3e3 !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N:hover,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N-JT {
+  background-color: #3c4043 !important;
+}
+
 /* 返信欄の案内文の「/」キー表示 */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .LbtP4e {
   background-color: #3c4043 !important;
@@ -495,6 +517,11 @@
 /* --------------------------------------------------------------------------
    9. QUICK FLOATING TOGGLE (右下クイック操作バー ＆ バージョンバッジ)
    -------------------------------------------------------------------------- */
+/* 作成ウィンドウ（右下・全画面）が開いている間は隠す。右下に畳んだ作成ウィンドウや送信欄に重なるため */
+body:has(.Hd[role="dialog"]) #gmail-reverser-quick-toggle {
+  display: none !important;
+}
+
 #gmail-reverser-quick-toggle {
   position: fixed;
   bottom: 20px;
