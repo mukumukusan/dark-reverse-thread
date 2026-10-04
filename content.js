@@ -13,6 +13,8 @@
 
   const EXTENSION_VERSION = 'v' + chrome.runtime.getManifest().version;
   const AI_SUMMARY_LABELS = ['AI による概要', 'AI summary', 'AI Summary'];
+  const SUMMARIZE_BUTTON_LABELS = ['このメールを要約', 'Summarize this email'];
+  const AI_LABELS = AI_SUMMARY_LABELS.concat(SUMMARIZE_BUTTON_LABELS);
   const QUICK_BAR_ID = 'gmail-reverser-quick-toggle';
 
   let config = {
@@ -60,8 +62,9 @@
   }
 
   /**
-   * Tag the Gemini AI summary card inside conversation views so styles.css can darken it.
-   * Only text nodes outside email bodies (.a3s) are inspected.
+   * Tag the Gemini AI summary card and the "このメールを要約" (Summarize this email) button inside
+   * conversation views so styles.css can darken them. Only text nodes outside email bodies (.a3s)
+   * are inspected.
    */
   function markAISummaryCards(scopes) {
     scopes.forEach((scope) => {
@@ -70,11 +73,13 @@
       const walker = document.createTreeWalker(scope, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
           if (node.nodeType === Node.ELEMENT_NODE) {
-            return node.classList.contains('a3s') || node.classList.contains('ai-summary-darkened')
+            return node.classList.contains('a3s') ||
+              node.classList.contains('ai-summary-darkened') ||
+              node.classList.contains('gtr-summarize-btn')
               ? NodeFilter.FILTER_REJECT
               : NodeFilter.FILTER_SKIP;
           }
-          return AI_SUMMARY_LABELS.some((label) => node.nodeValue.includes(label))
+          return AI_LABELS.some((label) => node.nodeValue.includes(label))
             ? NodeFilter.FILTER_ACCEPT
             : NodeFilter.FILTER_SKIP;
         }
@@ -82,6 +87,12 @@
 
       let textNode;
       while ((textNode = walker.nextNode())) {
+        if (SUMMARIZE_BUTTON_LABELS.some((label) => textNode.nodeValue.includes(label))) {
+          const button = textNode.parentElement.closest('button, [role="button"]') || textNode.parentElement;
+          button.classList.add('gtr-summarize-btn');
+          continue;
+        }
+
         // Pick the outermost ancestor that still looks like a card (wide enough, not the whole pane)
         let card = null;
         let el = textNode.parentElement;
