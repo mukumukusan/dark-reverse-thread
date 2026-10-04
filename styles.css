@@ -1,0 +1,482 @@
+/* ==========================================================================
+   Gmail Thread Reverser & Official Material Dark Mode (v1.4.3)
+   - Dark styling is scoped to the open conversation view only (.gtr-thread).
+     Inbox list, sidebar, header and search bar are left to Gmail's own theme.
+   - Official Google Material Dark Scheme (#1f1f1f / #28292c)
+   - High Contrast White Email Subject / Thread Title (h2.hP)
+   - Title-adjacent Mark Restored to Google Blue (#8ab4f8)
+   - High Contrast Dark Text (#202124) for "受信トレイ" / Label Chips
+   - Gemini AI Summary Card Darkening
+   - Bottom Reply / Forward Footer Buttons Darkening
+   - Clean Floating Quick Bar in English (Newest, Dark, Reply)
+   - Print Optimization (@media print): White background, black text, natural order
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. THREAD ORDER REVERSAL (スレッド表示順の反転)
+   -------------------------------------------------------------------------- */
+.gmail-thread-reversed {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.gmail-reply-top {
+  order: -999999 !important;
+  margin-bottom: 16px !important;
+}
+
+.gmail-reply-bottom {
+  order: 999999 !important;
+  margin-top: 16px !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. EMAIL TITLE / SUBJECT LINE (件名・タイトル表示の白色化)
+   -------------------------------------------------------------------------- */
+.gmail-dark-active .gtr-thread h2.hP,
+.gmail-dark-active .gtr-thread .hP {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* 2.1 タイトル横のマーク（重要マーク・インジケーター）を青色(#8ab4f8)に復元 */
+.gmail-dark-active .gtr-thread .ha .pG,
+.gmail-dark-active .gtr-thread .ha .pH,
+.gmail-dark-active .gtr-thread .ha .pI,
+.gmail-dark-active .gtr-thread .ha .ar6,
+.gmail-dark-active .gtr-thread .ha .asX,
+.gmail-dark-active .gtr-thread .ha .asY,
+.gmail-dark-active .gtr-thread .ha .bnc,
+.gmail-dark-active .gtr-thread .ha [aria-label*="重要"],
+.gmail-dark-active .gtr-thread .ha [aria-label*="Important"],
+.gmail-dark-active .gtr-thread .ha [data-tooltip*="重要"],
+.gmail-dark-active .gtr-thread .ha [data-tooltip*="Important"],
+.gmail-dark-active .gtr-thread .ha .hP + span,
+.gmail-dark-active .gtr-thread .ha .hP + div,
+.gmail-dark-active .gtr-thread .ha svg:not(.ar svg):not(.hN svg),
+.gmail-dark-active .gtr-thread .ha path:not(.ar path):not(.hN path) {
+  color: #8ab4f8 !important;
+  fill: #8ab4f8 !important;
+  stroke: #8ab4f8 !important;
+  opacity: 1 !important;
+}
+
+/* 2.2 受信トレイなどのラベルチップ（文字の視認性改善：黒文字#202124でくっきり表示） */
+.gmail-dark-active .gtr-thread .ha .ar,
+.gmail-dark-active .gtr-thread .hN .ar,
+.gmail-dark-active .gtr-thread .ha .av,
+.gmail-dark-active .gtr-thread .hN .av,
+.gmail-dark-active .gtr-thread .ha .hX,
+.gmail-dark-active .gtr-thread .hN .hX,
+.gmail-dark-active .gtr-thread .ha .aC,
+.gmail-dark-active .gtr-thread .hN .aC,
+.gmail-dark-active .gtr-thread .ha [data-label-name],
+.gmail-dark-active .gtr-thread .hN [data-label-name],
+.gmail-dark-active .gtr-thread .ha [data-label-name] * {
+  color: #202124 !important;
+  font-weight: 500 !important;
+}
+
+.gmail-dark-active .gtr-thread .ha .aw,
+.gmail-dark-active .gtr-thread .hN .aw {
+  color: #5f6368 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. SENDER HEADERS & METADATA (送信者名・宛先・日時)
+   -------------------------------------------------------------------------- */
+.gmail-dark-active .gtr-thread .gD,
+.gmail-dark-active .gtr-thread .gD *,
+.gmail-dark-active .gtr-thread .adn span[email],
+.gmail-dark-active .gtr-thread .qu {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.gmail-dark-active .gtr-thread .go,
+.gmail-dark-active .gtr-thread .g2,
+.gmail-dark-active .gtr-thread .g3,
+.gmail-dark-active .gtr-thread .g4,
+.gmail-dark-active .gtr-thread .iw,
+.gmail-dark-active .gtr-thread .hb,
+.gmail-dark-active .gtr-thread .gH,
+.gmail-dark-active .gtr-thread .gK,
+.gmail-dark-active .gtr-thread .bi4 {
+  color: #9aa0a6 !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. STAR ICON & TOP-RIGHT ACTION ICONS (星アイコン・操作ボタン)
+   -------------------------------------------------------------------------- */
+/* 未スター時の星アイコン（.T-KT 自体を純白化し、クリック操作性を完全保持） */
+.gmail-dark-active .gtr-thread .adn .T-KT:not(.T-KT-Jp):not([aria-checked="true"]):not(.sA) {
+  filter: invert(100%) brightness(1.8) contrast(1.2) !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+}
+
+/* スター付き状態（フィルターを解除し、鮮やかなゴールドを表示） */
+.gmail-dark-active .gtr-thread .adn .T-KT.T-KT-Jp,
+.gmail-dark-active .gtr-thread .adn .T-KT[aria-checked="true"],
+.gmail-dark-active .gtr-thread .adn .T-KT.sA {
+  filter: none !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+}
+
+.gmail-dark-active .gtr-thread .adn .T-KT * {
+  cursor: pointer !important;
+}
+
+/* 右上のリアクション(😊)、返信(↩)、その他メニュー(⋮)アイコン */
+.gmail-dark-active .gtr-thread .gE button,
+.gmail-dark-active .gtr-thread .gE button *,
+.gmail-dark-active .gtr-thread .gH button,
+.gmail-dark-active .gtr-thread .gH button *,
+.gmail-dark-active .gtr-thread .gH [role="button"],
+.gmail-dark-active .gtr-thread .gH [role="button"] *,
+.gmail-dark-active .gtr-thread .gH svg,
+.gmail-dark-active .gtr-thread .gH path,
+.gmail-dark-active .gtr-thread .gK button,
+.gmail-dark-active .gtr-thread .gK button *,
+.gmail-dark-active .gtr-thread .bi4 button,
+.gmail-dark-active .gtr-thread .bi4 button * {
+  color: #e3e3e3 !important;
+  fill: #e3e3e3 !important;
+  opacity: 1 !important;
+}
+
+.gmail-dark-active .gtr-thread .gE button:hover *,
+.gmail-dark-active .gtr-thread .gH button:hover * {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. TRIMMED QUOTE BUTTON ("...") (引用展開ボタンのピル化と明るい白ドット)
+   -------------------------------------------------------------------------- */
+.gmail-dark-active .gtr-thread .ajR,
+.gmail-dark-active .gtr-thread div[aria-label*="引用テキストを表示"],
+.gmail-dark-active .gtr-thread div[aria-label*="Show trimmed content"] {
+  background-color: #333538 !important;
+  border: 1px solid #5f6368 !important;
+  border-radius: 6px !important;
+  padding: 2px 10px !important;
+  cursor: pointer !important;
+  display: inline-block !important;
+  margin: 6px 0 !important;
+  vertical-align: middle !important;
+  transition: all 0.15s ease !important;
+}
+
+.gmail-dark-active .gtr-thread .ajR:hover {
+  background-color: #44474b !important;
+  border-color: #8ab4f8 !important;
+}
+
+.gmail-dark-active .gtr-thread .ajT {
+  color: #ffffff !important;
+  font-weight: bold !important;
+  font-size: 13px !important;
+  letter-spacing: 2px !important;
+  line-height: 1 !important;
+  background-color: transparent !important;
+}
+
+.gmail-dark-active .gtr-thread .ajR:hover .ajT {
+  color: #8ab4f8 !important;
+}
+
+/* メール本文内の引用（リンク色は本文の色調整で元の色相のまま明るくなる） */
+.gmail-dark-active .gtr-thread .a3s .gmail_quote,
+.gmail-dark-active .gtr-thread .a3s blockquote {
+  border-left: 2px solid #5f6368 !important;
+  color: #9aa0a6 !important;
+  padding-left: 8px !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. GEMINI AI SUMMARY CARD (AIによる概要カードの公式風ダーク化)
+   -------------------------------------------------------------------------- */
+.gmail-dark-active .gtr-thread .ai-summary-darkened,
+.gmail-dark-active .gtr-thread div[aria-label*="AI による概要"],
+.gmail-dark-active .gtr-thread div[aria-label*="AI summary"],
+.gmail-dark-active .gtr-thread .bt6,
+.gmail-dark-active .gtr-thread .bsu,
+.gmail-dark-active .gtr-thread .bta,
+.gmail-dark-active .gtr-thread .bty,
+.gmail-dark-active .gtr-thread .btz,
+.gmail-dark-active .gtr-thread .a9E,
+.gmail-dark-active .gtr-thread .a8u,
+.gmail-dark-active .gtr-thread .a8v {
+  background-color: #1f1f1f !important;
+  color: #e3e3e3 !important;
+  border: 1px solid #3c4043 !important;
+  border-radius: 16px !important;
+}
+
+.gmail-dark-active .gtr-thread .ai-summary-darkened *,
+.gmail-dark-active .gtr-thread .bt6 *,
+.gmail-dark-active .gtr-thread .bsu *,
+.gmail-dark-active .gtr-thread .bta *,
+.gmail-dark-active .gtr-thread .a9E * {
+  color: #e3e3e3 !important;
+  background-color: transparent !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. BOTTOM FOOTER BUTTONS (返信・全員に返信・転送ボタン)
+   -------------------------------------------------------------------------- */
+.gmail-dark-active .gtr-thread .amn,
+.gmail-dark-active .gtr-thread .bkH,
+.gmail-dark-active .gtr-thread .bkj,
+.gmail-dark-active .gtr-thread .bkI,
+.gmail-dark-active .gtr-thread .aaq,
+.gmail-dark-active .gtr-thread .brb,
+.gmail-dark-active .gtr-thread .g6,
+.gmail-dark-active .gtr-thread .adB,
+.gmail-dark-active .gtr-thread .ip.iB,
+.gmail-dark-active .gtr-thread .M9 {
+  background-color: #1f1f1f !important;
+  border-color: #3c4043 !important;
+  color: #e3e3e3 !important;
+}
+
+.gmail-dark-active .gtr-thread .amn [role="button"],
+.gmail-dark-active .gtr-thread .amn button,
+.gmail-dark-active .gtr-thread .bkj [role="button"],
+.gmail-dark-active .gtr-thread .bkj button,
+.gmail-dark-active .gtr-thread .bkH [role="button"],
+.gmail-dark-active .gtr-thread .bkH button {
+  background-color: #28292c !important;
+  border: 1px solid #3c4043 !important;
+  color: #e3e3e3 !important;
+  border-radius: 20px !important;
+}
+
+.gmail-dark-active .gtr-thread .amn [role="button"]:hover,
+.gmail-dark-active .gtr-thread .amn button:hover {
+  background-color: #35363a !important;
+  color: #ffffff !important;
+}
+
+.gmail-dark-active .gtr-thread .amn [role="button"] *,
+.gmail-dark-active .gtr-thread .amn button * {
+  color: #e3e3e3 !important;
+  fill: #e3e3e3 !important;
+}
+
+/* スレッド内のインライン返信欄 */
+.gmail-dark-active .gtr-thread .Am.Al.editable,
+.gmail-dark-active .gtr-thread div[role="textbox"] {
+  background-color: #1f1f1f !important;
+  color: #ffffff !important;
+}
+
+.gmail-dark-active .gtr-thread .btC,
+.gmail-dark-active .gtr-thread .gU.Up,
+.gmail-dark-active .gtr-thread .aDh,
+.gmail-dark-active .gtr-thread .IZ {
+  background-color: #1f1f1f !important;
+  border-color: #3c4043 !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. CONVERSATION VIEW SURFACES (スレッド画面のメッセージカード・本文)
+   ※ 受信トレイ・サイドバー・ヘッダーには一切適用しない
+   -------------------------------------------------------------------------- */
+/* スレッド画面自体の背景（メッセージ間の余白・ツールバー下の領域） */
+.gmail-dark-active .gtr-thread,
+.gmail-dark-active .gtr-thread .nH,
+.gmail-dark-active .gtr-thread .Bs,
+.gmail-dark-active .gtr-thread .y3 {
+  background-color: #1f1f1f !important;
+  color: #e3e3e3 !important;
+}
+
+.gmail-dark-active .gtr-thread div[role="list"] > div[role="listitem"],
+.gmail-dark-active .gtr-thread .adn.ads,
+.gmail-dark-active .gtr-thread .gs {
+  background-color: #1f1f1f !important;
+  border: 1px solid #303134 !important;
+  border-radius: 12px !important;
+  margin-bottom: 10px !important;
+}
+
+.gmail-dark-active .gtr-thread .gE.iv.gt,
+.gmail-dark-active .gtr-thread .adn .gA,
+.gmail-dark-active .gtr-thread .adn .gH,
+.gmail-dark-active .gtr-thread .kv {
+  background-color: #1f1f1f !important;
+  color: #c4c7c5 !important;
+}
+
+/* メール本文（HTMLメールの白背景・固定文字色を上書き。bgcolor / color 属性もCSSで無効化される） */
+.gmail-dark-active .gtr-thread .ii.gt,
+.gmail-dark-active .gtr-thread .a3s {
+  background-color: #1f1f1f !important;
+  color: #e3e3e3 !important;
+}
+
+/* 本文内の各要素は content.js が元の色の色相・彩度を保ったまま明度だけ調整し、
+   --gtr-fg / --gtr-bg に書き込む（ダークモードOFF時はこのルールが外れて元の色に戻る） */
+.gmail-dark-active .gtr-thread .a3s [data-gtr-fg] {
+  color: var(--gtr-fg) !important;
+}
+
+.gmail-dark-active .gtr-thread .a3s [data-gtr-bg] {
+  background-color: var(--gtr-bg) !important;
+}
+
+/* 色の調整がまだ済んでいない要素（読み込み直後・引用展開直後）の一時的な表示 */
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-reading) *:not([data-gtr-c]):not(img):not(video):not(iframe):not(svg):not(canvas):not(picture) {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. QUICK FLOATING TOGGLE (右下クイック操作バー ＆ バージョンバッジ)
+   -------------------------------------------------------------------------- */
+#gmail-reverser-quick-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 24px;
+  z-index: 999999;
+  background: #1f1f1f;
+  border: 1px solid #3c4043;
+  border-radius: 20px;
+  padding: 6px 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  color: #ffffff;
+  user-select: none;
+}
+
+#gmail-reverser-quick-toggle .gtr-title {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+#gmail-reverser-quick-toggle .gtr-version {
+  font-size: 10px;
+  font-weight: 600;
+  color: #8ab4f8;
+  background: #2b2c2e;
+  border: 1px solid #3c4043;
+  border-radius: 8px;
+  padding: 1px 6px;
+  margin-right: 4px;
+  letter-spacing: 0.5px;
+}
+
+.gtr-btn {
+  background: #2b2c2e;
+  color: #cccccc;
+  border: 1px solid #3c4043;
+  border-radius: 12px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1.2;
+  transition: all 0.15s ease-in-out;
+}
+
+.gtr-btn:hover {
+  background: #37393b;
+  color: #ffffff;
+}
+
+.gtr-btn.active {
+  background: #1a73e8;
+  border-color: #1a73e8;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   10. PRINT OPTIMIZATION (印刷・PDF出力時の白背景＆正順表示への自動復帰)
+   -------------------------------------------------------------------------- */
+@media print {
+  /* クイック操作バーの非表示 */
+  #gmail-reverser-quick-toggle {
+    display: none !important;
+  }
+
+  /* 印刷時は自然な時系列（正順）に戻して出力 */
+  .gmail-thread-reversed {
+    display: block !important;
+  }
+
+  .gmail-thread-reversed > * {
+    order: initial !important;
+  }
+
+  /* 返信エリアの非表示 */
+  .gmail-reply-top,
+  .gmail-reply-bottom {
+    display: none !important;
+  }
+
+  /* インク節約・読みやすさのため純白背景＆黒文字に強制復帰 */
+  html,
+  body,
+  .gmail-dark-active,
+  .gmail-dark-active body,
+  .gmail-dark-active div,
+  .gmail-dark-active table,
+  .gmail-dark-active tr,
+  .gmail-dark-active td,
+  .gmail-dark-active p,
+  .gmail-dark-active span,
+  .gmail-dark-active h1,
+  .gmail-dark-active h2,
+  .gmail-dark-active h3,
+  .gmail-dark-active .gtr-thread .ii.gt,
+  .gmail-dark-active .gtr-thread .a3s,
+  .gmail-dark-active .gtr-thread .ai-summary-darkened,
+  .gmail-dark-active div[role="main"],
+  .gmail-dark-active div[role="listitem"] {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+
+  .gmail-dark-active .gtr-thread h2.hP,
+  .gmail-dark-active .gtr-thread .hP {
+    color: #000000 !important;
+  }
+
+  .gmail-dark-active a,
+  .gmail-dark-active a * {
+    color: #1a0dab !important;
+    text-decoration: underline !important;
+  }
+
+  .gmail-dark-active .gtr-thread div[role="listitem"],
+  .gmail-dark-active .gtr-thread .adn.ads,
+  .gmail-dark-active .gtr-thread .gs,
+  .gmail-dark-active .gtr-thread .ai-summary-darkened {
+    border: 1px solid #e0e0e0 !important;
+  }
+
+  .gmail-dark-active .T-KT {
+    filter: none !important;
+  }
+
+  /* 本文はダーク用に調整する前の元の色で印刷 */
+  .gmail-dark-active .gtr-thread .a3s [data-gtr-fg] {
+    color: var(--gtr-fg0) !important;
+  }
+
+  .gmail-dark-active .gtr-thread .a3s [data-gtr-bg] {
+    background-color: var(--gtr-bg0) !important;
+  }
+}
