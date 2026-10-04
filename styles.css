@@ -377,10 +377,11 @@
 }
 
 /* 返信欄・作成ウィンドウの下のツールバーの後ろに Gmail が敷く白い背景（左右に 8px はみ出して白い線に見える）。
-   .aC3 はツールバーが画面下に張り付いたときにその下に出る帯 */
+   .aC3 はツールバーが画面下に、.azX は返信欄の上端が画面上部に張り付いたときに出る帯 */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aDj::after,
 .gmail-dark-active .gtr-thread .aC2,
-.gmail-dark-active .gtr-thread .aC3 {
+.gmail-dark-active .gtr-thread .aC3,
+.gmail-dark-active .gtr-thread .azX {
   background-color: #1f1f1f !important;
 }
 
