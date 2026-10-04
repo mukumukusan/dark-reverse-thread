@@ -237,12 +237,15 @@
   }
 
   /**
-   * The inline reply composer sits inside the newest message, below its content. For "top", the
-   * composer block (the ancestor of the textbox that branches off from the message content) is
-   * shown first within that message via flex order; "bottom" keeps Gmail's own position.
+   * The reply area sits inside the newest message, below its content: the Reply / Forward /
+   * reaction footer (.amn, with .ams links) while closed, the inline composer (textbox) while open.
+   * For "top", the reply block (the ancestor that branches off from the message content) is shown
+   * first within that message via flex order; "bottom" keeps Gmail's own position.
    */
-  function findComposerBlock(textbox, item) {
-    for (let el = textbox; el.parentElement && el.parentElement !== item; el = el.parentElement) {
+  const REPLY_ANCHORS = '[role="textbox"], .amn';
+
+  function findReplyBlock(anchor, item) {
+    for (let el = anchor; el.parentElement && el.parentElement !== item; el = el.parentElement) {
       if (el.parentElement.querySelector('.gs, .a3s')) return el;
     }
     return null;
@@ -251,9 +254,9 @@
   function applyReplyPosition(lists) {
     const active = new Set();
     lists.forEach((list) => {
-      list.querySelectorAll('[role="textbox"]').forEach((textbox) => {
-        const item = Array.from(list.children).find((child) => child.contains(textbox));
-        const block = item && findComposerBlock(textbox, item);
+      list.querySelectorAll(REPLY_ANCHORS).forEach((anchor) => {
+        const item = Array.from(list.children).find((child) => child.contains(anchor));
+        const block = item && findReplyBlock(anchor, item);
         // Flex layout is only safe on a plain block container, never on table parts
         if (!block || block.parentElement.tagName !== 'DIV') return;
         active.add(block);
@@ -267,7 +270,7 @@
       }
     });
 
-    // Hosts whose composer was closed (removed from the DOM) go back to normal layout
+    // Hosts whose reply block was removed from the DOM go back to normal layout
     document.querySelectorAll('.gmail-reply-host').forEach((host) => {
       if (!host.querySelector(':scope > .gmail-reply-above')) host.classList.remove('gmail-reply-host');
     });

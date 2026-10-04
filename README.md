@@ -1,4 +1,4 @@
-# Gmail Thread Reverser & Dark Mode (v1.5.8)
+# Gmail Thread Reverser & Dark Mode (v1.5.9)
 
 Web版Gmailのスレッドを最新順に反転表示し、スレッド画面とメール本文を公式Google風マテリアルダークモードに対応させるChrome拡張機能（Manifest V3対応）です。
 A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation threads (newest emails first) and provides a polished Google Material Dark mode for threads, email bodies, AI summaries, and print workflows.
@@ -20,8 +20,8 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
    - 日本語: 星アイコンの完全なクリック・選択操作性、タイトル横マークのGoogleブルー復元、「受信トレイ」ラベル文字のくっきり表示を実現。
    - English: Fully interactive star toggling, restored Google Blue title-adjacent indicators, and crisp, legible label pill text.
 5. **返信欄の位置制御 / Flexible Reply Box Position**
-   - 日本語: 返信を書くときの入力欄を、最新メールの「下」（Gmail標準）または「上」に表示。
-   - English: Open the reply composer either below (Gmail default) or above the newest email.
+   - 日本語: 返信・転送・リアクションのボタンと返信の入力欄を、最新メールの「下」（Gmail標準）または「上」に表示。
+   - English: Show the Reply / Forward / reaction buttons and the reply composer either below (Gmail default) or above the newest email.
 6. **印刷・PDF出力の最適化 (@media print) / Print Optimization**
    - 日本語: 印刷・PDF保存時は自動で白背景・黒文字（インク節約仕様）・正順表示に戻ります。
    - English: Automatically reverts to a white background with sharp black text and natural chronological order when printing or exporting to PDF.
@@ -36,7 +36,7 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
 
 ## 構成ファイル一覧 / Included Files
 
-- `manifest.json`: 拡張機能定義ファイル / Extension manifest (Manifest V3, v1.5.8)
+- `manifest.json`: 拡張機能定義ファイル / Extension manifest (Manifest V3, v1.5.9)
 - `content.js`: スレッド並び替え・DOMスタイル制御・入力時軽量化スクリプト / Core script with keystroke filtering
 - `styles.css`: スレッド反転レイアウト、公式マテリアルダークCSS、印刷用スタイル / Stylesheet for layout, dark theme, and @media print
 - `popup.html` & `popup.js` & `popup.css`: ツールバー設定ポップアップ / Extension popup settings UI
