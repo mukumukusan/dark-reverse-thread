@@ -26,7 +26,8 @@
    */
   const isContextValid = () => {
     try {
-      return !!chrome.runtime?.id;
+      // runtime.id alone can survive the invalidation; getManifest() throws once the context is gone
+      return !!chrome.runtime?.id && !!chrome.runtime.getManifest();
     } catch {
       return false;
     }
@@ -510,7 +511,11 @@
       showReloadHint();
       return;
     }
-    chrome.storage.sync.set(updated);
+    try {
+      chrome.storage.sync.set(updated).catch(showReloadHint);
+    } catch {
+      showReloadHint(); // invalidated between the check and the call
+    }
   };
 
   /** Full pass over every conversation view: initial load, setting changes and thread navigation. */
