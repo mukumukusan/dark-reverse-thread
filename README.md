@@ -1,4 +1,4 @@
-# Dark Reverse Thread (v1.8.1)
+# Dark Reverse Thread (v1.8.2)
 
 Web版Gmailのスレッド画面・メール本文・作成ウィンドウを、元の色味を保ったままダークモードで表示し、スレッドを新しい順に並べ替える Chrome 拡張機能（Manifest V3）です。
 A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads, email bodies and the compose window that keeps original colors, plus newest-first conversation threads.
@@ -23,8 +23,8 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
    - 日本語: 星アイコンの完全なクリック・選択操作性、タイトル横マークのGoogleブルー復元、「受信トレイ」ラベル文字のくっきり表示を実現。
    - English: Fully interactive star toggling, restored Google Blue title-adjacent indicators, and crisp, legible label pill text.
 5. **返信欄の位置制御 / Flexible Reply Box Position**
-   - 日本語: 返信・転送・リアクションのボタンと返信の入力欄を、最新メールの「下」（Gmail標準）または「上」に表示。
-   - English: Show the Reply / Forward / reaction buttons and the reply composer either below (Gmail default) or above the newest email.
+   - 日本語: 新しい順の表示で、返信・転送・リアクションのボタンと返信の入力欄を、最新メールの直下（標準）または直上に表示。
+   - English: Show the Reply / Forward / reaction buttons and the reply composer directly below or above the newest email (in newest-first order).
 6. **印刷・PDF出力の最適化 (@media print) / Print Optimization**
    - 日本語: 印刷・PDF保存時は自動で白背景・黒文字（インク節約仕様）・正順表示に戻ります。
    - English: Automatically reverts to a white background with sharp black text and natural chronological order when printing or exporting to PDF.

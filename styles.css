@@ -38,6 +38,25 @@
   order: 2 !important;
 }
 
+/* 返信欄「下」: 一覧を包む箱を見た目上なくし（content.js が .gmail-reply-flat を付ける）、メールとボタン欄を
+   同じ並びにして、ボタン欄を最新メール（order 2）の直後（order 3）に置く。件名などは先頭、残りは最後 */
+.gmail-reply-flat,
+.gmail-thread-reversed.gmail-reply-flat {
+  display: contents !important;
+}
+
+.gmail-reply-below {
+  order: 3 !important;
+}
+
+.gmail-reply-lead {
+  order: 1 !important;
+}
+
+.gmail-reply-tail {
+  order: 100000 !important;
+}
+
 /* --------------------------------------------------------------------------
    2. EMAIL TITLE / SUBJECT LINE (件名・タイトル表示の白色化)
    -------------------------------------------------------------------------- */
@@ -620,11 +639,14 @@
     display: none !important;
   }
 
-  .gmail-reply-host {
+  .gmail-reply-host,
+  .gmail-reply-flat,
+  .gmail-thread-reversed.gmail-reply-flat {
     display: block !important;
   }
 
-  .gmail-reply-host > * {
+  .gmail-reply-host > *,
+  .gmail-reply-flat > * {
     order: initial !important;
   }
 

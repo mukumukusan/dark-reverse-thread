@@ -297,10 +297,11 @@
 
       // Every child of the message list is a message (expanded .h7 or collapsed .kv);
       // the reply composer lives inside the newest message, not as a separate child.
+      // Orders are even (newest = 2) so the reply footer can sit at 3, right below the newest message.
       const children = Array.from(list.children);
       list.classList.add('gmail-thread-reversed');
       children.forEach((child, index) => {
-        const order = (children.length - index).toString();
+        const order = (2 * (children.length - index)).toString();
         if (child.style.order !== order) child.style.order = order;
       });
     });
@@ -309,13 +310,18 @@
   }
 
   /**
-   * Reply area placement for "top" (above the newest email, newest-first order only);
-   * "bottom" keeps Gmail's own layout.
-   * - Inline composer (textbox): inside the newest message, below its content. The composer block
-   *   (the ancestor that branches off from the message content) is shown first in that message.
-   * - Reply / Forward / reaction footer (.amn with .ams links): outside the message list, below it.
-   *   It is moved to just above the message list (= above the newest email).
-   * Both use flex order on the shared parent (.gmail-reply-host).
+   * Reply area placement in newest-first order ("top": above the newest email, "bottom": below it).
+   * - Inline composer (textbox): Gmail puts it inside the newest message, below its content, which is
+   *   already "below the newest email". For "top" the composer block (the ancestor that branches off
+   *   from the message content) is shown first in that message.
+   * - Reply / Forward / reaction footer (.amn with .ams links): outside the message list, below it
+   *   (= below the oldest email once reversed). Both use flex order on the shared parent
+   *   (.gmail-reply-host):
+   *   - "top": the footer is moved to just above the message list.
+   *   - "bottom": the boxes between that parent and the message list are flattened (display:
+   *     contents), so the messages and the footer share one flex column and the footer can take the
+   *     slot right after the newest message. Only plain boxes (no padding / border / margin) are
+   *     flattened; otherwise Gmail's own place is kept.
    */
   function findComposerBlock(textbox, item) {
     for (let el = textbox; el.parentElement && el.parentElement !== item; el = el.parentElement) {
@@ -336,6 +342,13 @@
   // Flex layout is only safe on a plain block container, never on table parts
   const isFlexSafe = (block) => block && block.parentElement.tagName === 'DIV';
 
+  // A box can be flattened without changing the look only if it draws nothing around its content
+  function isPlainBox(el) {
+    if (el.tagName !== 'DIV') return false;
+    const style = getComputedStyle(el);
+    return ['padding', 'margin', 'borderWidth'].every((prop) => style[prop].split(' ').every((v) => parseFloat(v) === 0));
+  }
+
   function syncClass(className, wanted) {
     document.querySelectorAll('.' + className).forEach((el) => {
       if (!wanted.has(el)) el.classList.remove(className);
@@ -348,6 +361,35 @@
     const composers = new Set();
     const footers = new Set();
     const afterFooter = new Set();
+    const footersBelow = new Set();
+    const flattened = new Set();
+    const leading = new Set();
+    const trailing = new Set();
+
+    if (config.replyPosition !== 'top' && config.reverseOrder) {
+      document.querySelectorAll('.gtr-thread .amn').forEach((footer) => {
+        if (lists.some((list) => list.contains(footer))) return; // empty placeholder inside a message
+        const block = findFooterBlock(footer, lists);
+        if (!isFlexSafe(block)) return;
+        const host = block.parentElement;
+        const list = lists.find((l) => host.contains(l));
+        const chain = [];
+        for (let el = list; el !== host; el = el.parentElement) chain.push(el);
+        if (!chain.every(isPlainBox)) return;
+
+        footersBelow.add(block);
+        chain.forEach((el) => {
+          flattened.add(el);
+          // Neighbours of the flattened boxes join the same column: those before the messages
+          // (subject, summary button) stay first, those after them go last
+          Array.from(el.parentElement.children).forEach((sibling) => {
+            if (sibling === el || sibling === block) return;
+            const before = sibling.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING;
+            (before ? leading : trailing).add(sibling);
+          });
+        });
+      });
+    }
 
     if (config.replyPosition === 'top' && config.reverseOrder) {
       lists.forEach((list) => {
@@ -377,10 +419,15 @@
     syncClass('gmail-reply-above', composers);
     syncClass('gmail-reply-footer', footers);
     syncClass('gmail-reply-after', afterFooter);
+    syncClass('gmail-reply-below', footersBelow);
+    syncClass('gmail-reply-flat', flattened);
+    syncClass('gmail-reply-lead', leading);
+    syncClass('gmail-reply-tail', trailing);
 
     const hosts = new Set();
     composers.forEach((block) => hosts.add(block.parentElement));
     footers.forEach((block) => hosts.add(block.parentElement));
+    footersBelow.forEach((block) => hosts.add(block.parentElement));
     syncClass('gmail-reply-host', hosts);
 
     newComposers.forEach((block) => block.scrollIntoView({ block: 'nearest' }));
@@ -410,8 +457,9 @@
     const threadKey = location.hash;
     if (!config.reverseOrder || threadKey === lastScrolledThread) return;
 
+    // The list itself has no box when flattened (display: contents), so check its first message
     const list = Array.from(document.querySelectorAll('.gtr-thread .gmail-thread-reversed'))
-      .find((el) => el.offsetParent !== null);
+      .find((el) => el.firstElementChild && el.firstElementChild.offsetParent !== null);
     if (!list) return;
     lastScrolledThread = threadKey;
 

@@ -37,7 +37,7 @@
   },
   "replyBottom": {
     "message": "Below newest email (Default)",
-    "description": "Reply box position option: Gmail's own place, below the newest email."
+    "description": "Reply box position option: right below the newest email (default)."
   },
   "replyTop": {
     "message": "Above newest email",
