@@ -20,6 +20,20 @@
   let lastQuickBarState = null;
 
   /**
+   * When the extension is reloaded or updated, this script keeps running in tabs that were already
+   * open, but every chrome.* call then throws "Extension context invalidated". The page keeps its
+   * current look; the quick bar asks for a page reload instead of failing on click.
+   */
+  const isContextValid = () => {
+    try {
+      return !!chrome.runtime?.id;
+    } catch {
+      return false;
+    }
+  };
+  const RELOAD_HINT = chrome.i18n.getMessage('quickReloadNeeded'); // read now: not available once invalidated
+
+  /**
    * Mark each conversation view (the main pane that holds a subject h2.hP) with .gtr-thread
    * so that every dark-mode rule stays inside the thread and never touches the inbox list,
    * sidebar or header.
@@ -419,7 +433,7 @@
   }
 
   function renderQuickBar() {
-    if (!document.body) return;
+    if (!document.body || !isContextValid()) return;
 
     if (!config.showQuickBar) {
       const existing = document.getElementById(QUICK_BAR_ID);
@@ -481,8 +495,23 @@
     );
   }
 
+  function showReloadHint() {
+    const bar = document.getElementById(QUICK_BAR_ID);
+    if (!bar) return;
+    const hint = document.createElement('span');
+    hint.className = 'gtr-title';
+    hint.textContent = RELOAD_HINT;
+    bar.replaceChildren(hint);
+  }
+
   // storage.onChanged applies the new value and re-renders the quick bar
-  const save = (updated) => chrome.storage.sync.set(updated);
+  const save = (updated) => {
+    if (!isContextValid()) {
+      showReloadHint();
+      return;
+    }
+    chrome.storage.sync.set(updated);
+  };
 
   /** Full pass over every conversation view: initial load, setting changes and thread navigation. */
   function applyAll() {

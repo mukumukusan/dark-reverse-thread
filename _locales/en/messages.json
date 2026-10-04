@@ -94,5 +94,9 @@
   "quickReplyBottom": {
     "message": "Bottom",
     "description": "Quick bar: reply box is at the bottom."
+  },
+  "quickReloadNeeded": {
+    "message": "The extension was updated. Please reload the page.",
+    "description": "Quick bar: shown when the extension was reloaded or updated while this Gmail tab stayed open."
   }
 }

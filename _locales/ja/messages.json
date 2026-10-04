@@ -70,5 +70,8 @@
   },
   "quickReplyBottom": {
     "message": "下"
+  },
+  "quickReloadNeeded": {
+    "message": "拡張機能が更新されました。ページを再読み込みしてください"
   }
 }
