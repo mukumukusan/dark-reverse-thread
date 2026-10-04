@@ -1,4 +1,4 @@
-# Gmail Thread Reverser & Dark Mode (v1.6.2)
+# Gmail Thread Reverser & Dark Mode (v1.6.3)
 
 Web版Gmailのスレッドを最新順に反転表示し、スレッド画面とメール本文を公式Google風マテリアルダークモードに対応させるChrome拡張機能（Manifest V3対応）です。
 A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation threads (newest emails first) and provides a polished Google Material Dark mode for threads, email bodies, AI summaries, and print workflows.
@@ -90,9 +90,13 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
 - **アイコン / Icons**: `icons/icon128.png` (128x128px)
 - **スクリーンショット / Screenshots**: 1280x800 または 640x400 ピクセル（Gmail上でスレッド反転やダークモードが動作している画面キャプチャを最低1枚）
 - **プライバシーポリシー / Privacy Policy**:
-  - 日本語: 「当拡張機能はユーザー設定（ON/OFF）をブラウザのローカルストレージ（chrome.storage.sync）に保存する目的のみで使用し、メール本文や個人情報は一切外部に送信・収集しません」と明記。
-  - English: State that all user preferences are saved strictly within local Chrome storage, and no personal email content or user data is ever tracked, collected, or transmitted externally.
+  - 日本語: [`PRIVACY.md`](PRIVACY.md) を公開URLに置き、そのURLをダッシュボードに登録します。データは収集・送信せず、表示設定だけを `chrome.storage.sync` に保存することを記載しています。
+  - English: Publish [`PRIVACY.md`](PRIVACY.md) at a public URL and enter that URL in the dashboard. It states that no data is collected or sent, and that only display settings are saved in `chrome.storage.sync`.
 
 ### 4. 提出と公開 / Submission
 - 日本語: ダッシュボードで「新しいアイテム」を作成してZIPをアップロードし、説明文とスクリーンショットを登録して「審査のために送信」をクリックします（通常1〜3営業日で審査完了）。
 - English: Upload the ZIP file in the dashboard, complete the store listing details, and click "Submit for review" (typically approved within 1–3 business days).
+
+## ライセンス / License
+
+MIT License — [`LICENSE`](LICENSE)
