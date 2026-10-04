@@ -128,6 +128,37 @@
     return enclosing ? [enclosing] : scope.querySelectorAll('.a3s');
   }
 
+  /**
+   * Transparent images (e.g. dark logos drawn for a white page) get back the backdrop they were
+   * designed on: the nearest original opaque background above them, or white. Tiny images
+   * (spacers, tracking pixels) are left alone so they don't turn into visible bars.
+   */
+  const MIN_IMAGE_SIZE = 16;
+
+  function findOriginalBackdrop(img, body) {
+    for (let el = img.parentElement; el && el !== body; el = el.parentElement) {
+      if (!el.hasAttribute('data-gtr-bg')) continue;
+      const original = el.style.getPropertyValue('--gtr-bg0').trim();
+      const bg = parseRGB(original);
+      if (bg && bg.a >= 1) return original;
+    }
+    return 'rgb(255, 255, 255)';
+  }
+
+  function restoreImageBackdrop(img, body) {
+    const apply = () => {
+      if (img.naturalWidth <= 2 || img.naturalHeight <= 2) return;
+      const shown = img.offsetWidth > 0 && img.offsetHeight > 0;
+      const width = shown ? img.offsetWidth : img.naturalWidth;
+      const height = shown ? img.offsetHeight : img.naturalHeight;
+      if (width < MIN_IMAGE_SIZE || height < MIN_IMAGE_SIZE) return;
+      img.style.setProperty('--gtr-img-bg', findOriginalBackdrop(img, body));
+      img.setAttribute('data-gtr-img', '');
+    };
+    if (img.complete) apply();
+    else img.addEventListener('load', apply, { once: true });
+  }
+
   function darkenEmailBodies(bodies) {
     bodies.forEach((body) => {
       const nodes = Array.from(body.querySelectorAll('*:not([data-gtr-c])'));
@@ -143,6 +174,7 @@
 
       nodes.forEach((node, i) => {
         node.setAttribute('data-gtr-c', '');
+        if (node.tagName === 'IMG') restoreImageBackdrop(node, body); // ancestors are written first (document order)
         const c = colors[i];
         if (!c) return;
         if (c.fg) {

@@ -1,4 +1,4 @@
-# Gmail Thread Reverser & Dark Mode (v1.5.14)
+# Gmail Thread Reverser & Dark Mode (v1.5.15)
 
 Web版Gmailのスレッドを最新順に反転表示し、スレッド画面とメール本文を公式Google風マテリアルダークモードに対応させるChrome拡張機能（Manifest V3対応）です。
 A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation threads (newest emails first) and provides a polished Google Material Dark mode for threads, email bodies, AI summaries, and print workflows.
@@ -14,8 +14,8 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
    - 日本語: Google公式Gmailの上品なマテリアルダーク調（#1f1f1f / #28292c / #303134）に統一し、目に優しく洗練された表示を提供。受信トレイ・サイドバー・ヘッダーには干渉せず、Gmail本体のテーマ設定をそのまま使います。
    - English: Unified with Google's official Material Dark palette (#1f1f1f / #28292c / #303134) for an eye-friendly, native feel. Applied to the conversation view only — the inbox list, sidebar and header are left to Gmail's own theme.
 3. **本文白飛びの根本解消 / Direct Email Body Darkening**
-   - 日本語: HTMLメールの文字色・背景色を、色相と彩度を保ったまま明るさだけ暗い背景向けに調整（黒文字→明るい灰色、白背景→暗色、赤字や黄色のハイライトは色味を残す）。画像やロゴは本来の色を保護し、印刷時は元の色で出力。
-   - English: Adapts HTML email text and background colors for dark mode by remapping only their lightness, keeping the original hue and saturation (black text becomes light gray, white backgrounds turn dark, red text and highlights keep their color). Images and media are untouched, and printing uses the original colors.
+   - 日本語: HTMLメールの文字色・背景色を、色相と彩度を保ったまま明るさだけ暗い背景向けに調整（黒文字→明るい灰色、白背景→暗色、赤字や黄色のハイライトは色味を残す）。画像やロゴは本来の色を保護し、透過画像（黒いロゴなど）の背後には元のメールでの背景色を敷いて見えるように。印刷時は元の色で出力。
+   - English: Adapts HTML email text and background colors for dark mode by remapping only their lightness, keeping the original hue and saturation (black text becomes light gray, white backgrounds turn dark, red text and highlights keep their color). Images keep their colors, transparent ones (e.g. dark logos) get their original backdrop back so they stay visible, and printing uses the original colors.
 4. **星アイコン・マーク・ラベルの視認性と操作性 / High-Contrast & Interactive UI**
    - 日本語: 星アイコンの完全なクリック・選択操作性、タイトル横マークのGoogleブルー復元、「受信トレイ」ラベル文字のくっきり表示を実現。
    - English: Fully interactive star toggling, restored Google Blue title-adjacent indicators, and crisp, legible label pill text.
@@ -36,7 +36,7 @@ A lightweight Chrome extension (Manifest V3) that reverses Gmail conversation th
 
 ## 構成ファイル一覧 / Included Files
 
-- `manifest.json`: 拡張機能定義ファイル / Extension manifest (Manifest V3, v1.5.14)
+- `manifest.json`: 拡張機能定義ファイル / Extension manifest (Manifest V3, v1.5.15)
 - `content.js`: スレッド並び替え・DOMスタイル制御・入力時軽量化スクリプト / Core script with keystroke filtering
 - `styles.css`: スレッド反転レイアウト、公式マテリアルダークCSS、印刷用スタイル / Stylesheet for layout, dark theme, and @media print
 - `popup.html` & `popup.js` & `popup.css`: ツールバー設定ポップアップ / Extension popup settings UI
