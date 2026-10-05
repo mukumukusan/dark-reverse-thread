@@ -21,6 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
     replyDesc.textContent = chrome.i18n.getMessage(reverseOrder.checked ? 'settingReplyDesc' : 'replyNeedsReverse');
   }
 
+  // Suggest Gmail's own dark theme when Gmail is on a light theme (flag noted by the content script)
+  chrome.storage.local.get({ gmailLightTheme: false }, ({ gmailLightTheme }) => {
+    document.getElementById('themeTip').hidden = !gmailLightTheme;
+  });
+
   chrome.storage.sync.get(GTR_DEFAULT_SETTINGS, (items) => {
     reverseOrder.checked = items.reverseOrder;
     smartDark.checked = items.smartDark;

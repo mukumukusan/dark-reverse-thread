@@ -619,8 +619,28 @@
     document.documentElement.classList.toggle(MENU_SOURCE_CLASS, fromDarkArea);
   }, true);
 
+  /**
+   * Whether Gmail itself uses a light theme, judged from the page background. Only this yes/no flag is
+   * kept, on this device (storage.local), so the popup can suggest Gmail's own dark theme.
+   */
+  let lastGmailLightTheme = null;
+
+  function noteGmailTheme() {
+    const bg = document.body && parseRGB(getComputedStyle(document.body).backgroundColor);
+    if (!bg || bg.a < 0.5 || !isContextValid()) return; // a picture theme or no context: unknown
+    const light = rgbToHsl(bg).l > 0.5;
+    if (light === lastGmailLightTheme) return;
+    lastGmailLightTheme = light;
+    try {
+      chrome.storage.local.set({ gmailLightTheme: light }).catch(() => {});
+    } catch {
+      // extension reloaded while this tab stayed open
+    }
+  }
+
   /** Full pass over every conversation view: initial load, setting changes and thread navigation. */
   function applyAll() {
+    noteGmailTheme();
     syncComposeOpen();
     markThreadViews();
     applyDarkMode(Array.from(document.querySelectorAll('.gtr-thread')));
@@ -647,6 +667,7 @@
   function flushPending() {
     flushTimeout = null;
     flushDeadline = 0;
+    noteGmailTheme(); // cheap; Gmail may apply its theme after the first pass
     if (needFullPass) {
       needFullPass = false;
       pendingNodes.clear();
@@ -734,6 +755,9 @@
     needFullPass = true;
     scheduleFlush();
   });
+
+  // Gmail can show a plain white page before its theme is applied, so check the theme again later
+  setTimeout(noteGmailTheme, 5000);
 
   if (document.body) {
     observer.observe(document.body, { childList: true, subtree: true });

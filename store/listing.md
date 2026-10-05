@@ -28,7 +28,7 @@ Gmail のスレッドとメール本文を、元の色合いを保ったまま�
 ・白い背景を暗く、黒い文字を明るくしながら、赤字やハイライトなどの色はそのまま残します。単純な白黒反転ではないので、メールの見た目が崩れません。
 ・透明な背景のロゴなど、暗い背景で見えなくなる画像には、元の背景色を敷いて読みやすくします。
 ・スレッド画面、返信欄、新規作成ウィンドウ、宛先の候補、メニュー、作成ボタンまで暗く表示します。
-・受信トレイの一覧には手を加えず、Gmail のテーマ設定をそのまま使います。
+・受信トレイの一覧には手を加えず、Gmail のテーマ設定をそのまま使います。Gmail のテーマを「ダーク」にして組み合わせると、画面全体が暗くなります。
 ・ダークの ON / OFF で、メールの位置や大きさは変わりません。
 
 ■ スレッドを新しい順に表示
@@ -61,7 +61,7 @@ Dark Reverse Thread gives Gmail a dark mode for threads and email bodies that ke
 • White backgrounds turn dark and black text turns light, while red text, highlights and other colors keep their hue. It is not a simple color inversion, so emails keep their look.
 • Transparent images such as dark logos get their original backdrop back, so they stay visible.
 • Covers the thread view, the inline reply box, the compose window, recipient suggestions, menus and the Compose button.
-• The inbox list is left to Gmail's own theme.
+• The inbox list is left to Gmail's own theme; pair it with Gmail's Dark theme for a fully dark Gmail.
 • Turning dark mode on or off never moves or resizes anything.
 
 ■ Newest-first threads
@@ -96,7 +96,7 @@ https://buymeacoffee.com/mukumukusan
 
 | 権限 / Permission | 理由（日本語） | Justification (English) |
 |---|---|---|
-| `storage` | ダークモード・新しい順・返信欄の位置・クイックバー表示の設定を保存するため。 | To save the display settings: dark mode, newest-first order, reply position and quick bar visibility. |
+| `storage` | ダークモード・新しい順・返信欄の位置・クイックバー表示の設定と、Gmail が明るいテーマかどうか（設定画面の案内用）を保存するため。 | To save the display settings (dark mode, newest-first order, reply position, quick bar visibility) and whether Gmail uses a light theme (for a tip in the popup). |
 | ホスト権限 `https://mail.google.com/*`（コンテンツスクリプト） | Gmail の画面に CSS とスクリプトを適用し、表示の色と並び順を変えるため。Gmail 以外のサイトでは動作しません。 | To apply the stylesheet and script that change colors and message order on the Gmail page. It does not run on any other site. |
 
 ### リモートコード / Remote code

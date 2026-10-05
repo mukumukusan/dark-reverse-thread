@@ -1,7 +1,7 @@
 # プライバシーポリシー / Privacy Policy
 
 **Dark Reverse Thread**
-最終更新日 / Last updated: 2026-10-04
+最終更新日 / Last updated: 2026-10-06
 
 ---
 
@@ -22,6 +22,8 @@
 - クイックバーの表示（ON / OFF）
 
 これらは Chrome の `chrome.storage.sync` に保存されます。Chrome の同期を有効にしている場合は、Chrome の仕組みによって、同じ Google アカウントでログインしている他の端末にも同期されます。開発者がこれらの設定を見ることはできません。
+
+このほか、Gmail が明るいテーマかどうか（はい／いいえ）だけを、設定画面に案内を表示するために、お使いの端末の中（`chrome.storage.local`）に保存します。同期や送信はされません。
 
 ### 通信
 本拡張機能は外部のサーバーと通信しません。アクセス解析、広告、トラッキングも使用していません。
@@ -58,6 +60,8 @@ The extension stores only these display settings:
 - Show the quick bar (on / off)
 
 They are stored in Chrome's `chrome.storage.sync`. If Chrome sync is turned on, Chrome syncs them to your other devices signed in to the same Google account. The developer cannot see these settings.
+
+In addition, only whether Gmail uses a light theme (yes / no) is kept on your device (`chrome.storage.local`) to show a tip in the settings popup. It is neither synced nor sent anywhere.
 
 ### Network
 The extension does not communicate with any external server. It uses no analytics, advertising or tracking.

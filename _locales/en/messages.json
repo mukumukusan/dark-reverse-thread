@@ -102,5 +102,9 @@
   "supportLink": {
     "message": "☕ Like it? Buy me a coffee",
     "description": "Popup link to the developer's Buy Me a Coffee page."
+  },
+  "tipGmailDarkTheme": {
+    "message": "💡 Set Gmail's theme to Dark to darken the inbox and the rest of Gmail too (⚙ Settings → Theme → Dark).",
+    "description": "Popup tip, shown only while Gmail uses a light theme."
   }
 }
