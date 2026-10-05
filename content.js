@@ -615,9 +615,11 @@
   const MENU_SOURCE_CLASS = 'gtr-menu-source';
 
   document.addEventListener('pointerdown', (event) => {
+    if (!(event.target instanceof Element)) return;
+    // A press on a menu item keeps the note: the menu stays open (dark) until the button is released
+    if (event.target.closest('[role="menu"], .J-M, .tB5Jxf-M-X')) return;
     // thread, toolbar (left / right part), advanced search panel
-    const fromDarkArea = event.target instanceof Element &&
-      event.target.closest('.gtr-thread, [gh="mtb"], [gh="tm"], .SK.ZF-zT') !== null;
+    const fromDarkArea = event.target.closest('.gtr-thread, [gh="mtb"], [gh="tm"], .SK.ZF-zT') !== null;
     document.documentElement.classList.toggle(MENU_SOURCE_CLASS, fromDarkArea);
   }, true);
 
