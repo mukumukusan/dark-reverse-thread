@@ -615,20 +615,25 @@
   const MENU_SOURCE_CLASS = 'gtr-menu-source';
 
   document.addEventListener('pointerdown', (event) => {
-    const fromDarkArea = event.target instanceof Element && event.target.closest('.gtr-thread, [gh="mtb"], [gh="tm"]') !== null // thread, toolbar (left / right part);
+    // thread, toolbar (left / right part), advanced search panel
+    const fromDarkArea = event.target instanceof Element &&
+      event.target.closest('.gtr-thread, [gh="mtb"], [gh="tm"], .SK.ZF-zT') !== null;
     document.documentElement.classList.toggle(MENU_SOURCE_CLASS, fromDarkArea);
   }, true);
 
   /**
    * Whether Gmail itself uses a light theme, judged from the page background. Only this yes/no flag is
-   * kept, on this device (storage.local), so the popup can suggest Gmail's own dark theme.
+   * kept, on this device (storage.local), so the popup can suggest Gmail's own dark theme. On Gmail's
+   * dark theme <html> also gets a class, so parts of Gmail's frame (search) are darkened only there.
    */
+  const GMAIL_DARK_THEME_CLASS = 'gtr-gmail-dark-theme';
   let lastGmailLightTheme = null;
 
   function noteGmailTheme() {
     const bg = document.body && parseRGB(getComputedStyle(document.body).backgroundColor);
     if (!bg || bg.a < 0.5 || !isContextValid()) return; // a picture theme or no context: unknown
     const light = rgbToHsl(bg).l > 0.5;
+    document.documentElement.classList.toggle(GMAIL_DARK_THEME_CLASS, !light);
     if (light === lastGmailLightTheme) return;
     lastGmailLightTheme = light;
     try {

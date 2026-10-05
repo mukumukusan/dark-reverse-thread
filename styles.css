@@ -510,6 +510,92 @@
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
+/* 上部の検索バー。Gmail のダークテーマでも、押すと検索欄と候補（.gssb_e）が白くなるので暗くする。
+   検索バーは Gmail の外枠の一部なので、Gmail がダークテーマのとき（.gtr-gmail-dark-theme）だけ */
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"],
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] .gb_id {
+  background-color: #3c4043 !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] input {
+  color: #e8eaed !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] input::placeholder {
+  color: #9aa0a6 !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] svg {
+  fill: #e8eaed !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.gssb_e, .gssb_m, .gssb_m tr, .RZftce, .aRp, .HW) {
+  background-color: #2d2e30 !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.gssb_e, .HW) * {
+  color: #e8eaed !important;
+}
+
+/* 候補の上の絞り込みチップ（添付ファイルあり など）と区切り線 */
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] .hNbco {
+  background-color: #3c4043 !important;
+  color: #e8eaed !important;
+  border-color: #5f6368 !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.gssb_e, .HW) .vh {
+  background-color: #3c4043 !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.aSP, .gssb_e) {
+  border-color: #5f6368 !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] .gssb_l {
+  background-color: #5f6368 !important;
+}
+
+/* 候補の時計・封筒・虫めがねのアイコンは画像なので反転 */
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.asor, .gsoi) {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* 検索バー右端から開く詳細検索のパネル（.SK.ZF-zT）。中のプルダウンのメニューは gtr-menu-source で暗くなる */
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT {
+  background-color: #2d2e30 !important;
+  color: #e8eaed !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT :is(label, span, div, td) {
+  color: #e8eaed !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT input:not([type="checkbox"]) {
+  background-color: transparent !important;
+  color: #e8eaed !important;
+  border-color: #5f6368 !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JN-M-I {
+  background-color: transparent !important;
+  border-color: #5f6368 !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JN-M-I-JG {
+  filter: invert(1) !important;
+}
+
+/* チェックボックスとカレンダーのアイコン（疑似要素の画像） */
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT label.bs3::before,
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .bs5::after {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .mUIrbf-anl {
+  color: #a8c7fa !important;
+}
+
 /* 右上の「あ」の入力ツールのメニュー（.d-Na-JG-M）と、そこから開く「入力ツールの設定」（.d-Qs-Md）。
    どちらも入力ツール専用の部品で、メニューの項目から設定を開くため、押した場所では判定せずに暗くする。
    アイコンは画像なので反転して明るくする */
