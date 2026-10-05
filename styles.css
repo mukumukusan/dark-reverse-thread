@@ -1,14 +1,36 @@
 /* ==========================================================================
    Dark Reverse Thread (dark mode & newest-first threads for Gmail)
-   - All dark styling is scoped to the open conversation view (.gtr-thread, set by content.js).
-     Inbox list, sidebar, header and search bar are left to Gmail's own theme.
-   - Material Dark palette (#1f1f1f / #28292c / #3c4043)
+   - Dark styling covers the open conversation view (.gtr-thread, set by content.js), the compose
+     window and menus opened from them. Inbox list and sidebar are left to Gmail's own theme; the
+     search bar is darkened only on Gmail's dark theme (.gtr-gmail-dark-theme).
+   - Colors come from the palette below (--gtr-dark-*), named by role
    - Gmail parts are recolored only: their size, spacing and shape stay Gmail's own
      (outlines use inset box-shadows so they add no size)
    - Email bodies: colors adapted by content.js via --gtr-fg / --gtr-bg (hue kept)
    - Thread reversal and reply area placement via flex order
    - Print (@media print): natural order, white page, email bodies in their original colors
    ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   パレット（役割ごとの色）。ダーク表示の色はすべてここから使う。
+   クイックバーはダーク OFF でも暗いので、:root に置く
+   -------------------------------------------------------------------------- */
+:root {
+  --gtr-dark-page: #1f1f1f;         /* スレッド・作成ウィンドウの地 */
+  --gtr-dark-surface: #28292c;      /* メニュー・パネル・カード */
+  --gtr-dark-surface-high: #35363a; /* 一段明るい面（マウスを乗せた行、チップ、帯） */
+  --gtr-dark-raised: #3c4043;       /* ボタン・選択中の項目、控えめな枠線 */
+  --gtr-dark-raised-hover: #44474b; /* ボタンにマウスを乗せたとき */
+  --gtr-dark-outline: #5f6368;      /* はっきりした枠線・区切り線 */
+  --gtr-dark-text: #e3e3e3;         /* 文字 */
+  --gtr-dark-text-strong: #ffffff;  /* 強調した文字 */
+  --gtr-dark-text-muted: #c4c7c5;   /* 補足の文字 */
+  --gtr-dark-text-subtle: #9aa0a6;  /* さらに控えめな文字（入力欄のヒントなど） */
+  --gtr-dark-link: #8ab4f8;         /* リンク・青いマーク */
+  --gtr-dark-accent: #1a73e8;       /* 青いボタン（クイックバー） */
+  --gtr-dark-accent-hover: #4c8df6;
+}
+
 
 /* --------------------------------------------------------------------------
    1. THREAD ORDER REVERSAL (スレッド表示順の反転)
@@ -61,7 +83,7 @@
    2. EMAIL TITLE / SUBJECT LINE (件名・タイトル表示の白色化)
    -------------------------------------------------------------------------- */
 .gmail-dark-active .gtr-thread .hP {
-  color: #ffffff !important;
+  color: var(--gtr-dark-text-strong) !important;
 }
 
 /* 2.1 タイトル横のマーク（重要マーク・インジケーター）を青色(#8ab4f8)に復元
@@ -78,9 +100,9 @@
 .gmail-dark-active .gtr-thread .ha .hP + div,
 .gmail-dark-active .gtr-thread .ha svg:not(.ar svg):not(.hN svg),
 .gmail-dark-active .gtr-thread .ha path:not(.ar path):not(.hN path) {
-  color: #8ab4f8 !important;
-  fill: #8ab4f8 !important;
-  stroke: #8ab4f8 !important;
+  color: var(--gtr-dark-link) !important;
+  fill: var(--gtr-dark-link) !important;
+  stroke: var(--gtr-dark-link) !important;
   opacity: 1 !important;
 }
 
@@ -108,7 +130,7 @@
 /* ユーザーが濃い色を付けたラベル（content.js が背景の明るさを見て data-gtr-dark-chip を付ける）は白文字 */
 .gmail-dark-active .gtr-thread :is(.ha, .hN) [data-gtr-dark-chip],
 .gmail-dark-active .gtr-thread :is(.ha, .hN) [data-gtr-dark-chip] * {
-  color: #ffffff !important;
+  color: var(--gtr-dark-text-strong) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -118,7 +140,7 @@
 .gmail-dark-active .gtr-thread .gD *,
 .gmail-dark-active .gtr-thread .adn span[email],
 .gmail-dark-active .gtr-thread .qu {
-  color: #ffffff !important;
+  color: var(--gtr-dark-text-strong) !important;
   font-weight: 600 !important;
 }
 
@@ -131,7 +153,7 @@
 .gmail-dark-active .gtr-thread .gH,
 .gmail-dark-active .gtr-thread .gK,
 .gmail-dark-active .gtr-thread .bi4 {
-  color: #9aa0a6 !important;
+  color: var(--gtr-dark-text-subtle) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -170,31 +192,31 @@
 .gmail-dark-active .gtr-thread .gK button *,
 .gmail-dark-active .gtr-thread .bi4 button,
 .gmail-dark-active .gtr-thread .bi4 button * {
-  color: #e3e3e3 !important;
-  fill: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
+  fill: var(--gtr-dark-text) !important;
   opacity: 1 !important;
 }
 
 .gmail-dark-active .gtr-thread .gE button:hover *,
 .gmail-dark-active .gtr-thread .gH button:hover * {
-  color: #ffffff !important;
-  fill: #ffffff !important;
+  color: var(--gtr-dark-text-strong) !important;
+  fill: var(--gtr-dark-text-strong) !important;
   opacity: 1 !important;
 }
 
 /* 4.1 折りたたまれたメールの件数バッジ（白丸に数字）→ 暗い丸に白い数字 */
 .gmail-dark-active .gtr-thread .kQ .adx {
-  background-color: #28292c !important;
-  color: #e3e3e3 !important;
-  box-shadow: inset 0 0 0 1px #5f6368 !important; /* 外側の影だと行の上下で切れるので内側に描く */
+  background-color: var(--gtr-dark-surface) !important;
+  color: var(--gtr-dark-text) !important;
+  box-shadow: inset 0 0 0 1px var(--gtr-dark-outline) !important; /* 外側の影だと行の上下で切れるので内側に描く */
 }
 
 .gmail-dark-active .gtr-thread .kQ .adx * {
-  color: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active .gtr-thread .kQ:hover .adx {
-  background-color: #35363a !important;
+  background-color: var(--gtr-dark-surface-high) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -202,13 +224,13 @@
    色だけを変え、サイズ・余白・文字サイズは Gmail のまま（枠線もレイアウトに影響しない inset の影で描く）。
    -------------------------------------------------------------------------- */
 .gmail-dark-active .gtr-thread .ajR {
-  background-color: #333538 !important;
-  box-shadow: inset 0 0 0 1px #5f6368 !important;
+  background-color: var(--gtr-dark-surface-high) !important;
+  box-shadow: inset 0 0 0 1px var(--gtr-dark-outline) !important;
 }
 
 .gmail-dark-active .gtr-thread .ajR:hover {
-  background-color: #44474b !important;
-  box-shadow: inset 0 0 0 1px #8ab4f8 !important;
+  background-color: var(--gtr-dark-raised-hover) !important;
+  box-shadow: inset 0 0 0 1px var(--gtr-dark-link) !important;
 }
 
 .gmail-dark-active .gtr-thread .ajT {
@@ -219,8 +241,8 @@
 /* メール本文内の引用（リンク色は本文の色調整で元の色相のまま明るくなる） */
 .gmail-dark-active .gtr-thread .a3s .gmail_quote,
 .gmail-dark-active .gtr-thread .a3s blockquote {
-  border-left: 2px solid #5f6368 !important;
-  color: #9aa0a6 !important;
+  border-left: 2px solid var(--gtr-dark-outline) !important;
+  color: var(--gtr-dark-text-subtle) !important;
   padding-left: 8px !important;
 }
 
@@ -234,61 +256,61 @@
    -------------------------------------------------------------------------- */
 /* 要約後の色付きの枠は内側の .DC5CAd（見出しと箇条書きだけ）。下の「Gemini が作成…」の行は枠の外に置く */
 .gmail-dark-active .gtr-thread .eJPjde .DC5CAd {
-  background-color: #28292c !important;
-  box-shadow: inset 0 0 0 1px #3c4043 !important;
+  background-color: var(--gtr-dark-surface) !important;
+  box-shadow: inset 0 0 0 1px var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active .gtr-thread .eJPjde *:not(svg):not(svg *) {
-  color: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
   background-color: transparent !important;
 }
 
 .gmail-dark-active .gtr-thread .eJPjde:not(.TvN2Xc) .mNKakd {
-  background-color: #28292c !important;
-  box-shadow: inset 0 0 0 1px #3c4043 !important;
+  background-color: var(--gtr-dark-surface) !important;
+  box-shadow: inset 0 0 0 1px var(--gtr-dark-raised) !important;
   border-radius: 12px !important; /* Dark OFF 時の Gmail 標準ボタンと同じ角丸 */
 }
 
 .gmail-dark-active .gtr-thread .eJPjde:not(.TvN2Xc) .mNKakd:hover {
-  background-color: #35363a !important;
+  background-color: var(--gtr-dark-surface-high) !important;
 }
 
 /* 6.1 件名下の Gemini 提案チップ（「カレンダーに追加」など）
    Rju2Ue-auk は Google 共通のチップ部品なので、Gmail 側の SsJGwb と組み合わせてスレッド内に限定。
    形・大きさは Gmail のまま、色だけ変える（枠線は inset の影で描きサイズに影響させない） */
 .gmail-dark-active .gtr-thread .Rju2Ue-auk.SsJGwb {
-  background-color: #28292c !important;
-  color: #e3e3e3 !important;
-  box-shadow: inset 0 0 0 1px #3c4043 !important;
+  background-color: var(--gtr-dark-surface) !important;
+  color: var(--gtr-dark-text) !important;
+  box-shadow: inset 0 0 0 1px var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active .gtr-thread .Rju2Ue-auk.SsJGwb:hover {
-  background-color: #35363a !important;
+  background-color: var(--gtr-dark-surface-high) !important;
 }
 
 .gmail-dark-active .gtr-thread .Rju2Ue-auk.SsJGwb *:not(svg):not(svg *) {
-  color: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 /* 6.2 本文上の自動翻訳の案内（「翻訳中...」の角丸の枠）
    K4vxLd-aLs は Google 共通部品なので、Gmail 側の eJ9qKc と組み合わせてスレッド内に限定 */
 .gmail-dark-active .gtr-thread .K4vxLd-aLs.eJ9qKc {
-  background-color: #28292c !important;
-  color: #e3e3e3 !important;
-  box-shadow: inset 0 0 0 1px #3c4043 !important;
+  background-color: var(--gtr-dark-surface) !important;
+  color: var(--gtr-dark-text) !important;
+  box-shadow: inset 0 0 0 1px var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active .gtr-thread .K4vxLd-aLs.eJ9qKc *:not(svg):not(svg *) {
-  color: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active .gtr-thread .K4vxLd-aLs.eJ9qKc svg {
-  fill: #c4c7c5 !important;
+  fill: var(--gtr-dark-text-muted) !important;
 }
 
 /* 翻訳後の案内の下段（「自動的に〜を翻訳する」）。明るい帯のままだと上の明るい文字が読めない */
 .gmail-dark-active .gtr-thread .K4vxLd-aLs.eJ9qKc .fbBQHf {
-  background-color: #35363a !important;
+  background-color: var(--gtr-dark-surface-high) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -305,9 +327,9 @@
 .gmail-dark-active .gtr-thread .adB,
 .gmail-dark-active .gtr-thread .ip.iB,
 .gmail-dark-active .gtr-thread .M9 {
-  background-color: #1f1f1f !important;
-  border-color: #3c4043 !important;
-  color: #e3e3e3 !important;
+  background-color: var(--gtr-dark-page) !important;
+  border-color: var(--gtr-dark-raised) !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active .gtr-thread .amn [role="button"],
@@ -316,29 +338,29 @@
 .gmail-dark-active .gtr-thread .bkj button,
 .gmail-dark-active .gtr-thread .bkH [role="button"],
 .gmail-dark-active .gtr-thread .bkH button {
-  background-color: #28292c !important;
-  border: 1px solid #3c4043 !important;
-  color: #e3e3e3 !important;
+  background-color: var(--gtr-dark-surface) !important;
+  border: 1px solid var(--gtr-dark-raised) !important;
+  color: var(--gtr-dark-text) !important;
   border-radius: 20px !important;
 }
 
 .gmail-dark-active .gtr-thread .amn [role="button"]:hover,
 .gmail-dark-active .gtr-thread .amn button:hover {
-  background-color: #35363a !important;
-  color: #ffffff !important;
+  background-color: var(--gtr-dark-surface-high) !important;
+  color: var(--gtr-dark-text-strong) !important;
 }
 
 .gmail-dark-active .gtr-thread .amn [role="button"] *,
 .gmail-dark-active .gtr-thread .amn button * {
-  color: #e3e3e3 !important;
-  fill: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
+  fill: var(--gtr-dark-text) !important;
 }
 
 /* スレッド内のインライン返信欄と、新規作成ウィンドウ（.Hd[role="dialog"]：右下・全画面とも）。どちらも同じ部品でできている */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .Am.Al.editable,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) div[role="textbox"] {
-  background-color: #1f1f1f !important;
-  color: #ffffff !important;
+  background-color: var(--gtr-dark-page) !important;
+  color: var(--gtr-dark-text-strong) !important;
 }
 
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC,
@@ -348,8 +370,8 @@
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .I5,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .Ap {
-  background-color: #1f1f1f !important;
-  border-color: #3c4043 !important;
+  background-color: var(--gtr-dark-page) !important;
+  border-color: var(--gtr-dark-raised) !important;
 }
 
 /* スレッド内の返信欄では、下のツールバーの段は透明にする。枠（.I5）は角丸 16px で同じ色を塗っており、
@@ -362,20 +384,20 @@
 /* 宛先行（.IG）の文字。アイコンボタンは下の反転で明るくするので文字色は付けない */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG *:not([role="button"]):not([role="button"] *):not(svg):not(svg *) {
-  color: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 /* 返信を作成ウィンドウに切り離したときに、スレッド内に残る「現在、別のウィンドウで返信を編集しています。」の枠 */
 .gmail-dark-active .gtr-thread .aNU {
-  background-color: #28292c !important;
-  color: #c4c7c5 !important;
-  box-shadow: inset 0 0 0 1px #3c4043 !important;
+  background-color: var(--gtr-dark-surface) !important;
+  color: var(--gtr-dark-text-muted) !important;
+  box-shadow: inset 0 0 0 1px var(--gtr-dark-raised) !important;
 }
 
 /* 宛先行の「他 N 人」のチップ。Gmail の明るい背景の上に上の明るい文字色が乗って読めなくなるので、背景を暗くする */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG .aDp {
-  background-color: #3c4043 !important;
-  color: #e3e3e3 !important;
+  background-color: var(--gtr-dark-raised) !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 /* 返信欄のアイコン（宛先行・ツールバー）は画像のため、明度を反転して明るくする
@@ -387,7 +409,7 @@
 
 /* 返信欄の書式ツールバー（フォント・太字など）。背景を暗くし、画像のアイコンと文字は上と同じく反転して明るくする */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-Z[role="toolbar"] {
-  background-color: #28292c !important;
+  background-color: var(--gtr-dark-surface) !important;
 }
 
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-Z[role="toolbar"] > * {
@@ -400,67 +422,67 @@
 .gmail-dark-active .gtr-thread .aC2,
 .gmail-dark-active .gtr-thread .aC3,
 .gmail-dark-active .gtr-thread .azX {
-  background-color: #1f1f1f !important;
+  background-color: var(--gtr-dark-page) !important;
 }
 
 /* 差出人を選ぶメニュー（返信欄・作成ウィンドウの中に作られる） */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] {
-  background-color: #28292c !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 0 0 1px #3c4043 !important;
+  background-color: var(--gtr-dark-surface) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 0 0 1px var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N * {
-  color: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N:hover,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N-JT {
-  background-color: #3c4043 !important;
+  background-color: var(--gtr-dark-raised) !important;
 }
 
 /* 返信欄の案内文の「/」キー表示 */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .LbtP4e {
-  background-color: #3c4043 !important;
-  color: #e3e3e3 !important;
+  background-color: var(--gtr-dark-raised) !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 /* 新規作成ウィンドウだけにある部分：タイトルバー・外枠・差出人／宛先／件名の行・下のツールバー */
 .gmail-dark-active .Hd[role="dialog"] .l.m {
-  background-color: #28292c !important;
+  background-color: var(--gtr-dark-surface) !important;
 }
 
 .gmail-dark-active .Hd[role="dialog"] .l.m :is(.Hp, .aYF, .aYF *),
 .gmail-dark-active .Hd[role="dialog"] .l.m .Hm button {
-  color: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active .Hd[role="dialog"] .aaZ,
 .gmail-dark-active .Hd[role="dialog"] .aDj {
-  background-color: #1f1f1f !important;
+  background-color: var(--gtr-dark-page) !important;
 }
 
 .gmail-dark-active .Hd[role="dialog"] .gO,
 .gmail-dark-active .Hd[role="dialog"] .aB,
 .gmail-dark-active .Hd[role="dialog"] .az2 span {
-  color: #c4c7c5 !important;
+  color: var(--gtr-dark-text-muted) !important;
 }
 
 .gmail-dark-active .Hd[role="dialog"] .aGb,
 .gmail-dark-active .Hd[role="dialog"] input.agP,
 .gmail-dark-active .Hd[role="dialog"] input.aoT {
   background-color: transparent !important;
-  color: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active .Hd[role="dialog"] input::placeholder {
-  color: #9aa0a6 !important;
+  color: var(--gtr-dark-text-subtle) !important;
 }
 
 /* 宛先を入力したときの候補一覧（.afC）。作成ウィンドウの外（ページ直下）に作られるため個別に指定する */
 .gmail-dark-active .afC,
 .gmail-dark-active .afC .afA {
-  background-color: #28292c !important;
+  background-color: var(--gtr-dark-surface) !important;
 }
 
 .gmail-dark-active .afC .agJ {
@@ -469,16 +491,16 @@
 
 .gmail-dark-active .afC .agJ.bjE,
 .gmail-dark-active .afC .agJ:hover {
-  background-color: #3c4043 !important;
+  background-color: var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active .afC .aL8 {
-  color: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active .afC .aXS,
 .gmail-dark-active .afC .aXS * {
-  color: #c4c7c5 !important;
+  color: var(--gtr-dark-text-muted) !important;
 }
 
 /* スレッド内のボタン（メールの「⋮」など）と上のツールバー（チェックボックスの「▾」、「⋮」）から開いたメニュー。
@@ -486,24 +508,24 @@
    <html> に .gtr-menu-source を付け、その間に表示されるメニューだけを暗くする（白く描かれるちらつきを防ぐ）。
    新しい部品（role 属性）と従来の部品（.J-M / .J-N）の両方。アイコンは画像なので反転して明るくする */
 .gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) {
-  background-color: #28292c !important;
-  border-color: #3c4043 !important;
-  color: #e3e3e3 !important;
+  background-color: var(--gtr-dark-surface) !important;
+  border-color: var(--gtr-dark-raised) !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is([role="menuitem"], [role="menuitemcheckbox"], .J-N),
 .gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is([role="menuitem"], [role="menuitemcheckbox"], .J-N) * {
-  color: #e3e3e3 !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is([role="menuitem"], [role="menuitemcheckbox"]):hover,
 .gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) .J-N.J-N-JT {
-  background-color: #3c4043 !important;
+  background-color: var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is([role="separator"], .J-Kh) {
-  background-color: #3c4043 !important;
-  border-color: #3c4043 !important;
+  background-color: var(--gtr-dark-raised) !important;
+  border-color: var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is(.aqdrmf-Kf-KkROqb, .J-N-JX, .J-Ph-hFsbo) {
@@ -514,46 +536,46 @@
    検索バーは Gmail の外枠の一部なので、Gmail がダークテーマのとき（.gtr-gmail-dark-theme）だけ */
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"],
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"] .gb_id {
-  background-color: #3c4043 !important;
+  background-color: var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"] input {
-  color: #e8eaed !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"] input::placeholder {
-  color: #9aa0a6 !important;
+  color: var(--gtr-dark-text-subtle) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"] svg {
-  fill: #e8eaed !important;
+  fill: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.gssb_e, .gssb_m, .gssb_m tr, .RZftce, .aRp, .HW) {
-  background-color: #2d2e30 !important;
+  background-color: var(--gtr-dark-surface) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.gssb_e, .HW) * {
-  color: #e8eaed !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 /* 候補の上の絞り込みチップ（添付ファイルあり など）と区切り線 */
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"] .hNbco {
-  background-color: #3c4043 !important;
-  color: #e8eaed !important;
-  border-color: #5f6368 !important;
+  background-color: var(--gtr-dark-raised) !important;
+  color: var(--gtr-dark-text) !important;
+  border-color: var(--gtr-dark-outline) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.gssb_e, .HW) .vh {
-  background-color: #3c4043 !important;
+  background-color: var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.aSP, .gssb_e) {
-  border-color: #5f6368 !important;
+  border-color: var(--gtr-dark-outline) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"] .gssb_l {
-  background-color: #5f6368 !important;
+  background-color: var(--gtr-dark-outline) !important;
 }
 
 /* 候補の時計・封筒・虫めがねのアイコンは画像なので反転 */
@@ -563,23 +585,23 @@
 
 /* 検索バー右端から開く詳細検索のパネル（.SK.ZF-zT）。中のプルダウンのメニューは gtr-menu-source で暗くなる */
 .gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT {
-  background-color: #2d2e30 !important;
-  color: #e8eaed !important;
+  background-color: var(--gtr-dark-surface) !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT :is(label, span, div, td) {
-  color: #e8eaed !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT input:not([type="checkbox"]) {
   background-color: transparent !important;
-  color: #e8eaed !important;
-  border-color: #5f6368 !important;
+  color: var(--gtr-dark-text) !important;
+  border-color: var(--gtr-dark-outline) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JN-M-I {
   background-color: transparent !important;
-  border-color: #5f6368 !important;
+  border-color: var(--gtr-dark-outline) !important;
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JN-M-I-JG {
@@ -593,36 +615,36 @@
 }
 
 .gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .mUIrbf-anl {
-  color: #a8c7fa !important;
+  color: var(--gtr-dark-link) !important;
 }
 
 /* 右上の「あ」の入力ツールのメニュー（.d-Na-JG-M）と、そこから開く「入力ツールの設定」（.d-Qs-Md）。
    どちらも入力ツール専用の部品で、メニューの項目から設定を開くため、押した場所では判定せずに暗くする。
    アイコンは画像なので反転して明るくする */
 .gmail-dark-active :is(.d-Na-JG-M, .d-Qs-Md) {
-  background-color: #28292c !important;
-  border-color: #3c4043 !important;
-  color: #e3e3e3 !important;
+  background-color: var(--gtr-dark-surface) !important;
+  border-color: var(--gtr-dark-raised) !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active .d-Na-JG-M .d-Na-N,
 .gmail-dark-active .d-Na-JG-M .d-Na-N *,
 .gmail-dark-active .d-Qs-Md :is(div, span, li, label, a, td, button) {
-  color: #e3e3e3 !important;
-  border-color: #3c4043 !important;
+  color: var(--gtr-dark-text) !important;
+  border-color: var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active .d-Na-JG-M .d-Na-N.d-Na-N-JW {
-  background-color: #3c4043 !important;
+  background-color: var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active .d-Na-JG-M .d-Na-axR {
-  background-color: #3c4043 !important;
-  border-color: #3c4043 !important;
+  background-color: var(--gtr-dark-raised) !important;
+  border-color: var(--gtr-dark-raised) !important;
 }
 
 .gmail-dark-active .d-Qs-Md :is(a.d-Qs-aLg, .d-Qs-aAL-at6-I) {
-  background-color: #3c4043 !important;
+  background-color: var(--gtr-dark-raised) !important;
   background-image: none !important;
 }
 
@@ -632,13 +654,13 @@
 
 /* 左上の「作成」ボタン（サイドバー）。白いボタンだけが浮いて見えるので暗い灰色にし、鉛筆アイコン（画像）は反転する */
 .gmail-dark-active [gh="cm"].T-I-KE {
-  background-color: #3c4043 !important;
-  color: #ffffff !important;
+  background-color: var(--gtr-dark-raised) !important;
+  color: var(--gtr-dark-text-strong) !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
 .gmail-dark-active [gh="cm"].T-I-KE:hover {
-  background-color: #4a4e52 !important;
+  background-color: var(--gtr-dark-raised-hover) !important;
 }
 
 .gmail-dark-active [gh="cm"].T-I-KE::before {
@@ -651,7 +673,7 @@
 .gmail-dark-active .gtr-thread .hq.gt .aVW *,
 .gmail-dark-active .gtr-thread .hq.gt button,
 .gmail-dark-active .gtr-thread .hq.gt button * {
-  color: #c4c7c5 !important;
+  color: var(--gtr-dark-text-muted) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -663,8 +685,8 @@
 .gmail-dark-active .gtr-thread .nH,
 .gmail-dark-active .gtr-thread .Bs,
 .gmail-dark-active .gtr-thread .y3 {
-  background-color: #1f1f1f !important;
-  color: #e3e3e3 !important;
+  background-color: var(--gtr-dark-page) !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 /* メールの枠。大きさ・位置は Gmail のまま変えない（枠線は場所を取らない inset の影で、一番外側にだけ描く。
@@ -672,39 +694,39 @@
 .gmail-dark-active .gtr-thread div[role="list"] > div[role="listitem"]:has(.adn),
 .gmail-dark-active .gtr-thread .adn.ads,
 .gmail-dark-active .gtr-thread .gs {
-  background-color: #1f1f1f !important;
+  background-color: var(--gtr-dark-page) !important;
 }
 
 .gmail-dark-active .gtr-thread div[role="list"] > div[role="listitem"]:has(.adn) {
-  box-shadow: inset 0 0 0 1px #303134 !important;
+  box-shadow: inset 0 0 0 1px var(--gtr-dark-surface-high) !important;
   border-radius: 12px !important;
 }
 
 .gmail-dark-active .gtr-thread .gE.iv.gt,
 .gmail-dark-active .gtr-thread .adn .gA,
 .gmail-dark-active .gtr-thread .kv {
-  background-color: #1f1f1f !important;
-  color: #c4c7c5 !important;
+  background-color: var(--gtr-dark-page) !important;
+  color: var(--gtr-dark-text-muted) !important;
 }
 
 /* 右上の操作アイコン欄（日時・星・返信・⋮）はメールの枠より右にはみ出すので、
    背景を塗ると枠の右の線が隠れる。背景は枠（.adn）の色をそのまま見せる */
 .gmail-dark-active .gtr-thread .adn .gH {
   background-color: transparent !important;
-  color: #c4c7c5 !important;
+  color: var(--gtr-dark-text-muted) !important;
 }
 
 /* スレッドをスクロールしている枠（content.js が付ける目印）。速くスクロールしたときに、
    まだ描かれていない部分が白く見えないよう、スレッドと同じ色を敷く */
 .gmail-dark-active .gtr-thread-scroller {
-  background-color: #1f1f1f !important;
+  background-color: var(--gtr-dark-page) !important;
 }
 
 /* メール本文（HTMLメールの白背景・固定文字色を上書き。bgcolor / color 属性もCSSで無効化される） */
 .gmail-dark-active .gtr-thread .ii.gt,
 .gmail-dark-active .gtr-thread .a3s {
-  background-color: #1f1f1f !important;
-  color: #e3e3e3 !important;
+  background-color: var(--gtr-dark-page) !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 /* 本文内の各要素は content.js が元の色の色相・彩度を保ったまま明度だけ調整し、
@@ -748,8 +770,8 @@
   bottom: 20px;
   right: 24px;
   z-index: 999999;
-  background: #1f1f1f;
-  border: 1px solid #3c4043;
+  background: var(--gtr-dark-page);
+  border: 1px solid var(--gtr-dark-raised);
   border-radius: 20px;
   padding: 6px 14px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
@@ -758,21 +780,21 @@
   gap: 8px;
   font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 12px;
-  color: #ffffff;
+  color: var(--gtr-dark-text-strong);
   user-select: none;
 }
 
 #gmail-reverser-quick-toggle .gtr-title {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--gtr-dark-text-strong);
 }
 
 #gmail-reverser-quick-toggle .gtr-version {
   font-size: 10px;
   font-weight: 600;
-  color: #8ab4f8;
-  background: #2b2c2e;
-  border: 1px solid #3c4043;
+  color: var(--gtr-dark-link);
+  background: var(--gtr-dark-surface);
+  border: 1px solid var(--gtr-dark-raised);
   border-radius: 8px;
   padding: 1px 6px;
   margin-right: 4px;
@@ -780,9 +802,9 @@
 }
 
 .gtr-btn {
-  background: #2b2c2e;
-  color: #cccccc;
-  border: 1px solid #3c4043;
+  background: var(--gtr-dark-surface);
+  color: var(--gtr-dark-text-muted);
+  border: 1px solid var(--gtr-dark-raised);
   border-radius: 12px;
   padding: 4px 10px;
   cursor: pointer;
@@ -797,21 +819,21 @@
 }
 
 .gtr-btn:not(:disabled):hover {
-  background: #37393b;
-  color: #ffffff;
+  background: var(--gtr-dark-surface-high);
+  color: var(--gtr-dark-text-strong);
 }
 
 .gtr-btn.active {
-  background: #1a73e8;
-  border-color: #1a73e8;
-  color: #ffffff;
+  background: var(--gtr-dark-accent);
+  border-color: var(--gtr-dark-accent);
+  color: var(--gtr-dark-text-strong);
   font-weight: 600;
 }
 
 /* ON のボタンはマウスを乗せても青いまま少し明るくする（暗い灰色になると OFF に見えるため） */
 .gtr-btn.active:not(:disabled):hover {
-  background: #4c8df6;
-  border-color: #4c8df6;
+  background: var(--gtr-dark-accent-hover);
+  border-color: var(--gtr-dark-accent-hover);
 }
 
 /* --------------------------------------------------------------------------
