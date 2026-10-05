@@ -32,8 +32,8 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
    - 日本語: 画面右下にコンパクトな切り替えバーを表示。
    - English: Features a sleek, floating quick bar in the bottom-right corner for instant toggles.
 8. **多言語対応 / Internationalization**
-   - 日本語: 拡張機能名・説明・ポップアップ・クイックバーはブラウザの言語に合わせて表示（現在は英語・日本語。その他の言語は英語）。
-   - English: Extension name, description, popup and quick bar follow the browser language (English and Japanese included; other languages fall back to English).
+   - 日本語: 拡張機能名・説明・ポップアップ・クイックバーはブラウザの言語に合わせて表示（現在は英語・日本語。その他の言語は英語）。Gmail の画面は文言ではなく構造で判定しているので、Gmail をどの言語で表示していても動作します。
+   - English: Extension name, description, popup and quick bar follow the browser language (English and Japanese included; other languages fall back to English). Gmail is recognized by its structure, not its on-screen text, so it works with any Gmail display language.
 
 ---
 
@@ -46,18 +46,6 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
 - `popup.html` & `popup.js` & `popup.css`: ツールバー設定ポップアップ / Extension popup settings UI
 - `_locales/<lang>/messages.json`: 表示文字列（英語 `en` が既定） / UI strings per language (`en` is the default)
 - `icons/`: アイコンアセット (16x16, 48x48, 128x128 PNG) / App icons
-
----
-
-## 言語の追加 / Adding a language
-
-### 拡張機能の表示文字列 / Extension UI strings
-- 日本語: `_locales/en/messages.json` を `_locales/<言語コード>/messages.json`（例: `fr`, `zh_CN`）にコピーし、各 `message` を翻訳します。`description` は翻訳者向けの説明で、翻訳は不要です。ストアの制限により `extName` は75文字、`extDescription` は132文字以内にしてください。
-- English: Copy `_locales/en/messages.json` to `_locales/<locale>/messages.json` (e.g. `fr`, `zh_CN`) and translate each `message`. The `description` fields are notes for translators. Keep `extName` within 75 and `extDescription` within 132 characters (Web Store limits).
-
-### Gmailの表示言語への対応 / Gmail display language
-- 日本語: Gmail画面上の要素はすべてクラス名や構造で判定しており、Gmail画面の文言には依存しません。Gmailをどの言語で表示していても、追加作業なしで動作します。
-- English: Gmail elements are matched by class names and structure only, never by on-screen text, so the extension works with any Gmail display language without extra work.
 
 ---
 
