@@ -73,5 +73,8 @@
   },
   "quickReloadNeeded": {
     "message": "拡張機能が更新されました。ページを再読み込みしてください"
+  },
+  "supportLink": {
+    "message": "☕ 気に入ったら応援する（Buy Me a Coffee）"
   }
 }

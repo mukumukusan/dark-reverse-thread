@@ -45,6 +45,9 @@ Gmail のスレッドとメール本文を、元の色合いを保ったまま�
 ・保存するのは表示設定（ON / OFF など）だけです。
 
 ※ 本拡張機能は Google とは関係のない個人開発のものです。Gmail は Google LLC の商標です。
+
+気に入っていただけたら、コーヒー1杯分の応援をいただけると励みになります。
+https://buymeacoffee.com/mukumukusan
 ```
 
 ---
@@ -75,6 +78,9 @@ Dark Reverse Thread gives Gmail a dark mode for threads and email bodies that ke
 • Only your display settings (on / off and so on) are saved.
 
 This extension is an independent project, not affiliated with or endorsed by Google. Gmail is a trademark of Google LLC.
+
+If it makes your inbox a little nicer, you can buy me a coffee:
+https://buymeacoffee.com/mukumukusan
 ```
 
 ---

@@ -117,3 +117,19 @@ label {
 .status.show {
   opacity: 1;
 }
+
+.support {
+  padding: 6px 16px 8px;
+  background-color: #2d2f31;
+  text-align: center;
+  font-size: 11px;
+}
+
+.support a {
+  color: #8ab4f8;
+  text-decoration: none;
+}
+
+.support a:hover {
+  text-decoration: underline;
+}

@@ -98,5 +98,9 @@
   "quickReloadNeeded": {
     "message": "The extension was updated. Please reload the page.",
     "description": "Quick bar: shown when the extension was reloaded or updated while this Gmail tab stayed open."
+  },
+  "supportLink": {
+    "message": "☕ Like it? Buy me a coffee",
+    "description": "Popup link to the developer's Buy Me a Coffee page."
   }
 }

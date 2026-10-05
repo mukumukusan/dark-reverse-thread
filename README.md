@@ -104,3 +104,8 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
 ## ライセンス / License
 
 MIT License — [`LICENSE`](LICENSE)
+
+## 応援 / Support
+
+気に入っていただけたら、コーヒー1杯分の応援をいただけると励みになります。
+If you like it, you can buy me a coffee: https://buymeacoffee.com/mukumukusan
