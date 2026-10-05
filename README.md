@@ -66,28 +66,6 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
 - 日本語: Chrome ウェブストアで公開予定です（現在審査中）。公開後、ここにリンクを掲載します。
 - English: Coming soon to the Chrome Web Store (currently in review). The link will be added here once published.
 
-## Chromeウェブストア公開ガイド / Chrome Web Store Publishing Guide
-
-### 1. デベロッパー登録 / Developer Registration
-- 日本語: [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole/) にアクセスし、初回登録料（$5 USD、1回のみ）を支払います。
-- English: Visit the Developer Dashboard and pay the one-time $5 USD registration fee.
-
-### 2. ZIPアーカイブの作成 / Prepare ZIP Archive
-- 日本語: `_locales` フォルダを含む全ファイルをZIP形式で圧縮します（`.git` は含めない）。例: `git archive --format=zip -o dark-reverse-thread.zip HEAD`
-- English: Zip all files including the `_locales` folder (exclude `.git`), e.g. `git archive --format=zip -o dark-reverse-thread.zip HEAD`.
-
-### 3. ストア掲載情報と審査要件 / Store Listing & Review Requirements
-- **掲載用の文面と画像 / Listing text & images**: [`store/listing.md`](store/listing.md)、`store/screenshots/{ja,en}/`（`git archive` の ZIP には含まれません / excluded from the `git archive` ZIP）
-- **アイコン / Icons**: `icons/icon128.png` (128x128px)
-- **スクリーンショット / Screenshots**: 1280x800 または 640x400 ピクセル（Gmail上でスレッド反転やダークモードが動作している画面キャプチャを最低1枚）
-- **プライバシーポリシー / Privacy Policy**:
-  - 日本語: [`PRIVACY.md`](PRIVACY.md) を公開URLに置き、そのURLをダッシュボードに登録します。データは収集・送信せず、表示設定だけを `chrome.storage.sync` に保存することを記載しています。
-  - English: Publish [`PRIVACY.md`](PRIVACY.md) at a public URL and enter that URL in the dashboard. It states that no data is collected or sent, and that only display settings are saved in `chrome.storage.sync`.
-
-### 4. 提出と公開 / Submission
-- 日本語: ダッシュボードで「新しいアイテム」を作成してZIPをアップロードし、説明文とスクリーンショットを登録して「審査のために送信」をクリックします（通常1〜3営業日で審査完了）。
-- English: Upload the ZIP file in the dashboard, complete the store listing details, and click "Submit for review" (typically approved within 1–3 business days).
-
 ## ライセンス / License
 
 MIT License — [`LICENSE`](LICENSE)
