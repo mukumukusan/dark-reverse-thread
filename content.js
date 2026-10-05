@@ -615,7 +615,7 @@
   const MENU_SOURCE_CLASS = 'gtr-menu-source';
 
   document.addEventListener('pointerdown', (event) => {
-    const fromDarkArea = event.target instanceof Element && event.target.closest('.gtr-thread, [gh="mtb"]') !== null;
+    const fromDarkArea = event.target instanceof Element && event.target.closest('.gtr-thread, [gh="mtb"], [gh="tm"]') !== null // thread, toolbar (left / right part);
     document.documentElement.classList.toggle(MENU_SOURCE_CLASS, fromDarkArea);
   }, true);
 
