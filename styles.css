@@ -360,6 +360,13 @@
   color: #e3e3e3 !important;
 }
 
+/* 返信を作成ウィンドウに切り離したときに、スレッド内に残る「現在、別のウィンドウで返信を編集しています。」の枠 */
+.gmail-dark-active .gtr-thread .aNU {
+  background-color: #28292c !important;
+  color: #c4c7c5 !important;
+  box-shadow: inset 0 0 0 1px #3c4043 !important;
+}
+
 /* 宛先行の「他 N 人」のチップ。Gmail の明るい背景の上に上の明るい文字色が乗って読めなくなるので、背景を暗くする */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG .aDp {
   background-color: #3c4043 !important;
