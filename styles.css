@@ -602,6 +602,12 @@
   background-color: var(--gtr-img-bg) !important;
 }
 
+/* ロゴくらいの小さな画像は、角を丸めて同じ色の縁（場所を取らない影）を付け、カードのように見せる */
+.gmail-dark-active .gtr-thread .a3s img[data-gtr-img-card] {
+  border-radius: 6px !important;
+  box-shadow: 0 0 0 4px var(--gtr-img-bg) !important;
+}
+
 /* 色の調整がまだ済んでいない要素（読み込み直後・引用展開直後）の一時的な表示 */
 .gmail-dark-active .gtr-thread .a3s:not(.gtr-reading) *:not([data-gtr-c]):not(img):not(video):not(iframe):not(svg):not(canvas):not(picture) {
   background-color: transparent !important;
@@ -778,5 +784,12 @@
 
   .gmail-dark-active .gtr-thread .a3s [data-gtr-bg] {
     background-color: var(--gtr-bg0) !important;
+  }
+
+  /* 画像の後ろの背景とカードの縁も外す（白い紙では不要） */
+  .gmail-dark-active .gtr-thread .a3s img[data-gtr-img] {
+    background-color: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
   }
 }

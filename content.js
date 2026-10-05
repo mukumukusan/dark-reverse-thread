@@ -158,10 +158,21 @@
 
   /**
    * Transparent images (e.g. dark logos drawn for a white page) get back the backdrop they were
-   * designed on: the nearest original opaque background above them, or white. Tiny images
-   * (spacers, tracking pixels) are left alone so they don't turn into visible bars.
+   * designed on: the nearest original opaque background above them, or white. A white backdrop is
+   * softened to light grey so it doesn't glare on the dark page, and logo-sized images get rounded
+   * corners and a small frame (styles.css) so they read as a card; large images are left square,
+   * because emails often tile one picture from several slices. Tiny images (spacers, tracking
+   * pixels) are left alone so they don't turn into visible bars.
    */
   const MIN_IMAGE_SIZE = 16;
+  const SOFT_WHITE_BACKDROP = 'rgb(232, 234, 237)';
+  const MAX_CARD_WIDTH = 320;
+  const MAX_CARD_HEIGHT = 160;
+
+  function softenWhite(color) {
+    const rgb = parseRGB(color);
+    return rgb && rgb.a >= 1 && rgb.r >= 240 && rgb.g >= 240 && rgb.b >= 240 ? SOFT_WHITE_BACKDROP : color;
+  }
 
   function findOriginalBackdrop(img, body) {
     for (let el = img.parentElement; el && el !== body; el = el.parentElement) {
@@ -180,8 +191,9 @@
       const width = shown ? img.offsetWidth : img.naturalWidth;
       const height = shown ? img.offsetHeight : img.naturalHeight;
       if (width < MIN_IMAGE_SIZE || height < MIN_IMAGE_SIZE) return;
-      img.style.setProperty('--gtr-img-bg', findOriginalBackdrop(img, body));
+      img.style.setProperty('--gtr-img-bg', softenWhite(findOriginalBackdrop(img, body)));
       img.setAttribute('data-gtr-img', '');
+      if (width <= MAX_CARD_WIDTH && height <= MAX_CARD_HEIGHT) img.setAttribute('data-gtr-img-card', '');
     };
     if (img.complete) apply();
     else img.addEventListener('load', apply, { once: true });
