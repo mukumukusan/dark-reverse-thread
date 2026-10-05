@@ -6,6 +6,6 @@
 const GTR_DEFAULT_SETTINGS = Object.freeze({
   reverseOrder: true,
   smartDark: true,
-  replyPosition: 'bottom', // 'top' (above the newest email) or 'bottom' (Gmail's own place)
+  replyPosition: 'bottom', // 'top' (right above the newest email) or 'bottom' (right below it)
   showQuickBar: false // shown only when turned on in the popup
 });
