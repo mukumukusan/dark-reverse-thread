@@ -14,8 +14,8 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
    - 日本語: 最新のメッセージがスレッド最上部に並ぶように自動で並び替え、スレッドを開くと最新メッセージの位置（先頭）を表示します。
    - English: Reverses conversation threads so the newest messages appear at the very top, and opens each thread scrolled to the newest message.
 2. **マテリアルダークモード / Material Dark Theme**
-   - 日本語: Gmail のダークテーマに馴染むマテリアルダーク調（#1f1f1f / #28292c / #303134）に統一し、目に優しく洗練された表示を提供。新規作成ウィンドウ（右下・全画面）も暗く表示します。受信トレイ・サイドバー・ヘッダーには干渉せず、Gmail本体のテーマ設定をそのまま使います。
-   - English: Uses a Material Dark palette that matches Gmail's own dark theme (#1f1f1f / #28292c / #303134) for an eye-friendly, native feel. Applied to the conversation view and the compose window (docked or full screen) only — the inbox list, sidebar and header are left to Gmail's own theme.
+   - 日本語: Gmail のダークテーマに馴染むマテリアルダーク調（#1f1f1f / #28292c / #303134）に統一し、目に優しく洗練された表示を提供。新規作成ウィンドウ（右下・全画面）、スレッドとツールバーから開くメニュー、作成ボタンも暗く表示します。受信トレイの一覧・サイドバー・ヘッダーはそれ以外は干渉せず、Gmail本体のテーマ設定をそのまま使います。
+   - English: Uses a Material Dark palette that matches Gmail's own dark theme (#1f1f1f / #28292c / #303134) for an eye-friendly, native feel. Applied to the conversation view, the compose window (docked or full screen), menus opened from the thread or toolbar, and the Compose button — the rest of the inbox list, sidebar and header is left to Gmail's own theme.
 3. **本文白飛びの根本解消 / Direct Email Body Darkening**
    - 日本語: HTMLメールの文字色・背景色を、色相と彩度を保ったまま明るさだけ暗い背景向けに調整（黒文字→明るい灰色、白背景→暗色、赤字や黄色のハイライトは色味を残す）。画像やロゴは本来の色を保護し、透過画像（黒いロゴなど）の背後には元のメールでの背景色を敷いて見えるように。印刷時は元の色で出力。
    - English: Adapts HTML email text and background colors for dark mode by remapping only their lightness, keeping the original hue and saturation (black text becomes light gray, white backgrounds turn dark, red text and highlights keep their color). Images keep their colors, transparent ones (e.g. dark logos) get their original backdrop back so they stay visible, and printing uses the original colors.

@@ -27,8 +27,8 @@ Gmail のスレッドとメール本文を、元の色合いを保ったまま�
 ■ 色合いを残すダークモード
 ・白い背景を暗く、黒い文字を明るくしながら、赤字やハイライトなどの色はそのまま残します。単純な白黒反転ではないので、メールの見た目が崩れません。
 ・透明な背景のロゴなど、暗い背景で見えなくなる画像には、元の背景色を敷いて読みやすくします。
-・スレッド画面、返信欄、新規作成ウィンドウ、宛先の候補まで暗く表示します。
-・受信トレイやサイドバーには手を加えず、Gmail のテーマ設定をそのまま使います。
+・スレッド画面、返信欄、新規作成ウィンドウ、宛先の候補、メニュー、作成ボタンまで暗く表示します。
+・受信トレイの一覧には手を加えず、Gmail のテーマ設定をそのまま使います。
 ・ダークの ON / OFF で、メールの位置や大きさは変わりません。
 
 ■ スレッドを新しい順に表示
@@ -57,8 +57,8 @@ Dark Reverse Thread gives Gmail a dark mode for threads and email bodies that ke
 ■ A dark mode that keeps colors
 • White backgrounds turn dark and black text turns light, while red text, highlights and other colors keep their hue. It is not a simple color inversion, so emails keep their look.
 • Transparent images such as dark logos get their original backdrop back, so they stay visible.
-• Covers the thread view, the inline reply box, the compose window and recipient suggestions.
-• The inbox and sidebar are left to Gmail's own theme.
+• Covers the thread view, the inline reply box, the compose window, recipient suggestions, menus and the Compose button.
+• The inbox list is left to Gmail's own theme.
 • Turning dark mode on or off never moves or resizes anything.
 
 ■ Newest-first threads
@@ -83,8 +83,8 @@ This extension is an independent project, not affiliated with or endorsed by Goo
 
 ### 単一用途 / Single purpose
 
-- 日本語: Gmail のスレッド画面と作成画面の表示を変更する（ダークモードでの表示と、スレッドを新しい順に並べ替えること）。
-- English: Changes how Gmail's conversation and compose views are displayed: a color-preserving dark mode and newest-first thread order.
+- 日本語: Gmail の表示を変更する（スレッド画面・作成画面などのダークモード表示と、スレッドを新しい順に並べ替えること）。
+- English: Changes how Gmail is displayed: a color-preserving dark mode for the conversation and compose views (and related menus), and newest-first thread order.
 
 ### 権限が必要な理由 / Permission justification
 
