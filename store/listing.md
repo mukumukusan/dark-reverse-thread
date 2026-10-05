@@ -133,3 +133,13 @@ Japanese images are in `screenshots/ja/` and English ones in `screenshots/en/`, 
 - メールの内容・人物・アドレス（example.com）は架空のものです。
 - Every name, address (example.com) and message is fictional.
 - アイコン（128×128）: `icons/icon128.png`
+
+### 宣伝用画像（任意） / Promotional images (optional)
+
+| ファイル / File | 用途 / Used for |
+|---|---|
+| `promo/ja/small-tile-440x280.png`, `promo/en/small-tile-440x280.png` | 小さいプロモーションタイル（一覧・検索結果） / Small promo tile (lists, search) |
+| `promo/ja/marquee-1400x560.png`, `promo/en/marquee-1400x560.png` | マーキー（特集に選ばれたときのみ） / Marquee (only if featured) |
+
+- どちらも透過なしの PNG。アイコンの元画像は `store/icon-1024.png`。
+- Both are PNG without transparency. The icon master is `store/icon-1024.png`.
