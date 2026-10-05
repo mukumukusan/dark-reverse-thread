@@ -578,8 +578,8 @@
   background-color: var(--gtr-dark-outline) !important;
 }
 
-/* 候補の時計・封筒・虫めがねのアイコンは画像なので反転 */
-.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.asor, .gsoi) {
+/* 候補の時計・封筒・虫めがねのアイコンは画像なので反転。連絡先の顔写真（.asor_i1）は反転しない */
+.gmail-dark-active.gtr-gmail-dark-theme form[role="search"] :is(.asor:not(.asor_i1), .gsoi) {
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
