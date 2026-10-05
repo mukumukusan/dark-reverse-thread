@@ -61,23 +61,10 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
 
 ---
 
-## パッケージ化されていない拡張機能としての導入手順 / How to Load Unpacked Extension
+## インストール / Install
 
-### 日本語
-1. 本フォルダ（`extension`）をローカルPCの安全な場所（「ドキュメント」フォルダ等）に保存します。
-2. Google Chromeのアドレスバーに `chrome://extensions` と入力して開きます。
-3. 画面右上の **「デベロッパー モード」** をONにします。
-4. 左上の **「パッケージ化されていない拡張機能を読み込む」** をクリックし、本フォルダを選択します。
-5. Gmail（`https://mail.google.com/`）を開き、再読み込みします。
-
-### English
-1. Save this `extension` folder to a safe local directory (e.g. Documents).
-2. Open Google Chrome and navigate to `chrome://extensions`.
-3. Enable **"Developer mode"** in the top-right corner.
-4. Click **"Load unpacked"** in the top-left corner and select this folder.
-5. Open or refresh Gmail (`https://mail.google.com/`).
-
----
+- 日本語: Chrome ウェブストアで公開予定です（現在審査中）。公開後、ここにリンクを掲載します。
+- English: Coming soon to the Chrome Web Store (currently in review). The link will be added here once published.
 
 ## Chromeウェブストア公開ガイド / Chrome Web Store Publishing Guide
 
