@@ -1,7 +1,11 @@
 {
   "extName": {
-    "message": "Dark Reverse Thread",
+    "message": "Dark Reverse Thread – Gmail dark mode & newest-first",
     "description": "Extension name shown in Chrome and the Web Store (max 75 characters)."
+  },
+  "extShortName": {
+    "message": "Dark Reverse Thread",
+    "description": "Short name for the popup heading and where space is tight."
   },
   "extDescription": {
     "message": "A dark mode for Gmail threads and email bodies that keeps their original colors, with conversations shown newest-first.",

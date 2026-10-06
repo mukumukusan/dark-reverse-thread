@@ -9,7 +9,7 @@ Text to paste into the matching fields of the Chrome Web Store Developer Dashboa
 
 | 欄 / Field | 内容 / Value |
 |---|---|
-| 名前 / Name | Dark Reverse Thread（`_locales` から自動で入ります / filled from `_locales`） |
+| 名前 / Name | `_locales` の `extName` から自動で入ります / filled from `extName`（ja: Dark Reverse Thread – Gmail をダークモード＆新しい順に / en: Dark Reverse Thread – Gmail dark mode & newest-first） |
 | 短い説明 / Summary | `_locales` の `extDescription` から自動で入ります / filled from `extDescription` |
 | カテゴリ / Category | 仕事効率化 / Productivity |
 | 言語 / Language | 日本語・English |
