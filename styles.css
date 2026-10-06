@@ -315,7 +315,9 @@
 
 /* --------------------------------------------------------------------------
    7. BOTTOM FOOTER BUTTONS (返信・全員に返信・転送ボタン)
+   ボタンの行を包む .nr.wR は Gmail では白い。返信欄を開くとボタンが先に消えて一瞬見えるので暗くする
    -------------------------------------------------------------------------- */
+.gmail-dark-active .gtr-thread .nr.wR,
 .gmail-dark-active .gtr-thread .amn,
 .gmail-dark-active .gtr-thread .amn .ams,
 .gmail-dark-active .gtr-thread .bkH,
