@@ -51,8 +51,9 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
 
 ## インストール / Install
 
-- 日本語: Chrome ウェブストアで公開予定です（現在審査中）。公開後、ここにリンクを掲載します。
-- English: Coming soon to the Chrome Web Store (currently in review). The link will be added here once published.
+Chrome ウェブストアからインストールできます / Install it from the Chrome Web Store:
+
+https://chromewebstore.google.com/detail/dark-reverse-thread/nkbapoheeghahneaomcecckkeeobmkja
 
 ## ライセンス / License
 
