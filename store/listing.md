@@ -122,7 +122,8 @@ Japanese images are in `screenshots/ja/` and English ones in `screenshots/en/`, 
 
 | ファイル / File | 内容 / Shows |
 |---|---|
-| `0-compare-off-on.png` | ダーク OFF（上）と ON（下）の比較。最初の1枚におすすめ / OFF (top) vs ON (bottom); recommended first |
+| `00-problem.png` | 「まぶしい」「長い」で困る封筒のイラスト。最初の1枚におすすめ / Illustration of the two pains (too bright, too long); recommended first |
+| `0-compare-off-on.png` | ダーク OFF（上）と ON（下）の比較。2枚目におすすめ / OFF (top) vs ON (bottom); recommended second |
 | `1-dark-newest-first.png` | ダークで、最新のメールが一番上 / Dark, newest email on top |
 | `2-reply-below-newest.png` | 返信ボタンが最新メールの直下、その下に古いメール / Reply buttons right below the newest email, older ones below |
 | `3-dark-off.png` | ダーク OFF の同じ画面 / Same view with dark mode off |
@@ -130,6 +131,7 @@ Japanese images are in `screenshots/ja/` and English ones in `screenshots/en/`, 
 
 - すべて 1280×800。実解像度（2倍）の 2276×1422 ピクセルから縮小しています。
 - All 1280×800, downscaled from a native 2x capture (2276×1422 px).
+- `00-problem.png` はイラストで、1280×800（2倍で描画して縮小）。
 - メールの内容・人物・アドレス（example.com）は架空のものです。
 - Every name, address (example.com) and message is fictional.
 - アイコン（128×128）: `icons/icon128.png`
