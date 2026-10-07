@@ -26,6 +26,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('themeTip').hidden = !gmailLightTheme;
   });
 
+  // Open Gmail's quick settings (theme list) in the current Gmail tab, or in a new Gmail tab
+  document.getElementById('openTheme').addEventListener('click', async () => {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    try {
+      const response = await chrome.tabs.sendMessage(tab.id, { type: 'gtr-open-theme-settings' });
+      if (response && response.opened) window.close();
+      return; // a Gmail tab without the gear button: leave the tip as it is
+    } catch {
+      // not a Gmail tab (no content script there)
+    }
+    await chrome.storage.local.set({ gtrOpenThemeAt: Date.now() });
+    chrome.tabs.create({ url: 'https://mail.google.com/mail/' });
+    window.close();
+  });
+
   chrome.storage.sync.get(GTR_DEFAULT_SETTINGS, (items) => {
     reverseOrder.checked = items.reverseOrder;
     smartDark.checked = items.smartDark;

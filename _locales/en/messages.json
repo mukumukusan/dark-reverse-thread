@@ -108,7 +108,11 @@
     "description": "Popup link to the developer's Buy Me a Coffee page."
   },
   "tipGmailDarkTheme": {
-    "message": "💡 Set Gmail's theme to Dark to darken the inbox and the rest of Gmail too (⚙ Settings → Theme → Dark).",
+    "message": "💡 Set Gmail's theme to Dark to darken the inbox and the rest of Gmail too.",
     "description": "Popup tip, shown only while Gmail uses a light theme."
+  },
+  "tipOpenTheme": {
+    "message": "Choose a theme",
+    "description": "Popup button: opens Gmail's quick settings panel, where the theme can be picked."
   }
 }

@@ -645,6 +645,38 @@
     }
   }
 
+  /**
+   * The popup's "Choose a theme" button opens Gmail's quick settings panel (the gear), where Gmail's own
+   * theme list is shown. The user picks the theme; the extension never changes Gmail's settings itself.
+   */
+  const OPEN_THEME_KEY = 'gtrOpenThemeAt'; // set by the popup just before it opens a new Gmail tab
+
+  function openThemeSettings() {
+    const gear = document.querySelector('header[role="banner"] a.FH[role="button"]');
+    if (!gear) return false;
+    if (gear.getAttribute('aria-expanded') !== 'true') gear.click();
+    return true;
+  }
+
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message && message.type === 'gtr-open-theme-settings') sendResponse({ opened: openThemeSettings() });
+  });
+
+  // A Gmail tab opened from that button: open the panel once Gmail's header is ready
+  chrome.storage.local.get({ [OPEN_THEME_KEY]: 0 }, (items) => {
+    if (Date.now() - items[OPEN_THEME_KEY] > 60000) return;
+    chrome.storage.local.remove(OPEN_THEME_KEY);
+    let tries = 0;
+    const timer = setInterval(() => {
+      const gear = document.querySelector('header[role="banner"] a.FH[role="button"]');
+      if ((gear && gear.getAttribute('aria-expanded') === 'true') || ++tries > 40) {
+        clearInterval(timer);
+        return;
+      }
+      openThemeSettings();
+    }, 500);
+  });
+
   /** Full pass over every conversation view: initial load, setting changes and thread navigation. */
   function applyAll() {
     noteGmailTheme();

@@ -81,6 +81,9 @@
     "message": "☕ 気に入ったら応援する（Buy Me a Coffee）"
   },
   "tipGmailDarkTheme": {
-    "message": "💡 Gmail のテーマを「ダーク」にすると、受信トレイなど画面全体も暗くなります（⚙ 設定 → テーマ → ダーク）。"
+    "message": "💡 Gmail のテーマを「ダーク」にすると、受信トレイなど画面全体も暗くなります。"
+  },
+  "tipOpenTheme": {
+    "message": "テーマを選ぶ"
   }
 }

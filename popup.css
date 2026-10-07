@@ -107,6 +107,23 @@ label {
   line-height: 1.5;
 }
 
+.tip-button {
+  display: block;
+  margin-top: 6px;
+  padding: 4px 12px;
+  border: none;
+  border-radius: 999px;
+  background-color: #8ab4f8;
+  color: #202124;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tip-button:hover {
+  background-color: #aecbfa;
+}
+
 .tip[hidden] {
   display: none;
 }
