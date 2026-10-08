@@ -127,6 +127,7 @@ Japanese images are in `screenshots/ja/` and English ones in `screenshots/en/`, 
 | `1-dark-newest-first.png` | ダークで、最新のメールが一番上 / Dark, newest email on top |
 | `2-reply-below-newest.png` | 返信ボタンが最新メールの直下、その下に古いメール / Reply buttons right below the newest email, older ones below |
 | `3-dark-compose.png` | ダークの作成ウィンドウ / Dark compose window |
+| `4-popup-settings.png` | 設定のポップアップと「テーマを選ぶ」ボタン（1.0.2 以降） / Settings popup with the "Choose a theme" button (1.0.2+) |
 
 - すべて 1280×800。実解像度（2倍）の 2276×1422 ピクセルから縮小しています。
 - All 1280×800, downscaled from a native 2x capture (2276×1422 px).
