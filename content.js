@@ -646,15 +646,49 @@
   }
 
   /**
-   * The popup's "Choose a theme" button opens Gmail's quick settings panel (the gear), where Gmail's own
-   * theme list is shown. The user picks the theme; the extension never changes Gmail's settings itself.
+   * The popup's "Choose a theme" button opens Gmail's theme dialog: the gear opens the quick settings
+   * panel, its theme "View all" button opens the dialog, and the Dark theme tile is scrolled into view
+   * and outlined. The user picks and saves the theme; the extension never changes Gmail's settings.
+   * Each step is optional: if a later control is missing, the panel or dialog simply stays open.
    */
   const OPEN_THEME_KEY = 'gtrOpenThemeAt'; // set by the popup just before it opens a new Gmail tab
+  const GEAR_SELECTOR = 'header[role="banner"] a.FH[role="button"]';
+  const THEME_VIEW_ALL_SELECTOR = 'button[jsname="JFZqac"]';
+  const DARK_THEME_SELECTOR = '[role="dialog"] [role="option"][bgid="basicblack"]';
+
+  /** Polls for a visible element and calls back with it, or with null after about 3 seconds. */
+  function whenVisible(selector, callback) {
+    let tries = 0;
+    const timer = setInterval(() => {
+      const el = Array.from(document.querySelectorAll(selector)).find((e) => e.offsetParent !== null);
+      if (el || ++tries > 30) {
+        clearInterval(timer);
+        callback(el || null);
+      }
+    }, 100);
+  }
+
+  let themeDialogPending = false; // one "View all" click per request, even if the gear is pressed again
 
   function openThemeSettings() {
-    const gear = document.querySelector('header[role="banner"] a.FH[role="button"]');
+    const gear = document.querySelector(GEAR_SELECTOR);
     if (!gear) return false;
     if (gear.getAttribute('aria-expanded') !== 'true') gear.click();
+    if (themeDialogPending) return true;
+    themeDialogPending = true;
+    whenVisible(THEME_VIEW_ALL_SELECTOR, (viewAll) => {
+      if (!viewAll) {
+        themeDialogPending = false;
+        return;
+      }
+      viewAll.click();
+      whenVisible(DARK_THEME_SELECTOR, (tile) => {
+        themeDialogPending = false;
+        if (!tile) return;
+        tile.scrollIntoView({ block: 'center' });
+        tile.setAttribute('data-gtr-suggest', '');
+      });
+    });
     return true;
   }
 
@@ -667,8 +701,9 @@
     if (Date.now() - items[OPEN_THEME_KEY] > 60000) return;
     chrome.storage.local.remove(OPEN_THEME_KEY);
     let tries = 0;
+    // Gmail may ignore the gear until it has fully started, so press it until the panel opens
     const timer = setInterval(() => {
-      const gear = document.querySelector('header[role="banner"] a.FH[role="button"]');
+      const gear = document.querySelector(GEAR_SELECTOR);
       if ((gear && gear.getAttribute('aria-expanded') === 'true') || ++tries > 40) {
         clearInterval(timer);
         return;

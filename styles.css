@@ -620,6 +620,18 @@
   color: var(--gtr-dark-link) !important;
 }
 
+/* ポップアップの「テーマを選ぶ」で開いたテーマ選択ダイアログで、「ダーク」のテーマ（basicblack）を
+   ゆっくり点滅する枠で示す。選ぶのは本人。Gmail が選択中のテーマに付ける青枠と見分けられるよう太めにする */
+[data-gtr-suggest] {
+  border-radius: 8px !important;
+  animation: gtr-suggest-pulse 1.4s ease-in-out infinite !important;
+}
+
+@keyframes gtr-suggest-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px #8ab4f8, 0 0 0 8px rgba(138, 180, 248, 0.25); }
+  50% { box-shadow: 0 0 0 4px #8ab4f8, 0 0 0 14px rgba(138, 180, 248, 0.55); }
+}
+
 /* 右上の「あ」の入力ツールのメニュー（.d-Na-JG-M）と、そこから開く「入力ツールの設定」（.d-Qs-Md）。
    どちらも入力ツール専用の部品で、メニューの項目から設定を開くため、押した場所では判定せずに暗くする。
    アイコンは画像なので反転して明るくする */

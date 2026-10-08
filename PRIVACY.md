@@ -23,7 +23,7 @@
 
 これらは Chrome の `chrome.storage.sync` に保存されます。Chrome の同期を有効にしている場合は、Chrome の仕組みによって、同じ Google アカウントでログインしている他の端末にも同期されます。開発者がこれらの設定を見ることはできません。
 
-このほか、Gmail が明るいテーマかどうか（はい／いいえ）だけを、設定画面に案内を表示するために、お使いの端末の中（`chrome.storage.local`）に保存します。案内の「テーマを選ぶ」ボタンで新しい Gmail のタブを開くときは、そのタブで設定パネルを開くための目印（押した時刻）も一時的に保存し、Gmail が開いたらすぐに消します。どちらも同期や送信はされません。本拡張機能が Gmail の設定（テーマなど）を変更することはありません。
+このほか、Gmail が明るいテーマかどうか（はい／いいえ）だけを、設定画面に案内を表示するために、お使いの端末の中（`chrome.storage.local`）に保存します。案内の「テーマを選ぶ」ボタンで新しい Gmail のタブを開くときは、そのタブでテーマの選択画面を開くための目印（押した時刻）も一時的に保存し、Gmail が開いたらすぐに消します。どちらも同期や送信はされません。本拡張機能が Gmail の設定（テーマなど）を変更することはありません。
 
 ### 通信
 本拡張機能は外部のサーバーと通信しません。アクセス解析、広告、トラッキングも使用していません。
@@ -61,7 +61,7 @@ The extension stores only these display settings:
 
 They are stored in Chrome's `chrome.storage.sync`. If Chrome sync is turned on, Chrome syncs them to your other devices signed in to the same Google account. The developer cannot see these settings.
 
-In addition, only whether Gmail uses a light theme (yes / no) is kept on your device (`chrome.storage.local`) to show a tip in the settings popup. When the tip's "Choose a theme" button opens a new Gmail tab, a temporary marker (the time of the click) is also kept so that tab can open the settings panel; it is deleted as soon as Gmail opens. Neither is synced or sent anywhere. The extension never changes Gmail's settings (such as the theme) itself.
+In addition, only whether Gmail uses a light theme (yes / no) is kept on your device (`chrome.storage.local`) to show a tip in the settings popup. When the tip's "Choose a theme" button opens a new Gmail tab, a temporary marker (the time of the click) is also kept so that tab can open the theme picker; it is deleted as soon as Gmail opens. Neither is synced or sent anywhere. The extension never changes Gmail's settings (such as the theme) itself.
 
 ### Network
 The extension does not communicate with any external server. It uses no analytics, advertising or tracking.
