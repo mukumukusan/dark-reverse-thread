@@ -126,8 +126,7 @@ Japanese images are in `screenshots/ja/` and English ones in `screenshots/en/`, 
 | `0-compare-off-on.png` | ダーク OFF（上）と ON（下）の比較。2枚目におすすめ / OFF (top) vs ON (bottom); recommended second |
 | `1-dark-newest-first.png` | ダークで、最新のメールが一番上 / Dark, newest email on top |
 | `2-reply-below-newest.png` | 返信ボタンが最新メールの直下、その下に古いメール / Reply buttons right below the newest email, older ones below |
-| `3-dark-off.png` | ダーク OFF の同じ画面 / Same view with dark mode off |
-| `4-dark-compose.png` | ダークの作成ウィンドウ / Dark compose window |
+| `3-dark-compose.png` | ダークの作成ウィンドウ / Dark compose window |
 
 - すべて 1280×800。実解像度（2倍）の 2276×1422 ピクセルから縮小しています。
 - All 1280×800, downscaled from a native 2x capture (2276×1422 px).
