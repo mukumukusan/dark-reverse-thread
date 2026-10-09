@@ -85,5 +85,8 @@
   },
   "tipOpenTheme": {
     "message": "テーマを選ぶ"
+  },
+  "openThemeLink": {
+    "message": "🎨 Gmail のテーマを変える"
   }
 }

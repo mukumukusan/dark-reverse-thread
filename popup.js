@@ -21,25 +21,31 @@ document.addEventListener('DOMContentLoaded', () => {
     replyDesc.textContent = chrome.i18n.getMessage(reverseOrder.checked ? 'settingReplyDesc' : 'replyNeedsReverse');
   }
 
-  // Suggest Gmail's own dark theme when Gmail is on a light theme (flag noted by the content script)
+  // Suggest Gmail's own dark theme when Gmail is on a light theme (flag noted by the content script).
+  // Otherwise a small link to Gmail's theme picker is shown instead, e.g. for picture themes the
+  // brightness check cannot judge.
   chrome.storage.local.get({ gmailLightTheme: false }, ({ gmailLightTheme }) => {
     document.getElementById('themeTip').hidden = !gmailLightTheme;
+    document.getElementById('themeLink').hidden = gmailLightTheme;
   });
 
-  // Open Gmail's quick settings (theme list) in the current Gmail tab, or in a new Gmail tab
-  document.getElementById('openTheme').addEventListener('click', async () => {
+  // Open Gmail's theme picker in the current Gmail tab, or in a new Gmail tab
+  async function openThemePicker() {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     try {
       const response = await chrome.tabs.sendMessage(tab.id, { type: 'gtr-open-theme-settings' });
       if (response && response.opened) window.close();
-      return; // a Gmail tab without the gear button: leave the tip as it is
+      return; // a Gmail tab without the gear button: leave the popup as it is
     } catch {
       // not a Gmail tab (no content script there)
     }
     await chrome.storage.local.set({ gtrOpenThemeAt: Date.now() });
     chrome.tabs.create({ url: 'https://mail.google.com/mail/' });
     window.close();
-  });
+  }
+
+  document.getElementById('openTheme').addEventListener('click', openThemePicker);
+  document.getElementById('openThemeLink').addEventListener('click', openThemePicker);
 
   chrome.storage.sync.get(GTR_DEFAULT_SETTINGS, (items) => {
     reverseOrder.checked = items.reverseOrder;

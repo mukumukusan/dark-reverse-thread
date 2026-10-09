@@ -114,5 +114,9 @@
   "tipOpenTheme": {
     "message": "Choose a theme",
     "description": "Popup button: opens Gmail's quick settings panel, where the theme can be picked."
+  },
+  "openThemeLink": {
+    "message": "🎨 Change Gmail's theme",
+    "description": "Small popup link (shown unless the dark-theme tip is shown): opens Gmail's theme picker."
   }
 }

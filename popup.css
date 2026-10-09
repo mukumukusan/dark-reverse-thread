@@ -124,6 +124,27 @@ label {
   background-color: #aecbfa;
 }
 
+.theme-link {
+  padding: 0 16px 10px;
+}
+
+.theme-link[hidden] {
+  display: none;
+}
+
+.link-button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #8ab4f8;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
 .tip[hidden] {
   display: none;
 }
