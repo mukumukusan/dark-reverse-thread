@@ -22,32 +22,32 @@ Text to paste into the matching fields of the Chrome Web Store Developer Dashboa
 ## 2. 詳しい説明（日本語） / Detailed description (Japanese)
 
 ```
-Gmail のダークテーマにしても、開いたメールは白いまま、まぶしいまま。長いスレッドでは、最新の返信を読むために毎回いちばん下までスクロール――。
-Dark Reverse Thread は、この2つをまとめて解決する拡張機能です。
+Gmail をダークテーマにしても、開いたメールは真っ白でまぶしい。長いスレッドでは、最新の返信を読むたびに一番下までスクロール――。
+Dark Reverse Thread なら、この2つをまとめて解決できます。
 
-■ メールまで、色を残したままダークに
-・白い背景を暗く、黒い文字を明るくしつつ、赤字やハイライトなどの色はそのまま。単純な白黒反転ではないので、メールのデザインが崩れにくくなっています。
-・透明な背景のロゴなど、暗くすると見えなくなる画像には、元の背景色を敷いて読みやすくします。
-・スレッド画面、返信欄、新規作成ウィンドウ、宛先の候補、メニュー、作成ボタンまで暗く表示します。Gmail がダークテーマのときは、検索欄と検索候補も暗くします。
-・ダークの ON / OFF で、メールの位置や大きさは変わりません。
+■ メール本文まで、色を残したままダークに
+・背景を暗く、文字を明るくしながら、赤字やハイライトなどの色はそのまま残します。単純な白黒反転ではないので、メールのデザインが崩れにくくなっています。
+・透明な背景のロゴなど、暗い背景で見えなくなる画像には、元の背景色を敷いて表示します。
+・スレッド画面のほか、返信欄、新規作成ウィンドウ、宛先の候補、メニューまで暗くなります。Gmail がダークテーマなら、検索欄と検索候補も暗くなります。
+・ダークを ON / OFF しても、メールの位置や大きさは変わりません。
 
 ■ 最新のメールが一番上に
-・スレッドを新しい順に並べ替えます。開いたらすぐ、最新の内容が読めます。
-・返信・転送ボタンと返信欄は、最新のメールの直下（標準）または直上に置けます。
+・スレッドを新しい順に並べ替えるので、開いた瞬間に最新の返信が読めます。
+・返信・転送ボタンと返信欄は、最新のメールのすぐ下（標準）か、すぐ上に置けます。
 
 ■ Gmail のテーマと組み合わせて
-・受信トレイなど Gmail の外枠は、Gmail 自身のテーマをそのまま使います。Gmail のテーマを「ダーク」にすると、画面全体が暗くなります。
-・設定画面の「Gmail のテーマを変える」から、Gmail のテーマ選択をすぐに開けます。テーマを選ぶのはご自身で、拡張機能が Gmail の設定を変えることはありません。
+・受信トレイなどの外枠には、Gmail 自身のテーマがそのまま使われます。Gmail のテーマを「ダーク」にすれば、画面全体が暗くなります。
+・設定画面の「Gmail のテーマを変える」を押すと、Gmail のテーマ選択がすぐに開きます。テーマを選ぶのはご自身で、拡張機能が Gmail の設定を変えることはありません。
 
-■ すぐに切り替え
-・ツールバーの拡張機能アイコンから、ダーク・新しい順・返信欄の位置を切り替えられます。画面右下に切り替えボタン（クイックバー）を出すこともできます。
-・印刷するときは、元の色と古い順に戻して印刷します。
+■ ワンクリックで切り替え
+・ツールバーの拡張機能アイコンから、ダーク・新しい順・返信欄の位置をいつでも切り替えられます。画面右下に切り替えボタン（クイックバー）を出すこともできます。
+・印刷するときは、元の色・古い順に戻して印刷します。
 
 ■ プライバシー
-・データの収集や外部への送信は一切行いません。メールの表示は、お使いのブラウザの中だけで変更します。
+・データの収集や外部への送信は一切ありません。表示の変更は、すべてお使いのブラウザの中で行います。
 ・保存するのは、表示設定（ON / OFF など）と、Gmail が明るいテーマかどうかだけです。
 
-※ 本拡張機能は Google とは関係のない個人開発のものです。Gmail は Google LLC の商標です。
+※ 本拡張機能は個人が開発したもので、Google とは関係ありません。Gmail は Google LLC の商標です。
 
 気に入っていただけたら、コーヒー1杯分の応援をいただけると励みになります。
 https://buymeacoffee.com/mukumukusan
@@ -58,32 +58,32 @@ https://buymeacoffee.com/mukumukusan
 ## 3. Detailed description (English)
 
 ```
-Even with Gmail's Dark theme, the emails you open stay bright white. And in long threads, you scroll all the way down every time just to read the latest reply.
+Turn on Gmail's Dark theme, and the emails you open are still bright white. In long threads, you scroll all the way down every time just to read the latest reply.
 Dark Reverse Thread fixes both.
 
-■ Dark mode that reaches your emails and keeps their colors
-• White backgrounds turn dark and black text turns light, while red text, highlights and other colors keep their hue. It is not a simple color inversion, so emails keep their look.
-• Transparent images such as dark logos get their original backdrop back, so they stay visible.
-• Covers the thread view, the inline reply box, the compose window, recipient suggestions, menus and the Compose button. On Gmail's Dark theme, the search box and its suggestions are darkened too.
+■ Dark emails that keep their colors
+• Backgrounds turn dark and text turns light, while red text, highlights and other colors keep their hue. It is not a simple color inversion, so emails keep their design.
+• Images that would vanish on a dark background, such as logos with transparent backgrounds, get their original backdrop back.
+• Beyond the thread view, the reply box, compose window, recipient suggestions and menus go dark too. On Gmail's Dark theme, so do the search box and its suggestions.
 • Turning dark mode on or off never moves or resizes anything.
 
 ■ The newest email on top
-• Threads are shown newest-first, so the latest reply is right there when you open them.
-• Place the Reply / Forward buttons and the reply box right below (default) or right above the newest email.
+• Threads are shown newest-first, so the latest reply is the first thing you see.
+• Put the Reply / Forward buttons and the reply box right below (default) or right above the newest email.
 
-■ Works with Gmail's own theme
-• The inbox and the rest of Gmail's frame keep Gmail's own theme; set Gmail's theme to Dark for a fully dark Gmail.
-• "Change Gmail's theme" in the settings popup opens Gmail's theme picker in one click. You choose the theme; the extension never changes Gmail's settings itself.
+■ Made to pair with Gmail's theme
+• The inbox and the rest of Gmail's frame keep Gmail's own theme. Set it to Dark for a fully dark Gmail.
+• "Change Gmail's theme" in the settings popup opens Gmail's theme picker right away. You pick the theme; the extension never changes Gmail's settings itself.
 
-■ Quick switching
-• Toggle dark mode, newest-first order and the reply position from the extension's toolbar icon, or turn on a small quick bar at the bottom right for one-click switching.
+■ One-click switching
+• Switch dark mode, newest-first order and the reply position anytime from the toolbar icon, or turn on a small quick bar in the bottom-right corner.
 • Printing uses the original colors and oldest-first order.
 
 ■ Privacy
-• No data is collected or sent anywhere. Everything happens inside your browser.
+• Nothing is collected or sent anywhere. All changes happen inside your browser.
 • Only your display settings (on / off and so on) and whether Gmail uses a light theme are saved.
 
-This extension is an independent project, not affiliated with or endorsed by Google. Gmail is a trademark of Google LLC.
+Dark Reverse Thread is an independent project, not affiliated with or endorsed by Google. Gmail is a trademark of Google LLC.
 
 If it makes your inbox a little nicer, you can buy me a coffee:
 https://buymeacoffee.com/mukumukusan
