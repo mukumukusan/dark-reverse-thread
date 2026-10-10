@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Menus opened from dark areas</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0;  }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>buildGmail(); window.__GTR_MOCK__ = {};</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const $ = (id) => document.getElementById(id);
+const press = (id) => $(id).dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+const hover = (id) => $(id).dispatchEvent(new PointerEvent('pointerover', { bubbles: true }));
+const SOURCE = 'gtr-menu-source';
+
+test('a press inside the thread notes the menu source', async () => {
+  await sleep(400);
+  press('text1');
+  assert(hasClass(html, SOURCE));
+});
+
+test('a menu opened then is dark', () => {
+  assertEqual(getComputedStyle($('menu')).backgroundColor, 'rgb(40, 41, 44)');
+});
+
+test('pressing a menu item keeps the menu dark until it closes', () => {
+  press('menu-item');
+  assert(hasClass(html, SOURCE));
+});
+
+test('a press outside the dark areas clears the note (Gmail\'s own menus stay as they are)', () => {
+  press('outside');
+  assert(!hasClass(html, SOURCE));
+  assert(getComputedStyle($('menu')).backgroundColor !== 'rgb(40, 41, 44)');
+});
+
+test('the toolbars count as dark areas', () => {
+  press('toolbar-button');
+  assert(hasClass(html, SOURCE), 'left toolbar');
+  press('outside');
+  press('count-label');
+  assert(hasClass(html, SOURCE), 'right toolbar');
+});
+
+test('hovering a dark area notes the source (menus that open on hover)', () => {
+  press('outside');
+  hover('count-label');
+  assert(hasClass(html, SOURCE));
+});
+
+test('hovering elsewhere does not clear it (the menu must not turn white on the way)', () => {
+  hover('outside');
+  assert(hasClass(html, SOURCE));
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

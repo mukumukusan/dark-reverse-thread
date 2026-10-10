@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cached theme while Gmail is loading</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #ffffff; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>buildGmail({ header: false }); window.__GTR_MOCK__ = { local: { gmailLightTheme: false } };</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('the cached dark theme is applied right away', async () => {
+  await sleep(50);
+  assert(hasClass(html, 'gtr-gmail-dark-theme'));
+});
+
+test('the white loading screen is not taken for a light theme while the header is missing', async () => {
+  await sleep(6000); // past the 5-second check
+  assert(hasClass(html, 'gtr-gmail-dark-theme'), 'still the cached value');
+  assertEqual(gtrStores.local.gmailLightTheme, false, 'nothing overwritten');
+});
+
+test('without a header, the theme is judged anyway after 10 seconds', async () => {
+  await sleep(4500);
+  assert(!hasClass(html, 'gtr-gmail-dark-theme'), 'judged as light from the white background');
+  assertEqual(gtrStores.local.gmailLightTheme, true);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

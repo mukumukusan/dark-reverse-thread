@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Thread view, newest-first, reply below</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0;  }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>buildGmail(); window.__GTR_MOCK__ = {};</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const $ = (id) => document.getElementById(id);
+const topOf = (id) => $(id).getBoundingClientRect().top;
+
+test('marks the conversation view', async () => {
+  await sleep(500);
+  assert(hasClass($('main'), 'gtr-thread'), 'role="main" with a subject should get .gtr-thread');
+});
+
+test('dark mode is on by default', () => {
+  assert(hasClass(html, 'gmail-dark-active'));
+});
+
+test('message list is reversed with even flex orders (newest = 2)', () => {
+  assert(hasClass($('list'), 'gmail-thread-reversed'));
+  assertEqual($('m1').style.order, '6', 'oldest');
+  assertEqual($('m2').style.order, '4');
+  assertEqual($('m3').style.order, '2', 'newest');
+});
+
+test('newest message is shown first', () => {
+  assert(topOf('m3') < topOf('m2') && topOf('m2') < topOf('m1'), `tops m3=${topOf('m3')} m2=${topOf('m2')} m1=${topOf('m1')}`);
+});
+
+test('reply "bottom": wrapper boxes are flattened and the footer is placed below the newest', () => {
+  assert(hasClass($('list'), 'gmail-reply-flat'), 'list flattened');
+  assert(hasClass($('wrap'), 'gmail-reply-flat'), 'wrapper flattened');
+  assert(hasClass($('footer'), 'gmail-reply-below'), 'footer tagged');
+  assert(hasClass($('main'), 'gmail-reply-host'), 'host tagged');
+  assert(hasClass($('subject'), 'gmail-reply-lead'), 'subject stays first');
+  assert(hasClass($('spacer'), 'gmail-reply-tail'), 'content after the list goes last');
+});
+
+test('footer sits between the newest and the next message', () => {
+  assert(topOf('m3') < topOf('footer') && topOf('footer') < topOf('m2'), `tops m3=${topOf('m3')} footer=${topOf('footer')} m2=${topOf('m2')}`);
+});
+
+test('scroller of the visible conversation gets the dark background', () => {
+  assert(hasClass($('scroller'), 'gtr-thread-scroller'));
+  assertEqual(getComputedStyle($('scroller')).backgroundColor, 'rgb(31, 31, 31)');
+});
+
+test('conversation background is dark', () => {
+  assertEqual(getComputedStyle($('main')).backgroundColor, 'rgb(31, 31, 31)');
+});
+
+test('a message added later is picked up and reversed', async () => {
+  $('list').insertAdjacentHTML('beforeend', '<div class="msg" id="m4"><div class="inner"><div class="adn"><div class="a3s"><p style="color:#000">New</p></div></div></div></div>');
+  await waitFor(() => $('m4').style.order === '2', 2000);
+  assertEqual($('m4').style.order, '2', 'new newest');
+  assertEqual($('m3').style.order, '4');
+  assertEqual($('m4').querySelector('p').style.getPropertyValue('--gtr-fg').trim(), 'rgba(227, 227, 227, 1)', 'its body colors are adapted');
+});
+
+test('turning newest-first off restores Gmail order and removes the reply layout', async () => {
+  chrome.storage.sync.set({ reverseOrder: false });
+  await waitFor(() => !hasClass($('list'), 'gmail-thread-reversed'), 2000);
+  assert(!hasClass($('list'), 'gmail-thread-reversed'));
+  assertEqual($('m1').style.order, '', 'orders cleared');
+  assert(!hasClass($('list'), 'gmail-reply-flat') && !hasClass($('footer'), 'gmail-reply-below'), 'reply classes removed');
+  assert(topOf('m1') < topOf('m2'), 'oldest first again');
+});
+
+test('turning dark mode off removes the dark class', async () => {
+  chrome.storage.sync.set({ smartDark: false });
+  await waitFor(() => !hasClass(html, 'gmail-dark-active'), 2000);
+  assert(!hasClass(html, 'gmail-dark-active'));
+  assert(getComputedStyle($('main')).backgroundColor !== 'rgb(31, 31, 31)', 'thread background back to Gmail');
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

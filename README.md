@@ -46,6 +46,17 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
 - `popup.html` & `popup.js` & `popup.css`: ツールバー設定ポップアップ / Extension popup settings UI
 - `_locales/<lang>/messages.json`: 表示文字列（英語 `en` が既定） / UI strings per language (`en` is the default)
 - `icons/`: アイコンアセット (16x16, 48x48, 128x128 PNG) / App icons
+- `tests/`: 自動テスト（ストア用の ZIP には含まれません） / Automated tests (not part of the store package)
+
+### テストの実行 / Running the tests
+
+```
+python3 tests/run.py          # すべて / everything
+python3 tests/run.py theme    # 名前に "theme" を含むものだけ / only suites whose name contains "theme"
+```
+
+- 日本語: Python 3 と Google Chrome だけで動きます（ほかのインストールは不要）。言語ファイル・manifest・CSS の書き方を確かめる静的チェックと、Gmail を模したページで実物の content.js・styles.css・popup をヘッドレス Chrome で動かすテストがあります。時間のかかる待ち（10 秒など）は Chrome の仮想時間で早送りするので、全体で数秒で終わります。
+- English: Needs only Python 3 and Google Chrome. Static checks cover the locale files, the manifest and CSS pitfalls; browser suites run the real content.js, styles.css and popup in headless Chrome on a small Gmail-like page with a fake `chrome.*` API. Long waits (such as 10 seconds) are fast-forwarded with Chrome's virtual time, so the whole run takes a few seconds.
 
 ---
 

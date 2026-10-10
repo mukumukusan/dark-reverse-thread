@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gmail theme detection</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #111111; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>buildGmail(); window.__GTR_MOCK__ = {};</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const lightLog = () => gtrStorageLog.filter((e) => e.area === 'local' && 'gmailLightTheme' in (e.items || {})).map((e) => e.items.gmailLightTheme);
+
+test('a dark Gmail background is detected as the dark theme', async () => {
+  await waitFor(() => hasClass(html, 'gtr-gmail-dark-theme'), 2000);
+  assert(hasClass(html, 'gtr-gmail-dark-theme'));
+  assertEqual(gtrStores.local.gmailLightTheme, false, 'result saved for the popup and the next load');
+});
+
+test('switching Gmail to a light theme is noticed within about a second', async () => {
+  await sleep(1200); // leave the throttle window of the first check
+  document.body.style.background = '#ffffff';
+  document.body.appendChild(document.createElement('div')); // any page change triggers a check
+  await waitFor(() => !hasClass(html, 'gtr-gmail-dark-theme'), 1500);
+  assert(!hasClass(html, 'gtr-gmail-dark-theme'));
+  assertEqual(gtrStores.local.gmailLightTheme, true);
+});
+
+test('a change right after a check is caught by the trailing check', async () => {
+  document.body.appendChild(document.createElement('div')); // check runs now (light)
+  await sleep(50);
+  document.body.style.background = '#111111';
+  document.body.appendChild(document.createElement('div')); // inside the throttle window: skipped
+  await sleep(100);
+  assert(!hasClass(html, 'gtr-gmail-dark-theme'), 'not checked yet');
+  await waitFor(() => hasClass(html, 'gtr-gmail-dark-theme'), 1500);
+  assert(hasClass(html, 'gtr-gmail-dark-theme'), 'trailing check saw the dark background');
+});
+
+test('an unchanged result is not written again', async () => {
+  const writes = lightLog().length;
+  for (let i = 0; i < 3; i++) {
+    document.body.appendChild(document.createElement('div'));
+    await sleep(1100);
+  }
+  assertEqual(lightLog().length, writes);
+});
+
+test('a picture theme (transparent background) is not judged', async () => {
+  const before = hasClass(html, 'gtr-gmail-dark-theme');
+  document.body.style.background = 'transparent';
+  await sleep(1100);
+  document.body.appendChild(document.createElement('div'));
+  await sleep(1200);
+  assertEqual(hasClass(html, 'gtr-gmail-dark-theme'), before);
+});
+
+test('the search box is darkened on the dark theme', () => {
+  const form = document.createElement('form');
+  form.setAttribute('role', 'search');
+  document.body.appendChild(form);
+  assertEqual(getComputedStyle(form).backgroundColor, 'rgb(60, 64, 67)');
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

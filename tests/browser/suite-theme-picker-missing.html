@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Theme picker when Gmail's controls are missing</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0;  }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>buildGmail({ header: false }); window.__GTR_MOCK__ = { local: { gtrOpenThemeAt: 1 } };</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('without the gear the content script answers opened: false', async () => {
+  await sleep(300);
+  const response = await gtrSendMessage({ type: 'gtr-open-theme-settings' });
+  assertEqual(response.opened, false);
+});
+
+test('an old "open the theme picker" marker (over a minute) is ignored and kept', () => {
+  assertEqual(gtrStores.local.gtrOpenThemeAt, 1);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Reply above the newest email</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0;  }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>buildGmail({ composer: true }); window.__GTR_MOCK__ = { sync: { replyPosition: 'top' } };</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const $ = (id) => document.getElementById(id);
+const topOf = (id) => $(id).getBoundingClientRect().top;
+
+test('footer is moved above the message list', async () => {
+  await sleep(500);
+  assert(hasClass($('footer'), 'gmail-reply-footer'), 'footer tagged');
+  assert(hasClass($('wrap'), 'gmail-reply-after'), 'the list wrapper follows the footer');
+  assert(!hasClass($('subject'), 'gmail-reply-after'), 'the subject stays first');
+  assert(topOf('subject') < topOf('footer') && topOf('footer') < topOf('m3'), `tops subject=${topOf('subject')} footer=${topOf('footer')} m3=${topOf('m3')}`);
+});
+
+test('the inline composer is shown first inside the newest message', () => {
+  assert(hasClass($('composer'), 'gmail-reply-above'), 'composer block tagged');
+  assert(topOf('composer') < topOf('body3'), `composer=${topOf('composer')} body=${topOf('body3')}`);
+});
+
+test('no "bottom" layout classes are left', () => {
+  assert(!hasClass($('footer'), 'gmail-reply-below') && !hasClass($('list'), 'gmail-reply-flat'));
+});
+
+test('switching to "bottom" swaps the layout', async () => {
+  chrome.storage.sync.set({ replyPosition: 'bottom' });
+  await waitFor(() => hasClass($('footer'), 'gmail-reply-below'), 2000);
+  assert(hasClass($('footer'), 'gmail-reply-below'));
+  assert(!hasClass($('footer'), 'gmail-reply-footer') && !hasClass($('composer'), 'gmail-reply-above'), 'top classes removed');
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

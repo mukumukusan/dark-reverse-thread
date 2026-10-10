@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Scroller background follows the thread</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0;  }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>buildGmail(); window.__GTR_MOCK__ = {};
+// Headless Chrome under virtual time does not render frames, so the real ResizeObserver never reports.
+// A fake one records what the extension observes and lets the tests deliver the size reports.
+window.FakeResizeObservers = [];
+window.ResizeObserver = class {
+  constructor(callback) { this.callback = callback; this.targets = new Set(); FakeResizeObservers.push(this); }
+  observe(target) { this.targets.add(target); }
+  unobserve(target) { this.targets.delete(target); }
+  disconnect() { this.targets.clear(); }
+  report() { if (this.targets.size) this.callback([...this.targets].map((target) => ({ target })), this); }
+};
+window.reportSizes = () => FakeResizeObservers.forEach((observer) => observer.report());
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const $ = (id) => document.getElementById(id);
+
+test('the scroller is tagged while the thread is shown', async () => {
+  await sleep(400);
+  assert(hasClass($('scroller'), 'gtr-thread-scroller'));
+});
+
+test('the thread view is watched for size changes', () => {
+  assert(FakeResizeObservers.some((observer) => observer.targets.has($('main'))));
+});
+
+// Hiding or showing the view changes no nodes, so no batched pass runs: only the size report can react
+// Inline !important: the reply layout gives the view display: flex !important
+const setShown = (shown) => (shown ? $('main').style.removeProperty('display') : $('main').style.setProperty('display', 'none', 'important'));
+
+test('hiding the thread untags the scroller as soon as the size is reported', async () => {
+  setShown(false);
+  assert($('main').offsetParent === null, 'the view is really hidden');
+  await sleep(500);
+  assert(hasClass($('scroller'), 'gtr-thread-scroller'), 'nothing else removes the tag');
+  reportSizes();
+  assert(!hasClass($('scroller'), 'gtr-thread-scroller'), 'removed synchronously in the report');
+});
+
+test('showing it again tags the scroller again', () => {
+  setShown(true);
+  reportSizes();
+  assert(hasClass($('scroller'), 'gtr-thread-scroller'));
+});
+
+test('a removed conversation loses .gtr-thread', async () => {
+  $('subject').remove();
+  $('list').remove();
+  window.dispatchEvent(new HashChangeEvent('hashchange'));
+  await waitFor(() => !hasClass($('main'), 'gtr-thread'), 2000);
+  assert(!hasClass($('main'), 'gtr-thread'));
+  assert(!FakeResizeObservers.some((observer) => observer.targets.has($('main'))), 'no longer watched');
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

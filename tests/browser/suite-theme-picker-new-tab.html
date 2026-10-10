@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Theme picker in a new Gmail tab</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0;  }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+// The header appears a little later, as in a real Gmail tab that is still starting
+window.__GTR_MOCK__ = { local: { gtrOpenThemeAt: Date.now() } };
+setTimeout(() => {
+  buildGmail();
+  const gear = document.getElementById('gear');
+  gear.addEventListener('click', () => {
+    window.gearClicks = (window.gearClicks || 0) + 1;
+    gear.setAttribute('aria-expanded', 'true');
+  });
+}, 1200);
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('a fresh marker opens the panel once Gmail\'s header is ready, and is removed', async () => {
+  await waitFor(() => document.getElementById('gear') && document.getElementById('gear').getAttribute('aria-expanded') === 'true', 5000);
+  assertEqual(document.getElementById('gear').getAttribute('aria-expanded'), 'true');
+  assert(!('gtrOpenThemeAt' in gtrStores.local), 'marker removed so other tabs do not react');
+});
+
+test('the gear is pressed only until the panel is open', async () => {
+  const clicks = window.gearClicks;
+  await sleep(2000);
+  assertEqual(window.gearClicks, clicks);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

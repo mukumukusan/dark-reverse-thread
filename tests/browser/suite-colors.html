@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Email body colors</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0;  }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+// A transparent 40x40 logo and a 2x2 spacer, drawn on canvases so no files are needed
+const png = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c.toDataURL(); };
+document.getElementById('body1').insertAdjacentHTML('beforeend', `
+  <span id="black" style="color: #000000">black</span>
+  <span id="red" style="color: #ff0000">red</span>
+  <a id="link" style="color: #1a0dab">link</a>
+  <span id="light-text" style="color: #e0e0e0">already light</span>
+  <div id="white-bg" style="background: #ffffff">white</div>
+  <div id="yellow-bg" style="background: #ffff00"><img id="logo-on-yellow" src="${png(40, 40)}"></div>
+  <div id="dark-bg" style="background: #101010">dark</div>
+  <div id="half-bg" style="background: rgba(255, 255, 255, 0.5)">half</div>
+  <img id="logo" src="${png(40, 40)}">
+  <img id="big" src="${png(400, 200)}">
+  <img id="spacer" src="${png(2, 2)}">`);
+window.__GTR_MOCK__ = {};
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const $ = (id) => document.getElementById(id);
+const fg = (id) => $(id).style.getPropertyValue('--gtr-fg').trim();
+const bg = (id) => $(id).style.getPropertyValue('--gtr-bg').trim();
+const color = (id) => getComputedStyle($(id)).color;
+const background = (id) => getComputedStyle($(id)).backgroundColor;
+
+test('black text becomes light grey', async () => {
+  await sleep(500);
+  assertEqual(fg('black'), 'rgba(227, 227, 227, 1)');
+  assertEqual(color('black'), 'rgb(227, 227, 227)', 'applied by styles.css');
+});
+
+test('red text keeps its hue and gets lighter', () => {
+  assertEqual(color('red'), 'rgb(255, 77, 77)');
+});
+
+test('a dark blue link becomes a lighter blue', () => {
+  assertEqual(color('link'), 'rgb(102, 89, 242)');
+});
+
+test('text that is already light keeps its lightness', () => {
+  assertEqual(color('light-text'), 'rgb(224, 224, 224)');
+});
+
+test('white backgrounds turn dark', () => {
+  assertEqual(background('white-bg'), 'rgb(31, 31, 31)');
+});
+
+test('a yellow highlight becomes a dark shade of the same hue', () => {
+  assertEqual(background('yellow-bg'), 'rgb(112, 112, 0)');
+});
+
+test('dark backgrounds stay dark', () => {
+  assertEqual(background('dark-bg'), 'rgb(16, 16, 16)');
+});
+
+test('alpha is kept', () => {
+  assertEqual(bg('half-bg'), 'rgba(31, 31, 31, 0.5)');
+});
+
+test('original colors are kept for turning dark mode off', () => {
+  assertEqual($('black').style.getPropertyValue('--gtr-fg0').trim(), 'rgba(0, 0, 0, 1)');
+  assertEqual($('white-bg').style.getPropertyValue('--gtr-bg0').trim(), 'rgba(255, 255, 255, 1)');
+});
+
+test('elements without their own background are not given one', () => {
+  assert(!$('black').hasAttribute('data-gtr-bg'));
+});
+
+test('a transparent logo gets a softened white backdrop and a card frame', async () => {
+  await waitFor(() => $('logo').hasAttribute('data-gtr-img'), 2000);
+  assertEqual($('logo').style.getPropertyValue('--gtr-img-bg').trim(), 'rgb(232, 234, 237)');
+  assert($('logo').hasAttribute('data-gtr-img-card'), 'logo-sized image is a card');
+  assertEqual(getComputedStyle($('logo')).backgroundColor, 'rgb(232, 234, 237)');
+});
+
+test('a logo on a colored box gets that original color as its backdrop', async () => {
+  await waitFor(() => $('logo-on-yellow').hasAttribute('data-gtr-img'), 2000);
+  assertEqual($('logo-on-yellow').style.getPropertyValue('--gtr-img-bg').trim(), 'rgba(255, 255, 0, 1)');
+});
+
+test('large images get a backdrop but no card frame', async () => {
+  await waitFor(() => $('big').hasAttribute('data-gtr-img'), 2000);
+  assert(!$('big').hasAttribute('data-gtr-img-card'));
+});
+
+test('tiny images (spacers, tracking pixels) are left alone', async () => {
+  await sleep(200);
+  assert(!$('spacer').hasAttribute('data-gtr-img'));
+});
+
+test('turning dark mode off shows the original colors again', async () => {
+  chrome.storage.sync.set({ smartDark: false });
+  await waitFor(() => !hasClass(html, 'gmail-dark-active'), 2000);
+  assertEqual(color('black'), 'rgb(0, 0, 0)');
+  assertEqual(background('white-bg'), 'rgb(255, 255, 255)');
+  assertEqual(background('yellow-bg'), 'rgb(255, 255, 0)');
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

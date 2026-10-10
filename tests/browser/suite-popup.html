@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Settings popup</title></head>
+<body>
+  <script src="harness.js"></script>
+  <script>
+    /**
+     * Loads the real popup.html into an iframe with the chrome mock injected first, so popup.js runs
+     * against a configurable fake. Resolves with the popup's window once its scripts have run.
+     */
+    let messagesEn;
+    async function openPopup(mock) {
+      if (!messagesEn) {
+        const raw = await (await fetch('../../_locales/en/messages.json')).json();
+        messagesEn = Object.fromEntries(Object.entries(raw).map(([key, value]) => [key, value.message]));
+      }
+      const source = await (await fetch('../../popup.html')).text();
+      const config = JSON.stringify({ messages: messagesEn, version: '9.9.9', ...mock });
+      const injected = source
+        .replace('<head>', '<head><base href="../../">')
+        .replace('<script src="settings.js"><\/script>', // escaped: a literal end tag would close this script
+          `<script>window.__GTR_MOCK__ = ${config};<\/script><script src="tests/browser/chrome-mock.js"><\/script><script src="settings.js"><\/script>`);
+      const frame = document.createElement('iframe');
+      frame.style.width = '320px';
+      frame.style.height = '700px';
+      document.body.appendChild(frame);
+      frame.srcdoc = injected;
+      await new Promise((resolve) => frame.addEventListener('load', resolve, { once: true }));
+      await sleep(100); // storage callbacks
+      frame.contentWindow.close = () => { frame.contentWindow.__closed = true; };
+      return frame.contentWindow;
+    }
+    const visible = (win, id) => !win.document.getElementById(id).hidden;
+
+    test('UI text comes from the locale file', async () => {
+      const win = await openPopup({});
+      assertEqual(win.document.querySelector('h2').textContent, messagesEn.extShortName);
+      assertEqual(win.document.querySelector('label[for="smartDark"]').textContent, messagesEn.settingDark);
+      assertEqual(win.document.getElementById('version').textContent, 'v9.9.9');
+    });
+
+    test('defaults are shown when nothing is saved', async () => {
+      const win = await openPopup({});
+      const d = win.document;
+      assertEqual(d.getElementById('smartDark').checked, true);
+      assertEqual(d.getElementById('reverseOrder').checked, true);
+      assertEqual(d.getElementById('replyPosition').value, 'bottom');
+      assertEqual(d.getElementById('showQuickBar').checked, false);
+    });
+
+    test('saved settings are shown', async () => {
+      const win = await openPopup({ sync: { smartDark: false, replyPosition: 'top', showQuickBar: true } });
+      const d = win.document;
+      assertEqual(d.getElementById('smartDark').checked, false);
+      assertEqual(d.getElementById('replyPosition').value, 'top');
+      assertEqual(d.getElementById('showQuickBar').checked, true);
+    });
+
+    test('changing a setting saves it', async () => {
+      const win = await openPopup({});
+      const box = win.document.getElementById('smartDark');
+      box.checked = false;
+      box.dispatchEvent(new Event('change'));
+      await sleep(50);
+      assertEqual(win.gtrStores.sync.smartDark, false);
+    });
+
+    test('the reply position is disabled while newest-first is off', async () => {
+      const win = await openPopup({ sync: { reverseOrder: false } });
+      const d = win.document;
+      assertEqual(d.getElementById('replyPosition').disabled, true);
+      assertEqual(d.getElementById('replyDesc').textContent, messagesEn.replyNeedsReverse);
+    });
+
+    test('on Gmail\'s dark theme: only the small theme link is shown', async () => {
+      const win = await openPopup({ local: { gmailLightTheme: false } });
+      assert(!visible(win, 'themeTip'), 'tip hidden');
+      assert(visible(win, 'themeLink'), 'link shown');
+    });
+
+    test('before Gmail was ever opened: the link is shown', async () => {
+      const win = await openPopup({});
+      assert(!visible(win, 'themeTip') && visible(win, 'themeLink'));
+    });
+
+    test('on a light Gmail theme: the tip with its button replaces the link', async () => {
+      const win = await openPopup({ local: { gmailLightTheme: true } });
+      assert(visible(win, 'themeTip'), 'tip shown');
+      assert(!visible(win, 'themeLink'), 'link hidden');
+      assertEqual(win.getComputedStyle(win.document.getElementById('themeLink')).display, 'none');
+    });
+
+    test('in a Gmail tab, the link asks the page to open the theme picker and closes the popup', async () => {
+      const win = await openPopup({ sendMessageResponse: { opened: true } });
+      win.document.getElementById('openThemeLink').click();
+      await sleep(50);
+      assertEqual(win.__gtrSent && win.__gtrSent.type, 'gtr-open-theme-settings');
+      assert(win.__closed, 'popup closed');
+      assert(!win.__gtrCreated, 'no new tab');
+    });
+
+    test('in another tab, a new Gmail tab is opened with a marker', async () => {
+      const win = await openPopup({ sendMessageThrows: true });
+      win.document.getElementById('openTheme').click();
+      await sleep(50);
+      assert(win.__gtrCreated && win.__gtrCreated.url.startsWith('https://mail.google.com/'), 'Gmail tab opened');
+      assert(Math.abs(Date.now() - win.gtrStores.local.gtrOpenThemeAt) < 5000, 'fresh marker saved');
+    });
+
+    test('in a Gmail tab without the gear, the popup stays open and opens nothing', async () => {
+      const win = await openPopup({ sendMessageResponse: { opened: false } });
+      win.document.getElementById('openThemeLink').click();
+      await sleep(50);
+      assert(!win.__closed && !win.__gtrCreated);
+    });
+
+    runTests();
+  </script>
+</body>
+</html>

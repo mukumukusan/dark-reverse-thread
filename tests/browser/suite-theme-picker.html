@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Opening Gmail's theme picker</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0;  }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+// Gmail's behavior in miniature: the gear opens quick settings with "View all", which opens the dialog
+const gear = document.getElementById('gear');
+gear.addEventListener('click', () => {
+  window.gearClicks = (window.gearClicks || 0) + 1;
+  gear.setAttribute('aria-expanded', 'true');
+  if (document.querySelector('[jsname="JFZqac"]')) return;
+  const viewAll = document.createElement('button');
+  viewAll.setAttribute('jsname', 'JFZqac');
+  viewAll.textContent = 'View all';
+  viewAll.addEventListener('click', () => {
+    window.viewAllClicks = (window.viewAllClicks || 0) + 1;
+    document.body.insertAdjacentHTML('beforeend',
+      '<div role="dialog"><div role="option" bgid="basicwhite">Default</div><div role="option" bgid="basicblack" id="dark-tile">Dark</div></div>');
+  });
+  document.body.appendChild(viewAll);
+});
+window.__GTR_MOCK__ = {};
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('the popup message opens the gear, then "View all", then points at the Dark theme', async () => {
+  await sleep(300);
+  const response = await gtrSendMessage({ type: 'gtr-open-theme-settings' });
+  assertEqual(response.opened, true);
+  await waitFor(() => document.getElementById('dark-tile'), 2000);
+  await waitFor(() => document.getElementById('dark-tile').hasAttribute('data-gtr-suggest'), 2000);
+  assert(document.getElementById('dark-tile').hasAttribute('data-gtr-suggest'), 'Dark tile outlined');
+  assertEqual(window.viewAllClicks, 1);
+});
+
+test('the Dark tile pulses (styles.css)', () => {
+  assert(getComputedStyle(document.getElementById('dark-tile')).animationName.includes('gtr-suggest-pulse'));
+});
+
+test('the extension never picks or saves a theme itself', () => {
+  assert(!document.querySelector('[aria-selected="true"]'));
+});
+
+test('other messages are ignored', async () => {
+  let answered = false;
+  gtrSendMessage({ type: 'something-else' }).then(() => { answered = true; });
+  await sleep(100);
+  assert(!answered);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>
