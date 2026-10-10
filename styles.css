@@ -634,52 +634,50 @@
 
 /* 右上の「あ」の入力ツールのメニュー（.d-Na-JG-M）と、そこから開く「入力ツールの設定」（.d-Qs-Md）。
    どちらも入力ツール専用の部品で、メニューの項目から設定を開くため、押した場所では判定せずに暗くする。
-   アイコンは画像なので反転して明るくする。
-   Gmail の外枠の部品なので、Gmail がダークテーマのとき（.gtr-gmail-dark-theme）だけ */
-.gmail-dark-active.gtr-gmail-dark-theme :is(.d-Na-JG-M, .d-Qs-Md) {
+   アイコンは画像なので反転して明るくする */
+.gmail-dark-active :is(.d-Na-JG-M, .d-Qs-Md) {
   background-color: var(--gtr-dark-surface) !important;
   border-color: var(--gtr-dark-raised) !important;
   color: var(--gtr-dark-text) !important;
 }
 
-.gmail-dark-active.gtr-gmail-dark-theme .d-Na-JG-M .d-Na-N,
-.gmail-dark-active.gtr-gmail-dark-theme .d-Na-JG-M .d-Na-N *,
-.gmail-dark-active.gtr-gmail-dark-theme .d-Qs-Md :is(div, span, li, label, a, td, button) {
+.gmail-dark-active .d-Na-JG-M .d-Na-N,
+.gmail-dark-active .d-Na-JG-M .d-Na-N *,
+.gmail-dark-active .d-Qs-Md :is(div, span, li, label, a, td, button) {
   color: var(--gtr-dark-text) !important;
   border-color: var(--gtr-dark-raised) !important;
 }
 
-.gmail-dark-active.gtr-gmail-dark-theme .d-Na-JG-M .d-Na-N.d-Na-N-JW {
+.gmail-dark-active .d-Na-JG-M .d-Na-N.d-Na-N-JW {
   background-color: var(--gtr-dark-raised) !important;
 }
 
-.gmail-dark-active.gtr-gmail-dark-theme .d-Na-JG-M .d-Na-axR {
+.gmail-dark-active .d-Na-JG-M .d-Na-axR {
   background-color: var(--gtr-dark-raised) !important;
   border-color: var(--gtr-dark-raised) !important;
 }
 
-.gmail-dark-active.gtr-gmail-dark-theme .d-Qs-Md :is(a.d-Qs-aLg, .d-Qs-aAL-at6-I) {
+.gmail-dark-active .d-Qs-Md :is(a.d-Qs-aLg, .d-Qs-aAL-at6-I) {
   background-color: var(--gtr-dark-raised) !important;
   background-image: none !important;
 }
 
-.gmail-dark-active.gtr-gmail-dark-theme :is(.d-Na-JG-M, .d-Qs-Md) :is([class*="ita-icon"], .J-ayz-JX, [class*="-K1-JX"], [class*="-Kp"], .d-Qs-Jq-ax3) {
+.gmail-dark-active :is(.d-Na-JG-M, .d-Qs-Md) :is([class*="ita-icon"], .J-ayz-JX, [class*="-K1-JX"], [class*="-Kp"], .d-Qs-Jq-ax3) {
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
-/* 左上の「作成」ボタン（サイドバー）。Gmail のダークテーマでは白いボタンだけが浮いて見えるので暗い灰色にし、
-   鉛筆アイコン（画像）は反転する。明るいテーマでは Gmail の水色のボタンがなじむので変えない */
-.gmail-dark-active.gtr-gmail-dark-theme [gh="cm"].T-I-KE {
+/* 左上の「作成」ボタン（サイドバー）。白いボタンだけが浮いて見えるので暗い灰色にし、鉛筆アイコン（画像）は反転する */
+.gmail-dark-active [gh="cm"].T-I-KE {
   background-color: var(--gtr-dark-raised) !important;
   color: var(--gtr-dark-text-strong) !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
-.gmail-dark-active.gtr-gmail-dark-theme [gh="cm"].T-I-KE:hover {
+.gmail-dark-active [gh="cm"].T-I-KE:hover {
   background-color: var(--gtr-dark-raised-hover) !important;
 }
 
-.gmail-dark-active.gtr-gmail-dark-theme [gh="cm"].T-I-KE::before {
+.gmail-dark-active [gh="cm"].T-I-KE::before {
   filter: invert(1) hue-rotate(180deg) !important;
 }
 

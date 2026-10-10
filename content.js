@@ -629,11 +629,8 @@
     if (!(event.target instanceof Element)) return;
     // A press on a menu item keeps the note: the menu stays open (dark) until the button is released
     if (event.target.closest('[role="menu"], .J-M, .tB5Jxf-M-X')) return;
-    // The thread is always dark. The toolbar (left / right part) and the advanced search panel belong
-    // to Gmail's frame, so their menus are darkened only on Gmail's dark theme
-    const frameIsDark = document.documentElement.classList.contains(GMAIL_DARK_THEME_CLASS);
-    const fromDarkArea = event.target.closest('.gtr-thread') !== null ||
-      (frameIsDark && event.target.closest('[gh="mtb"], [gh="tm"], .SK.ZF-zT') !== null);
+    // thread, toolbar (left / right part), advanced search panel
+    const fromDarkArea = event.target.closest('.gtr-thread, [gh="mtb"], [gh="tm"], .SK.ZF-zT') !== null;
     document.documentElement.classList.toggle(MENU_SOURCE_CLASS, fromDarkArea);
   }, true);
 
