@@ -628,8 +628,8 @@
    */
   const MENU_SOURCE_CLASS = 'gtr-menu-source';
   const MENU_SELECTOR = '[role="menu"], .J-M, .tB5Jxf-M-X';
-  // thread, toolbar (left / right part), advanced search panel
-  const DARK_MENU_AREAS = '.gtr-thread, [gh="mtb"], [gh="tm"], .SK.ZF-zT';
+  // thread, compose window, toolbar (left / right part), advanced search panel
+  const DARK_MENU_AREAS = '.gtr-thread, .Hd[role="dialog"], [gh="mtb"], [gh="tm"], .SK.ZF-zT';
 
   document.addEventListener('pointerdown', (event) => {
     if (!(event.target instanceof Element)) return;

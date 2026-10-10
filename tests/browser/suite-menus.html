@@ -49,6 +49,12 @@ test('the toolbars count as dark areas', () => {
   assert(hasClass(html, SOURCE), 'right toolbar');
 });
 
+test('the compose window counts as a dark area (link / emoji popups opened from it)', () => {
+  press('outside');
+  press('compose-button');
+  assert(hasClass(html, SOURCE));
+});
+
 test('hovering a dark area notes the source (menus that open on hover)', () => {
   press('outside');
   hover('count-label');

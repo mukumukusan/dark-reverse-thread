@@ -31,6 +31,7 @@ window.buildGmail = (options = {}) => {
       </div>
     </div>
     <div id="elsewhere"><button id="outside">outside</button></div>
+    <div class="Hd" role="dialog" id="compose-window"><button id="compose-button">Aa</button></div>
     <div class="J-M" role="menu" id="menu" style="position: absolute; top: 0; left: 400px; width: 120px">
       <div role="menuitem" id="menu-item">Item</div>
     </div>`);

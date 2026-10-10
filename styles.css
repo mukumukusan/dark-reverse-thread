@@ -557,7 +557,7 @@
   border-color: var(--gtr-dark-raised) !important;
 }
 
-.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is(.aqdrmf-Kf-KkROqb, .J-N-JX, .J-Ph-hFsbo) {
+.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is(.aqdrmf-Kf-KkROqb, .J-N-JX, .J-Ph-hFsbo, .J-N-Jo) {
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
@@ -639,6 +639,7 @@
 
 /* チェックボックスとカレンダーのアイコン（疑似要素の画像） */
 .gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT label.bs3::before,
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT label.aD::before,
 .gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .bs5::after {
   filter: invert(1) hue-rotate(180deg) !important;
 }
@@ -701,6 +702,79 @@
   50% { box-shadow: 0 0 0 4px #8ab4f8, 0 0 0 14px rgba(138, 180, 248, 0.55); }
 }
 
+/* 「ラベルを付ける」サブメニューの検索欄（メニューは暗くなるが入力欄だけ白く残る） */
+.gmail-dark-active.gtr-menu-source .J-M input.bqf {
+  background-color: var(--gtr-dark-raised) !important;
+  color: var(--gtr-dark-text) !important;
+}
+
+/* 返信欄・作成ウィンドウから開く「リンクを挿入」（.eVDL2-aLs）と「絵文字を挿入」（.aM7）。どちらもページ直下に
+   作られるので、メニューと同じく gtr-menu-source の間だけ暗くする */
+.gmail-dark-active.gtr-menu-source :is(.eVDL2-aLs, .aM7) {
+  background-color: var(--gtr-dark-surface) !important;
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active.gtr-menu-source :is(.eVDL2-aLs, .aM7) :is(span, div, label, input) {
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active.gtr-menu-source :is(.eVDL2-aLs, .aM7) input {
+  background-color: transparent !important;
+}
+
+.gmail-dark-active.gtr-menu-source :is(.eVDL2-aLs, .aM7) svg {
+  fill: var(--gtr-dark-text-muted) !important;
+  color: var(--gtr-dark-text-muted) !important;
+}
+
+/* 絵文字の分類ボタンの選択中の背景 */
+.gmail-dark-active.gtr-menu-source .aM7 button.bAr {
+  background-color: var(--gtr-dark-raised) !important;
+}
+
+/* スヌーズの「日付と時間を選択」・返信の「送信日時の設定」などのダイアログ（.uW2Fw-bHo）。Gmail のダークテーマでも
+   白いまま出る。Gmail の外枠の部品なので、ダークテーマのときだけ */
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo {
+  background-color: var(--gtr-dark-surface) !important;
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo :is(span, div, label, td, th, li) {
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo input {
+  background-color: transparent !important;
+  color: var(--gtr-dark-text) !important;
+}
+
+/* ダイアログの中のカレンダー（詳細検索のカレンダーと同じ部品）。過ぎた日付（.J-JB-KA-a1R-JB）は選べないので控えめに */
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo .J-JB-KA,
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo .J-JB-KA :is(tr, th, td, button) {
+  background-color: transparent !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo .J-JB-KA th {
+  color: var(--gtr-dark-text-muted) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo .J-JB-KA :is(td.J-JB-KA-Ku-Kk, td.J-JB-KA-a1R-JB) {
+  color: var(--gtr-dark-text-subtle) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo .J-JB-KA td:hover::before {
+  background-color: var(--gtr-dark-raised) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo .J-JB-KA td.J-JB-KA-K8::before {
+  border-color: var(--gtr-dark-link) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo .J-JB-KA :is(.J-JB-KA-bsP, .J-JB-KA-bsO) {
+  filter: invert(1) !important;
+}
+
 /* 右上の「あ」の入力ツールのメニュー（.d-Na-JG-M）と、そこから開く「入力ツールの設定」（.d-Qs-Md）。
    どちらも入力ツール専用の部品で、メニューの項目から設定を開くため、押した場所では判定せずに暗くする。
    アイコンは画像なので反転して明るくする */
@@ -748,6 +822,48 @@
 
 .gmail-dark-active [gh="cm"].T-I-KE::before {
   filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* プレビューのない添付ファイルのカード（a.aQy・サムネイル部分 .aSG）と、マウスを乗せたときの覆い（.aYy） */
+.gmail-dark-active .gtr-thread :is(a.aQy, .aQy .aSG) {
+  background-color: var(--gtr-dark-surface) !important;
+}
+
+.gmail-dark-active .gtr-thread .aQy .aYy {
+  background-color: var(--gtr-dark-surface-high) !important;
+  border-color: var(--gtr-dark-raised) !important;
+}
+
+.gmail-dark-active .gtr-thread .aQy :is(.aV3, .aYy *) {
+  color: var(--gtr-dark-text) !important;
+}
+
+/* 宛先の「▾」で開く詳細（From / To / 日付など）のポップアップ（.ajA）。白い背景に明るい文字で読めなかった */
+.gmail-dark-active .gtr-thread .ajA {
+  background-color: var(--gtr-dark-surface) !important;
+  border-color: var(--gtr-dark-raised) !important;
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active .gtr-thread .ajA * {
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active .gtr-thread .ajA .gI {
+  color: var(--gtr-dark-text-subtle) !important;
+}
+
+.gmail-dark-active .gtr-thread .ajA a {
+  color: var(--gtr-dark-link) !important;
+}
+
+/* 書式バーの右端の「元に戻す／やり直す」（.Bswxkd） */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .Bswxkd {
+  background-color: var(--gtr-dark-raised) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .Bswxkd svg {
+  fill: var(--gtr-dark-text-muted) !important;
 }
 
 /* 添付ファイル欄の見出し（「添付ファイル N 件」・「すべてをドライブに追加」など）。
