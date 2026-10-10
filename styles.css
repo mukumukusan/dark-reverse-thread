@@ -644,6 +644,16 @@
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
+/* フィルタ作成の画面：左上の戻る矢印（.btl.acK、画像）と、下の「ヘルプ」リンク（a.btn と「?」の画像） */
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .btl.acK,
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT a.btn::before {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT a.btn {
+  color: var(--gtr-dark-text-muted) !important;
+}
+
 .gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .mUIrbf-anl {
   color: var(--gtr-dark-link) !important;
 }
