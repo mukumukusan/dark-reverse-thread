@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gmail surfaces on a light theme</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #ffffff; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+// Gmail surfaces fixed one by one in the full sweep (class names as in Gmail)
+document.getElementById('body1').insertAdjacentHTML('afterend', `
+  <a class="aQy" id="attachment"><div class="aSG" id="attachment-thumb"></div><div class="aYy" id="attachment-cover"><span>name.xlsx</span></div><span class="aV3" id="attachment-name">name.xlsx</span></a>
+  <div class="ajA SK" id="details"><span class="gI" id="details-label">From:</span><span id="details-name">Someone</span></div>`);
+document.getElementById('m3').querySelector('.inner').insertAdjacentHTML('beforeend', '<div class="Bswxkd" id="undo"></div>');
+document.body.insertAdjacentHTML('beforeend', `
+  <div class="J-M" role="menu" id="label-menu"><input class="bqf" id="label-search"><div class="J-N-Jo" id="menu-icon"></div></div>
+  <div class="eVDL2-aLs" id="link-popup"><input id="link-input"></div>
+  <div class="aM7" id="emoji-picker"><button class="bAr" id="emoji-tab">x</button></div>
+  <div class="uW2Fw-bHo" id="date-dialog"><span id="date-title">Pick date</span><div class="J-JB-KA" id="date-calendar"><table><tr><td class="J-JB-KA-a1R-JB" id="past-day">1</td><td class="J-JB-KA-JB" id="day">20</td></tr></table></div></div>
+  <div class="SK ZF-zT" id="search-panel"><div class="btl acK" id="filter-back"></div><label class="aD" id="filter-checkbox">Skip</label><a class="btn" id="filter-help">Help</a></div>
+  <div class="nH fY" role="tablist" id="settings-tabs"><div class="f1">General</div></div>
+  <div class="nH r4" id="settings"><img id="settings-image" src=""><span>Language</span></div>`);
+window.__GTR_MOCK__ = {};
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const $ = (id) => document.getElementById(id);
+const filter = (id) => getComputedStyle($(id)).filter;
+
+test('on a light Gmail theme the theme class stays off', async () => {
+  await sleep(1500);
+  assert(!hasClass(html, 'gtr-gmail-dark-theme'));
+});
+
+test('settings pages are left as Gmail draws them', () => {
+  assertEqual(filter('settings'), 'none');
+  assertEqual(filter('settings-tabs'), 'none');
+});
+
+test('date dialogs are left as Gmail draws them', () => {
+  assert(getComputedStyle($('date-dialog')).backgroundColor !== 'rgb(40, 41, 44)');
+});
+
+test('the thread itself is still dark (the extension\'s own part)', () => {
+  assertEqual(getComputedStyle($('main')).backgroundColor, 'rgb(31, 31, 31)');
+  assertEqual(getComputedStyle($('details')).backgroundColor, 'rgb(40, 41, 44)');
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

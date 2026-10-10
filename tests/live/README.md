@@ -11,6 +11,9 @@
   reload, or a setting is off.
 - **info**: context only (theme background, message header).
 
+Run it once in a conversation and once on a settings page (`#settings/general`): the settings
+checks only run there.
+
 ## How to run
 
 1. Load the extension and open Gmail.

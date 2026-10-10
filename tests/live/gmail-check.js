@@ -88,6 +88,17 @@
     }
   }
 
+  // ---- Settings pages (open #settings to check) ----------------------------------------------------
+  if (location.hash.startsWith('#settings')) {
+    const settings = first('.nH.r4');
+    const tabs = first('.nH.fY[role="tablist"]');
+    add('required', 'settings', 'settings content .nH.r4', settings);
+    add('required', 'settings', 'settings tab strip .nH.fY[role="tablist"]', tabs);
+    if (html.classList.contains('gtr-gmail-dark-theme') && settings) {
+      add('state', 'extension', 'settings page inverted to dark', getComputedStyle(settings).filter.includes('invert'), getComputedStyle(settings).filter);
+    }
+  }
+
   // ---- Theme class -------------------------------------------------------------------------------
   if (bodyLight !== null) {
     add('state', 'extension', 'Gmail theme class matches the background', html.classList.contains('gtr-gmail-dark-theme') === (bodyLight <= 0.5),
@@ -96,7 +107,7 @@
 
   const failed = checks.filter((c) => !c.ok && c.level !== 'info');
   const summary = {
-    page: inThread ? 'conversation' : 'list',
+    page: location.hash.startsWith('#settings') ? 'settings' : inThread ? 'conversation' : 'list',
     darkMode: darkOn,
     passed: checks.filter((c) => c.ok).length,
     failed: failed.length,
