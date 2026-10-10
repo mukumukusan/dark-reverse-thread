@@ -622,16 +622,27 @@
    * other parts of Gmail reuse. Gmail opens them on mouse/pointer down, so the source of the press is
    * noted on <html> before Gmail handles it; styles.css darkens menus only while that note is set, and
    * they are never painted white first.
+   * Some menus open on hover alone (the "1-50 of N" count), so hovering a dark area sets the note too.
+   * Hovering never clears it: on the way from the button to its menu the pointer may cross other parts
+   * of the page, and the open menu must not turn white. Only the next press elsewhere clears it.
    */
   const MENU_SOURCE_CLASS = 'gtr-menu-source';
+  const MENU_SELECTOR = '[role="menu"], .J-M, .tB5Jxf-M-X';
+  // thread, toolbar (left / right part), advanced search panel
+  const DARK_MENU_AREAS = '.gtr-thread, [gh="mtb"], [gh="tm"], .SK.ZF-zT';
 
   document.addEventListener('pointerdown', (event) => {
     if (!(event.target instanceof Element)) return;
     // A press on a menu item keeps the note: the menu stays open (dark) until the button is released
-    if (event.target.closest('[role="menu"], .J-M, .tB5Jxf-M-X')) return;
-    // thread, toolbar (left / right part), advanced search panel
-    const fromDarkArea = event.target.closest('.gtr-thread, [gh="mtb"], [gh="tm"], .SK.ZF-zT') !== null;
+    if (event.target.closest(MENU_SELECTOR)) return;
+    const fromDarkArea = event.target.closest(DARK_MENU_AREAS) !== null;
     document.documentElement.classList.toggle(MENU_SOURCE_CLASS, fromDarkArea);
+  }, true);
+
+  document.addEventListener('pointerover', (event) => {
+    if (event.target instanceof Element && event.target.closest(DARK_MENU_AREAS)) {
+      document.documentElement.classList.add(MENU_SOURCE_CLASS);
+    }
   }, true);
 
   /**
