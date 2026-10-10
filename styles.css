@@ -759,6 +759,23 @@
   color: var(--gtr-dark-text) !important;
 }
 
+/* テーマの選択ダイアログ（同じ .uW2Fw-bHo）：下段のボタンの帯（.a8Y）、見出しの下と区切りの線（.cER4xe・hr.a81）、
+   写真のテーマを選んだときに出る調整の欄（.a7R と中のボタン .T-I） */
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo :is(.a8Y, .a7R) {
+  background-color: var(--gtr-dark-surface) !important;
+  border-color: var(--gtr-dark-raised) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo :is(.cER4xe, hr.a81) {
+  border-color: var(--gtr-dark-raised) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo .a7R .T-I {
+  background-color: var(--gtr-dark-raised) !important;
+  border-color: var(--gtr-dark-outline) !important;
+  background-image: none !important;
+}
+
 /* ダイアログの中のカレンダー（詳細検索のカレンダーと同じ部品）。過ぎた日付（.J-JB-KA-a1R-JB）は選べないので控えめに */
 .gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo .J-JB-KA,
 .gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo .J-JB-KA :is(tr, th, td, button) {

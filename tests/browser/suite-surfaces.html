@@ -20,7 +20,7 @@ document.body.insertAdjacentHTML('beforeend', `
   <div class="J-M" role="menu" id="label-menu"><input class="bqf" id="label-search"><div class="J-N-Jo" id="menu-icon"></div></div>
   <div class="eVDL2-aLs" id="link-popup"><input id="link-input"></div>
   <div class="aM7" id="emoji-picker"><button class="bAr" id="emoji-tab">x</button></div>
-  <div class="uW2Fw-bHo" id="date-dialog"><span id="date-title">Pick date</span><div class="J-JB-KA" id="date-calendar"><table><tr><td class="J-JB-KA-a1R-JB" id="past-day">1</td><td class="J-JB-KA-JB" id="day">20</td></tr></table></div></div>
+  <div class="uW2Fw-bHo" id="date-dialog"><div class="cER4xe" id="dialog-header" style="border-bottom: 1px solid #e1e1e1">Pick date</div><hr class="a81" id="dialog-rule"><div class="a8Y" id="dialog-footer">Cancel</div><span id="date-title">Pick date</span><div class="J-JB-KA" id="date-calendar"><table><tr><td class="J-JB-KA-a1R-JB" id="past-day">1</td><td class="J-JB-KA-JB" id="day">20</td></tr></table></div></div>
   <div class="SK ZF-zT" id="search-panel"><div class="btl acK" id="filter-back"></div><label class="aD" id="filter-checkbox">Skip</label><a class="btn" id="filter-help">Help</a></div>
   <div class="nH fY" role="tablist" id="settings-tabs"><div class="f1">General</div></div>
   <div class="nH r4" id="settings"><img id="settings-image" src=""><span>Language</span></div>`);
@@ -81,6 +81,12 @@ test('date dialogs (snooze, schedule send) are dark, past days muted', () => {
   assertEqual(color('date-title'), 'rgb(227, 227, 227)');
   assertEqual(color('past-day'), 'rgb(154, 160, 166)');
   assertEqual(color('day'), 'rgb(227, 227, 227)');
+});
+
+test('theme dialog: footer strip is dark, separators are subtle', () => {
+  assertEqual(bg('dialog-footer'), SURFACE);
+  assertEqual(getComputedStyle($('dialog-header')).borderBottomColor, 'rgb(60, 64, 67)');
+  assertEqual(getComputedStyle($('dialog-rule')).borderTopColor, 'rgb(60, 64, 67)');
 });
 
 test('filter step: checkbox, back arrow and help icon are inverted, help text is light', () => {
