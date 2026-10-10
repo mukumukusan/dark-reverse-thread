@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Dark Reverse Thread – Modo oscuro para Gmail y lo más nuevo primero"
+    "message": "Dark Reverse Thread – Modo oscuro para Gmail y lo más reciente primero"
   },
   "extShortName": {
     "message": "Dark Reverse Thread"
@@ -54,7 +54,7 @@
     "message": "Recientes"
   },
   "quickNewestTitle": {
-    "message": "Invertir el orden del hilo (lo más nuevo primero)"
+    "message": "Invertir el orden del hilo (lo más reciente primero)"
   },
   "quickDark": {
     "message": "Oscuro"

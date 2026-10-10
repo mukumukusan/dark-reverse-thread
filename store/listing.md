@@ -104,7 +104,7 @@ Dark Reverse Thread resuelve las dos cosas.
 • Activar o desactivar el modo oscuro nunca mueve ni cambia el tamaño de nada.
 
 ■ El correo más reciente, arriba
-• Los hilos se muestran con lo más nuevo primero, así que la última respuesta es lo primero que ves.
+• Los hilos se muestran con lo más reciente primero, así que la última respuesta es lo primero que ves.
 • Coloca los botones Responder / Reenviar y el cuadro de respuesta justo debajo (predeterminado) o justo encima del correo más reciente.
 
 ■ Pensado para combinar con el tema de Gmail
@@ -176,7 +176,7 @@ Dark Reverse Thread löst beides.
 • Das Ein- und Ausschalten des Dunkelmodus verändert weder Position noch Größe von Elementen.
 
 ■ Die neueste E-Mail oben
-• Unterhaltungen werden mit der neuesten Nachricht zuerst angezeigt – die letzte Antwort ist das Erste, was du siehst.
+• Unterhaltungen werden mit der neuesten Nachricht zuerst angezeigt – die neueste Antwort ist das Erste, was du siehst.
 • Die Schaltflächen Antworten / Weiterleiten und das Antwortfeld lassen sich direkt unter (Standard) oder direkt über der neuesten E-Mail platzieren.
 
 ■ Passend zum Gmail-Design
@@ -191,7 +191,7 @@ Dark Reverse Thread löst beides.
 • Es werden keinerlei Daten erhoben oder gesendet. Alles passiert in deinem Browser.
 • Gespeichert werden nur deine Anzeigeeinstellungen (an / aus usw.) und ob Gmail ein helles Design verwendet.
 
-Dark Reverse Thread ist ein unabhängiges Projekt und steht in keiner Verbindung zu Google und wird nicht von Google unterstützt. Gmail ist eine Marke der Google LLC.
+Dark Reverse Thread ist ein unabhängiges Projekt, das weder mit Google verbunden ist noch von Google unterstützt wird. Gmail ist eine Marke der Google LLC.
 
 Wenn dein Posteingang dadurch ein bisschen angenehmer wird, kannst du mir einen Kaffee spendieren:
 https://buymeacoffee.com/mukumukusan
