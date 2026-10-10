@@ -407,6 +407,28 @@
   color: var(--gtr-dark-text) !important;
 }
 
+/* 宛先の欄を押して開いたときの入力行（.aGb・input.agP）と、宛先のチップ（.afV）。Gmail の白い背景のままだと
+   上の明るい文字色で名前が読めない */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aGb,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) input.agP {
+  background-color: var(--gtr-dark-page) !important;
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .agh {
+  background-color: transparent !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .afV[role="option"] {
+  background-color: var(--gtr-dark-surface-high) !important;
+  border-color: var(--gtr-dark-outline) !important;
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .afV[role="option"] * {
+  color: var(--gtr-dark-text) !important;
+}
+
 /* 返信欄のアイコン（宛先行・ツールバー）は画像のため、明度を反転して明るくする
    （hue-rotate で色付きアイコンの色相は維持）。青い送信ボタン(.T-I-atl)は対象外 */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG [role="button"]:not([role="button"] [role="button"]),
