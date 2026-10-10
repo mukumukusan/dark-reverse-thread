@@ -119,9 +119,9 @@ Dark Reverse Thread resuelve las dos cosas.
 • No se recopila ni se envía ningún dato. Todo ocurre dentro de tu navegador.
 • Solo se guardan tus ajustes de visualización (activado / desactivado, etc.) y si Gmail usa un tema claro.
 
-Dark Reverse Thread es un proyecto independiente, sin relación con Google ni respaldado por Google. Gmail es una marca comercial de Google LLC.
+Dark Reverse Thread es un proyecto independiente que no está afiliado a Google ni cuenta con su respaldo. Gmail es una marca comercial de Google LLC.
 
-Si te hace la bandeja de entrada un poco más agradable, puedes invitarme a un café:
+Si hace tu bandeja de entrada un poco más agradable, puedes invitarme a un café:
 https://buymeacoffee.com/mukumukusan
 ```
 
@@ -136,7 +136,7 @@ O Dark Reverse Thread resolve as duas coisas.
 ■ Modo escuro até nos seus e-mails, mantendo os tons
 • Os fundos escurecem e o texto clareia, mas o vermelho continua vermelho e os links azuis continuam azuis; só o brilho é ajustado. Não é uma simples inversão de cores, então os e-mails mantêm o design.
 • Imagens que sumiriam no modo escuro, como logotipos transparentes, recebem de volta o fundo original.
-• Além da conversa, a caixa de resposta, a janela de escrever, as sugestões de destinatários e os menus também ficam escuros. Com o tema Escuro do Gmail, a caixa de pesquisa e as sugestões também.
+• Além da conversa, a caixa de resposta, a janela de nova mensagem, as sugestões de destinatários e os menus também ficam escuros. Com o tema Escuro do Gmail, a caixa de pesquisa e as sugestões também.
 • Ligar ou desligar o modo escuro nunca move nem redimensiona nada.
 
 ■ O e-mail mais recente no topo
@@ -147,15 +147,15 @@ O Dark Reverse Thread resolve as duas coisas.
 • A caixa de entrada e o resto da moldura do Gmail mantêm o tema do próprio Gmail. Escolha o tema Escuro para um Gmail totalmente escuro.
 • "Mudar o tema do Gmail", na janela de configurações, abre na hora o seletor de temas do Gmail. Você escolhe o tema; a extensão nunca muda as configurações do Gmail por conta própria.
 
-■ Troca com um clique
+■ Tudo a um clique
 • Troque o modo escuro, a ordem invertida e a posição da resposta a qualquer momento pelo ícone na barra de ferramentas. Você também pode adicionar uma pequena barra rápida no canto inferior direito.
-• Ao imprimir, as cores originais e a ordem do mais antigo para o mais recente voltam.
+• Ao imprimir, voltam as cores originais e a ordem do mais antigo para o mais recente.
 
 ■ Privacidade
 • Nenhum dado é coletado ou enviado. Tudo acontece dentro do seu navegador.
 • Só são salvos seus ajustes de exibição (ligado / desligado etc.) e se o Gmail usa um tema claro.
 
-O Dark Reverse Thread é um projeto independente, sem vínculo com o Google nem endossado por ele. Gmail é uma marca registrada da Google LLC.
+O Dark Reverse Thread é um projeto independente, não afiliado nem endossado pelo Google. Gmail é uma marca registrada da Google LLC.
 
 Se ele deixar sua caixa de entrada um pouco mais agradável, você pode me pagar um café:
 https://buymeacoffee.com/mukumukusan
@@ -172,8 +172,8 @@ Dark Reverse Thread löst beides.
 ■ Dunkelmodus bis in die E-Mails – mit erhaltenen Farbtönen
 • Hintergründe werden dunkel und Text hell, aber Rot bleibt Rot und blaue Links bleiben blau; nur die Helligkeit wird angepasst. Es ist keine einfache Farbumkehr, daher behalten E-Mails ihr Design.
 • Bilder, die im Dunkelmodus verschwinden würden, etwa transparente Logos, erhalten ihren ursprünglichen Hintergrund zurück.
-• Neben der Unterhaltung werden auch das Antwortfeld, das Fenster zum Schreiben, die Empfängervorschläge und die Menüs dunkel. Mit dem Gmail-Design „Dunkel“ auch das Suchfeld und seine Vorschläge.
-• Das Ein- und Ausschalten des Dunkelmodus verschiebt oder vergrößert nichts.
+• Neben der Unterhaltung werden auch das Antwortfeld, das Fenster für neue Nachrichten, die Empfängervorschläge und die Menüs dunkel. Mit dem Gmail-Design „Dunkel“ auch das Suchfeld und seine Vorschläge.
+• Das Ein- und Ausschalten des Dunkelmodus verändert weder Position noch Größe von Elementen.
 
 ■ Die neueste E-Mail oben
 • Unterhaltungen werden mit der neuesten Nachricht zuerst angezeigt – die letzte Antwort ist das Erste, was du siehst.

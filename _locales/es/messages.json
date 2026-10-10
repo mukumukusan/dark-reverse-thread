@@ -6,10 +6,10 @@
     "message": "Dark Reverse Thread"
   },
   "extDescription": {
-    "message": "Modo oscuro para Gmail que llega a tus correos y conserva sus tonos, con el hilo invertido: la respuesta más nueva arriba."
+    "message": "Modo oscuro para Gmail que llega a tus correos y conserva sus tonos, con el hilo invertido: la respuesta más reciente arriba."
   },
   "popupSubtitle": {
-    "message": "Modo oscuro e hilos con lo más nuevo primero para Gmail"
+    "message": "Modo oscuro e hilos con lo más reciente primero para Gmail"
   },
   "settingDark": {
     "message": "Activar modo oscuro"
