@@ -631,8 +631,9 @@
   // thread, compose window, toolbar (left / right part), advanced search panel
   const DARK_MENU_AREAS = '.gtr-thread, .Hd[role="dialog"], [gh="mtb"], [gh="tm"], .SK.ZF-zT';
 
-  // The mail list (e.g. its right-click menu) belongs to Gmail's frame: dark only on Gmail's dark theme
-  const FRAME_MENU_AREAS = 'div[role="main"]';
+  // The mail list (its right-click menu) and the sidebar (a label's "⋮" menu) belong to Gmail's frame:
+  // their menus are dark only on Gmail's dark theme
+  const FRAME_MENU_AREAS = 'div[role="main"], [role="navigation"]';
 
   document.addEventListener('pointerdown', (event) => {
     if (!(event.target instanceof Element)) return;
