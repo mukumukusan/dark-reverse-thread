@@ -341,9 +341,14 @@
 .gmail-dark-active .gtr-thread .bkH [role="button"],
 .gmail-dark-active .gtr-thread .bkH button {
   background-color: var(--gtr-dark-surface) !important;
-  border: 1px solid var(--gtr-dark-raised) !important;
+  border: 1px solid var(--gtr-dark-outline) !important;
   color: var(--gtr-dark-text) !important;
   border-radius: 20px !important;
+}
+
+/* 返信・全員に返信・転送のボタン（span.ams）。上の共通ルールの枠線（raised）だと暗い背景に沈むので一段明るく */
+.gmail-dark-active .gtr-thread .amn .ams {
+  border-color: var(--gtr-dark-outline) !important;
 }
 
 .gmail-dark-active .gtr-thread .amn [role="button"]:hover,
