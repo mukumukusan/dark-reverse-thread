@@ -620,6 +620,48 @@
   color: var(--gtr-dark-link) !important;
 }
 
+/* 「検索する前後期間」の日付欄から開くカレンダー（.J-JB-KA）。パネル内の文字を明るくしているので、
+   背景が白いままだと日付が読めない。今日・選択中・マウスを乗せた日付の丸（::before）は Gmail の形のまま色だけ変える */
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JB-KA {
+  background-color: var(--gtr-dark-surface) !important;
+  border-color: var(--gtr-dark-raised) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JB-KA :is(tr, th, td, button) {
+  background-color: transparent !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JB-KA th {
+  color: var(--gtr-dark-text-muted) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JB-KA :is(td, button) {
+  color: var(--gtr-dark-text) !important;
+}
+
+/* 前後の月の日付 */
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JB-KA td.J-JB-KA-Ku-Kk {
+  color: var(--gtr-dark-text-subtle) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JB-KA button:hover {
+  background-color: var(--gtr-dark-raised) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JB-KA td:hover::before {
+  background-color: var(--gtr-dark-raised) !important;
+}
+
+/* 今日の日付の丸 */
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JB-KA td.J-JB-KA-K8::before {
+  border-color: var(--gtr-dark-link) !important;
+}
+
+/* 前月・翌月の矢印（画像） */
+.gmail-dark-active.gtr-gmail-dark-theme .SK.ZF-zT .J-JB-KA :is(.J-JB-KA-bsP, .J-JB-KA-bsO) {
+  filter: invert(1) !important;
+}
+
 /* ポップアップの「テーマを選ぶ」で開いたテーマ選択ダイアログで、「ダーク」のテーマ（basicblack）を
    ゆっくり点滅する枠で示す。選ぶのは本人。Gmail が選択中のテーマに付ける青枠と見分けられるよう太めにする */
 [data-gtr-suggest] {
