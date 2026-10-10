@@ -650,12 +650,17 @@
    * kept, on this device (storage.local), so the popup can suggest Gmail's own dark theme. On Gmail's
    * dark theme <html> also gets a class, so parts of Gmail's frame (search) are darkened only there.
    * The last result is applied as soon as the page starts, since the theme rarely changes, and the
-   * check then runs at most once a second while the page changes, so a theme switch is noticed quickly.
-   * Until Gmail's header exists, the page may still be a plain white loading screen, so it is not judged.
+   * check then runs at most once a second while the page changes (plus once after the last skipped
+   * change), so a theme switch is noticed quickly. Until Gmail's header exists, the page may still be a
+   * plain white loading screen, so it is not judged; if the header is never found (Gmail changed its
+   * markup), the check runs anyway after THEME_HEADER_WAIT.
    */
   const GMAIL_DARK_THEME_CLASS = 'gtr-gmail-dark-theme';
   const THEME_CHECK_INTERVAL = 1000;
+  const THEME_HEADER_WAIT = 10000;
+  const scriptStart = Date.now();
   let lastThemeCheck = 0;
+  let trailingThemeCheck = null;
   let lastGmailLightTheme = null;
 
   try {
@@ -669,14 +674,24 @@
   }
 
   function noteGmailThemeThrottled() {
-    const now = Date.now();
-    if (now - lastThemeCheck < THEME_CHECK_INTERVAL) return;
-    lastThemeCheck = now;
+    const wait = lastThemeCheck + THEME_CHECK_INTERVAL - Date.now();
+    if (wait > 0) {
+      // Skipped: check once more when the interval ends, so the last change is not missed
+      if (!trailingThemeCheck) {
+        trailingThemeCheck = setTimeout(() => {
+          trailingThemeCheck = null;
+          noteGmailThemeThrottled();
+        }, wait);
+      }
+      return;
+    }
+    lastThemeCheck = Date.now();
     noteGmailTheme();
   }
 
   function noteGmailTheme() {
-    if (!document.querySelector('header[role="banner"]')) return; // still loading
+    const loading = !document.querySelector('header[role="banner"]') && Date.now() - scriptStart < THEME_HEADER_WAIT;
+    if (loading) return;
     const bg = document.body && parseRGB(getComputedStyle(document.body).backgroundColor);
     if (!bg || bg.a < 0.5 || !isContextValid()) return; // a picture theme or no context: unknown
     const light = rgbToHsl(bg).l > 0.5;
@@ -878,6 +893,7 @@
 
   // Gmail can show a plain white page before its theme is applied, so check the theme again later
   setTimeout(noteGmailTheme, 5000);
+  setTimeout(noteGmailTheme, THEME_HEADER_WAIT); // the fallback when Gmail's header is never found
 
   if (document.body) {
     observer.observe(document.body, { childList: true, subtree: true });
