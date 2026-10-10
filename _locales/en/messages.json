@@ -8,7 +8,7 @@
     "description": "Short name for the popup heading and where space is tight."
   },
   "extDescription": {
-    "message": "A dark mode for Gmail threads and email bodies that keeps their original colors, with conversations shown newest-first.",
+    "message": "Dark mode for Gmail that reaches your emails and keeps their colors, plus reverse thread order with the newest reply on top.",
     "description": "Extension description shown in Chrome and the Web Store (max 132 characters)."
   },
   "popupSubtitle": {
