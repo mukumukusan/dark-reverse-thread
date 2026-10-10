@@ -631,11 +631,16 @@
   // thread, compose window, toolbar (left / right part), advanced search panel
   const DARK_MENU_AREAS = '.gtr-thread, .Hd[role="dialog"], [gh="mtb"], [gh="tm"], .SK.ZF-zT';
 
+  // The mail list (e.g. its right-click menu) belongs to Gmail's frame: dark only on Gmail's dark theme
+  const FRAME_MENU_AREAS = 'div[role="main"]';
+
   document.addEventListener('pointerdown', (event) => {
     if (!(event.target instanceof Element)) return;
     // A press on a menu item keeps the note: the menu stays open (dark) until the button is released
     if (event.target.closest(MENU_SELECTOR)) return;
-    const fromDarkArea = event.target.closest(DARK_MENU_AREAS) !== null;
+    const frameIsDark = document.documentElement.classList.contains(GMAIL_DARK_THEME_CLASS);
+    const fromDarkArea = event.target.closest(DARK_MENU_AREAS) !== null ||
+      (frameIsDark && event.target.closest(FRAME_MENU_AREAS) !== null);
     document.documentElement.classList.toggle(MENU_SOURCE_CLASS, fromDarkArea);
   }, true);
 

@@ -838,6 +838,16 @@
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
+/* 右上の Gemini のパネル（.aHij0b-aLs）も白いので、同じく反転する（画像は元に戻す） */
+.gmail-dark-active.gtr-gmail-dark-theme .aHij0b-aLs {
+  background-color: rgb(224, 224, 224) !important;
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .aHij0b-aLs :is(img, video, picture, canvas) {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
 /* ？のヘルプのメニュー（.t9） */
 .gmail-dark-active.gtr-gmail-dark-theme .t9[role="menu"] {
   background-color: var(--gtr-dark-surface) !important;

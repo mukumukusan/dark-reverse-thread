@@ -26,7 +26,9 @@ document.body.insertAdjacentHTML('beforeend', `
   <div class="nH r4" id="settings"><img id="settings-image" src=""><span>Language</span></div>
   <div class="IU" id="quick-settings"><img id="quick-image" src=""><div class="XO" id="quick-theme"></div></div>
   <div class="t9" role="menu" id="help-menu"><div class="ua bk5" id="help-active">Help</div><div class="ua" id="help-item">Training</div><div class="ub" id="help-rule"></div></div>
-  <div class="d-Qs-Jh-JF" id="input-tools-scrim" style="opacity: 0.5"></div>`);
+  <div class="d-Qs-Jh-JF" id="input-tools-scrim" style="opacity: 0.5"></div>
+  <div class="aHij0b-aLs" id="gemini-panel"><img id="gemini-image" src=""></div>
+  <div role="main" id="mail-list"><span id="mail-row">row</span></div>`);
 window.__GTR_MOCK__ = {};
 </script>
   <script src="chrome-mock.js"></script>
@@ -51,6 +53,12 @@ test('quick settings, help menu and scrim are left as Gmail draws them', () => {
   assertEqual(filter('quick-settings'), 'none');
   assert(getComputedStyle($('help-menu')).backgroundColor !== 'rgb(40, 41, 44)');
   assert(getComputedStyle($('input-tools-scrim')).backgroundColor !== 'rgb(0, 0, 0)');
+});
+
+test('Gemini panel and mail-list menus are left as Gmail draws them', () => {
+  assertEqual(filter('gemini-panel'), 'none');
+  $('mail-row').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+  assert(!hasClass(html, 'gtr-menu-source'));
 });
 
 test('date dialogs are left as Gmail draws them', () => {
