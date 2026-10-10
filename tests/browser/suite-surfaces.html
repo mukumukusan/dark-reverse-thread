@@ -23,7 +23,13 @@ document.body.insertAdjacentHTML('beforeend', `
   <div class="uW2Fw-bHo" id="date-dialog"><div class="cER4xe" id="dialog-header" style="border-bottom: 1px solid #e1e1e1">Pick date</div><hr class="a81" id="dialog-rule"><div class="a8Y" id="dialog-footer">Cancel</div><span id="date-title">Pick date</span><div class="J-JB-KA" id="date-calendar"><table><tr><td class="J-JB-KA-a1R-JB" id="past-day">1</td><td class="J-JB-KA-JB" id="day">20</td></tr></table></div></div>
   <div class="SK ZF-zT" id="search-panel"><div class="btl acK" id="filter-back"></div><label class="aD" id="filter-checkbox">Skip</label><a class="btn" id="filter-help">Help</a></div>
   <div class="nH fY" role="tablist" id="settings-tabs"><div class="f1">General</div></div>
-  <div class="nH r4" id="settings"><img id="settings-image" src=""><span>Language</span></div>`);
+  <div class="nH r4" id="settings"><img id="settings-image" src=""><span>Language</span></div>
+  <div class="IU" id="quick-settings"><img id="quick-image" src=""><div class="XO" id="quick-theme"></div></div>
+  <div class="t9" role="menu" id="help-menu"><div class="ua bk5" id="help-active">Help</div><div class="ua" id="help-item">Training</div><div class="ub" id="help-rule"></div></div>
+  <div class="d-Qs-Jh-JF" id="input-tools-scrim" style="opacity: 0.5"></div>`);
+document.getElementById('date-dialog').append(
+  Object.assign(document.createElement('a'), { id: 'dialog-link', textContent: 'Learn more' }),
+  Object.assign(document.createElement('button'), { id: 'dialog-disabled', disabled: true, textContent: 'Create' }));
 window.__GTR_MOCK__ = {};
 </script>
   <script src="chrome-mock.js"></script>
@@ -87,6 +93,28 @@ test('theme dialog: footer strip is dark, separators are subtle', () => {
   assertEqual(bg('dialog-footer'), SURFACE);
   assertEqual(getComputedStyle($('dialog-header')).borderBottomColor, 'rgb(60, 64, 67)');
   assertEqual(getComputedStyle($('dialog-rule')).borderTopColor, 'rgb(60, 64, 67)');
+});
+
+test('quick settings panel is inverted; its photos are inverted back', () => {
+  assertEqual(filter('quick-settings'), INVERT);
+  assertEqual(filter('quick-image'), INVERT);
+  assertEqual(filter('quick-theme'), INVERT);
+});
+
+test('help menu is dark with a raised active row', () => {
+  assertEqual(bg('help-menu'), SURFACE);
+  assertEqual(bg('help-active'), 'rgb(60, 64, 67)');
+  assertEqual(color('help-item'), 'rgb(227, 227, 227)');
+});
+
+test('input tools scrim is black (not a white haze)', () => {
+  assertEqual(bg('input-tools-scrim'), 'rgb(0, 0, 0)');
+});
+
+test('dialog links are light blue; disabled buttons are muted, not light pills', () => {
+  assertEqual(color('dialog-link'), 'rgb(138, 180, 248)');
+  assertEqual(bg('dialog-disabled'), 'rgba(227, 227, 227, 0.12)');
+  assertEqual(color('dialog-disabled'), 'rgb(154, 160, 166)');
 });
 
 test('filter step: checkbox, back arrow and help icon are inverted, help text is light', () => {

@@ -759,6 +759,20 @@
   color: var(--gtr-dark-text) !important;
 }
 
+/* ダイアログの中のリンク（情報保護モードの「詳細を表示」など）と、押せない状態の塗りボタン（ラベル名を入れる前の「作成」など） */
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo a {
+  color: var(--gtr-dark-link) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo button:disabled {
+  background-color: rgba(227, 227, 227, 0.12) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo button:disabled,
+.gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo button:disabled * {
+  color: var(--gtr-dark-text-subtle) !important;
+}
+
 /* テーマの選択ダイアログ（同じ .uW2Fw-bHo）：下段のボタンの帯（.a8Y）、見出しの下と区切りの線（.cER4xe・hr.a81）、
    写真のテーマを選んだときに出る調整の欄（.a7R と中のボタン .T-I） */
 .gmail-dark-active.gtr-gmail-dark-theme .uW2Fw-bHo :is(.a8Y, .a7R) {
@@ -806,7 +820,7 @@
    フォームや表が多く部品ごとに色を変えると抜けが出るので、明るい灰色を敷いてから全体を反転する
    （rgb(224, 224, 224) が反転するとスレッドと同じ #1f1f1f になる）。画像は二重に反転して元の色に戻す。
    どちらも設定の画面にしか表示されない部品 */
-.gmail-dark-active.gtr-gmail-dark-theme :is(.nH.r4, .nH.fY[role="tablist"]) {
+.gmail-dark-active.gtr-gmail-dark-theme :is(.nH.r4, .nH.fY[role="tablist"], .IU) {
   background-color: rgb(224, 224, 224) !important;
   filter: invert(1) hue-rotate(180deg) !important;
 }
@@ -817,6 +831,35 @@
 
 .gmail-dark-active.gtr-gmail-dark-theme .nH.r4 :is(img, video, picture, canvas) {
   filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* ⚙ のクイック設定のパネル（.IU）も同じく白いので、上と同じ方法で反転する。写真（img と、テーマの見本 .XO）は元に戻す */
+.gmail-dark-active.gtr-gmail-dark-theme .IU :is(img, .XO) {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* ？のヘルプのメニュー（.t9） */
+.gmail-dark-active.gtr-gmail-dark-theme .t9[role="menu"] {
+  background-color: var(--gtr-dark-surface) !important;
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .t9[role="menu"] .ua {
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .t9[role="menu"] :is(.ua.bk5, .ua:hover) {
+  background-color: var(--gtr-dark-raised) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .t9[role="menu"] .ub {
+  background-color: var(--gtr-dark-raised) !important;
+  border-color: var(--gtr-dark-raised) !important;
+}
+
+/* 「入力ツールの設定」の後ろの幕（.d-Qs-Jh-JF）。白の半透明で画面全体が霞むので黒にする（半透明はそのまま） */
+.gmail-dark-active.gtr-gmail-dark-theme .d-Qs-Jh-JF {
+  background-color: #000 !important;
 }
 
 /* 右上の「あ」の入力ツールのメニュー（.d-Na-JG-M）と、そこから開く「入力ツールの設定」（.d-Qs-Md）。
