@@ -649,11 +649,34 @@
    * Whether Gmail itself uses a light theme, judged from the page background. Only this yes/no flag is
    * kept, on this device (storage.local), so the popup can suggest Gmail's own dark theme. On Gmail's
    * dark theme <html> also gets a class, so parts of Gmail's frame (search) are darkened only there.
+   * The last result is applied as soon as the page starts, since the theme rarely changes, and the
+   * check then runs at most once a second while the page changes, so a theme switch is noticed quickly.
+   * Until Gmail's header exists, the page may still be a plain white loading screen, so it is not judged.
    */
   const GMAIL_DARK_THEME_CLASS = 'gtr-gmail-dark-theme';
+  const THEME_CHECK_INTERVAL = 1000;
+  let lastThemeCheck = 0;
   let lastGmailLightTheme = null;
 
+  try {
+    chrome.storage.local.get({ gmailLightTheme: null }, ({ gmailLightTheme }) => {
+      if (gmailLightTheme === null || lastGmailLightTheme !== null) return; // unknown, or already judged
+      lastGmailLightTheme = gmailLightTheme;
+      document.documentElement.classList.toggle(GMAIL_DARK_THEME_CLASS, !gmailLightTheme);
+    });
+  } catch {
+    // extension reloaded while this tab stayed open
+  }
+
+  function noteGmailThemeThrottled() {
+    const now = Date.now();
+    if (now - lastThemeCheck < THEME_CHECK_INTERVAL) return;
+    lastThemeCheck = now;
+    noteGmailTheme();
+  }
+
   function noteGmailTheme() {
+    if (!document.querySelector('header[role="banner"]')) return; // still loading
     const bg = document.body && parseRGB(getComputedStyle(document.body).backgroundColor);
     if (!bg || bg.a < 0.5 || !isContextValid()) return; // a picture theme or no context: unknown
     const light = rgbToHsl(bg).l > 0.5;
@@ -812,6 +835,7 @@
     }
 
     syncComposeOpen();
+    noteGmailThemeThrottled();
 
     let relevant = false;
     let threadAdded = false;
