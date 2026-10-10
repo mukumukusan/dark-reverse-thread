@@ -26,8 +26,8 @@ Gmail をダークテーマにしても、開いたメールは真っ白でま�
 Dark Reverse Thread なら、この2つをまとめて解決できます。
 
 ■ メール本文まで、色を残したままダークに
-・背景を暗く、文字を明るくしながら、赤字やハイライトなどの色はそのまま残します。単純な白黒反転ではないので、メールのデザインが崩れにくくなっています。
-・透明な背景のロゴなど、暗い背景で見えなくなる画像には、元の背景色を敷いて表示します。
+・背景を暗く、文字を明るくしながら、赤字やハイライトなどの色はそのまま残します。単純な白黒反転ではないので、メールのデザインを崩しにくいのが特長です。
+・背景が透明なロゴなど、暗くすると見えなくなる画像には、元の背景色を敷いて表示します。
 ・スレッド画面のほか、返信欄、新規作成ウィンドウ、宛先の候補、メニューまで暗くなります。Gmail がダークテーマのときは、検索欄と検索候補も対象です。
 ・ダークを ON / OFF しても、メールの位置や大きさは変わりません。
 
@@ -37,7 +37,7 @@ Dark Reverse Thread なら、この2つをまとめて解決できます。
 
 ■ Gmail のテーマと組み合わせて
 ・受信トレイなどの外枠には、Gmail 自身のテーマがそのまま使われます。Gmail のテーマを「ダーク」にすれば、画面全体が暗くなります。
-・設定画面の「Gmail のテーマを変える」を押すと、Gmail のテーマ選択がすぐに開きます。テーマを選ぶのはご自身で、拡張機能が Gmail の設定を変えることはありません。
+・設定画面の「Gmail のテーマを変える」から、テーマ選択の画面をすぐに開けます。テーマを選ぶのはご自身で、拡張機能が Gmail の設定を変えることはありません。
 
 ■ ワンクリックで切り替え
 ・ツールバーの拡張機能アイコンから、ダーク・新しい順・返信欄の位置をいつでも切り替えられます。画面右下に切り替えボタン（クイックバー）を出すこともできます。
@@ -63,7 +63,7 @@ Dark Reverse Thread fixes both.
 
 ■ Dark emails that keep their colors
 • Backgrounds turn dark and text turns light, while red text, highlights and other colors keep their hue. It is not a simple color inversion, so emails keep their design.
-• Images that would vanish on a dark background, such as logos with transparent backgrounds, get their original backdrop back.
+• Images that would disappear in dark mode, such as transparent logos, get their original backdrop back.
 • Beyond the thread view, the reply box, compose window, recipient suggestions and menus go dark too. On Gmail's Dark theme, so do the search box and its suggestions.
 • Turning dark mode on or off never moves or resizes anything.
 
