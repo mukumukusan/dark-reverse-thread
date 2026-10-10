@@ -1,0 +1,95 @@
+{
+  "extName": {
+    "message": "Dark Reverse Thread – Dunkelmodus für Gmail & neueste zuerst"
+  },
+  "extShortName": {
+    "message": "Dark Reverse Thread"
+  },
+  "extDescription": {
+    "message": "Dunkelmodus für Gmail bis in die E-Mails, der ihre Farbtöne erhält – dazu umgekehrte Reihenfolge mit der neuesten Antwort oben."
+  },
+  "popupSubtitle": {
+    "message": "Dunkelmodus & neueste zuerst für Gmail"
+  },
+  "settingDark": {
+    "message": "Dunkelmodus aktivieren"
+  },
+  "settingDarkDesc": {
+    "message": "Dunkelt Unterhaltungen und E-Mails ab, Farbtöne bleiben erhalten"
+  },
+  "settingReverse": {
+    "message": "Reihenfolge umkehren"
+  },
+  "settingReverseDesc": {
+    "message": "Neueste E-Mail oben anzeigen"
+  },
+  "settingReply": {
+    "message": "Position der Antwort"
+  },
+  "settingReplyDesc": {
+    "message": "Über oder unter der neuesten E-Mail"
+  },
+  "replyBottom": {
+    "message": "Darunter (Standard)"
+  },
+  "replyTop": {
+    "message": "Darüber"
+  },
+  "replyNeedsReverse": {
+    "message": "Verfügbar, wenn die Reihenfolge umgekehrt ist"
+  },
+  "settingQuickBar": {
+    "message": "Schnellleiste"
+  },
+  "settingQuickBarDesc": {
+    "message": "Zeigt Schnellschalter unten rechts an"
+  },
+  "statusSaved": {
+    "message": "Gespeichert"
+  },
+  "footerTagline": {
+    "message": "Angenehm dunkles Gmail"
+  },
+  "quickNewest": {
+    "message": "Neueste"
+  },
+  "quickNewestTitle": {
+    "message": "Reihenfolge umkehren (neueste zuerst)"
+  },
+  "quickDark": {
+    "message": "Dunkel"
+  },
+  "quickDarkTitle": {
+    "message": "Dunkelmodus ein- oder ausschalten"
+  },
+  "quickReply": {
+    "message": "Antwort"
+  },
+  "quickReplyTitle": {
+    "message": "Antwortfeld über oder unter der neuesten E-Mail öffnen"
+  },
+  "quickReplyTop": {
+    "message": "Oben"
+  },
+  "quickReplyBottom": {
+    "message": "Unten"
+  },
+  "quickReloadNeeded": {
+    "message": "Die Erweiterung wurde aktualisiert. Bitte lade die Seite neu."
+  },
+  "supportLink": {
+    "message": "☕ Gefällt’s dir? Spendier mir einen Kaffee"
+  },
+  "tipGmailDarkTheme": {
+    "message": "💡 Wähle in Gmail das Design „Dunkel“, damit auch der Posteingang und der Rest von Gmail dunkel werden."
+  },
+  "tipOpenTheme": {
+    "message": "Design auswählen"
+  },
+  "openThemeLink": {
+    "message": "🎨 Gmail-Design ändern"
+  },
+  "openThemeNote": {
+    "message": "Das Öffnen kann einen Moment dauern."
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "extName": {
+    "message": "Dark Reverse Thread – Modo oscuro para Gmail y lo más nuevo primero"
+  },
+  "extShortName": {
+    "message": "Dark Reverse Thread"
+  },
+  "extDescription": {
+    "message": "Modo oscuro para Gmail que llega a tus correos y conserva sus tonos, con el hilo invertido: la respuesta más nueva arriba."
+  },
+  "popupSubtitle": {
+    "message": "Modo oscuro e hilos con lo más nuevo primero para Gmail"
+  },
+  "settingDark": {
+    "message": "Activar modo oscuro"
+  },
+  "settingDarkDesc": {
+    "message": "Oscurece las conversaciones y los correos, conservando sus tonos"
+  },
+  "settingReverse": {
+    "message": "Invertir el orden del hilo"
+  },
+  "settingReverseDesc": {
+    "message": "Muestra el correo más reciente arriba"
+  },
+  "settingReply": {
+    "message": "Posición de la respuesta"
+  },
+  "settingReplyDesc": {
+    "message": "Encima o debajo del correo más reciente"
+  },
+  "replyBottom": {
+    "message": "Debajo (predet.)"
+  },
+  "replyTop": {
+    "message": "Encima"
+  },
+  "replyNeedsReverse": {
+    "message": "Disponible con el orden invertido activado"
+  },
+  "settingQuickBar": {
+    "message": "Barra rápida flotante"
+  },
+  "settingQuickBarDesc": {
+    "message": "Muestra botones rápidos en la esquina inferior derecha"
+  },
+  "statusSaved": {
+    "message": "Guardado"
+  },
+  "footerTagline": {
+    "message": "Un Gmail oscuro y cómodo"
+  },
+  "quickNewest": {
+    "message": "Recientes"
+  },
+  "quickNewestTitle": {
+    "message": "Invertir el orden del hilo (lo más nuevo primero)"
+  },
+  "quickDark": {
+    "message": "Oscuro"
+  },
+  "quickDarkTitle": {
+    "message": "Activar o desactivar el modo oscuro"
+  },
+  "quickReply": {
+    "message": "Respuesta"
+  },
+  "quickReplyTitle": {
+    "message": "Abrir el cuadro de respuesta encima o debajo del correo más reciente"
+  },
+  "quickReplyTop": {
+    "message": "Arriba"
+  },
+  "quickReplyBottom": {
+    "message": "Abajo"
+  },
+  "quickReloadNeeded": {
+    "message": "La extensión se actualizó. Vuelve a cargar la página."
+  },
+  "supportLink": {
+    "message": "☕ ¿Te gusta? Invítame a un café"
+  },
+  "tipGmailDarkTheme": {
+    "message": "💡 Elige el tema Oscuro de Gmail para oscurecer también la bandeja de entrada y el resto de Gmail."
+  },
+  "tipOpenTheme": {
+    "message": "Elegir un tema"
+  },
+  "openThemeLink": {
+    "message": "🎨 Cambiar el tema de Gmail"
+  },
+  "openThemeNote": {
+    "message": "Puede tardar un momento en abrirse."
+  }
+}

@@ -32,8 +32,8 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
    - 日本語: 画面右下にコンパクトな切り替えバーを表示。
    - English: Features a sleek, floating quick bar in the bottom-right corner for instant toggles.
 8. **多言語対応 / Internationalization**
-   - 日本語: 拡張機能名・説明・ポップアップ・クイックバーはブラウザの言語に合わせて表示（現在は英語・日本語。その他の言語は英語）。Gmail の画面は文言ではなく構造で判定しているので、Gmail をどの言語で表示していても動作します。
-   - English: Extension name, description, popup and quick bar follow the browser language (English and Japanese included; other languages fall back to English). Gmail is recognized by its structure, not its on-screen text, so it works with any Gmail display language.
+   - 日本語: 拡張機能名・説明・ポップアップ・クイックバーはブラウザの言語に合わせて表示（現在は英語・日本語・スペイン語・ポルトガル語（ブラジル）・ドイツ語。その他の言語は英語）。Gmail の画面は文言ではなく構造で判定しているので、Gmail をどの言語で表示していても動作します。
+   - English: Extension name, description, popup and quick bar follow the browser language (English, Japanese, Spanish, Brazilian Portuguese and German included; other languages fall back to English). Gmail is recognized by its structure, not its on-screen text, so it works with any Gmail display language.
 
 ---
 

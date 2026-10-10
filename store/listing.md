@@ -12,7 +12,7 @@ Text to paste into the matching fields of the Chrome Web Store Developer Dashboa
 | 名前 / Name | `_locales` の `extName` から自動で入ります / filled from `extName`（ja: Dark Reverse Thread – Gmail をダークモード＆新しい順に / en: Dark Reverse Thread – Gmail dark mode & newest-first） |
 | 短い説明 / Summary | `_locales` の `extDescription` から自動で入ります / filled from `extDescription` |
 | カテゴリ / Category | 仕事効率化 / Productivity |
-| 言語 / Language | 日本語・English |
+| 言語 / Language | 日本語・English・Español・Português (Brasil)・Deutsch |
 | プライバシーポリシー / Privacy policy | https://github.com/mukumukusan/dark-reverse-thread/blob/main/PRIVACY.md |
 | ホームページ / Homepage | https://github.com/mukumukusan/dark-reverse-thread |
 | サポート / Support | https://github.com/mukumukusan/dark-reverse-thread/issues |
@@ -86,6 +86,114 @@ Dark Reverse Thread fixes both.
 Dark Reverse Thread is an independent project, not affiliated with or endorsed by Google. Gmail is a trademark of Google LLC.
 
 If it makes your inbox a little nicer, you can buy me a coffee:
+https://buymeacoffee.com/mukumukusan
+```
+
+---
+
+## 3b. Descripción detallada (Español)
+
+```
+Aunque actives el tema Oscuro de Gmail, los correos que abres siguen siendo de un blanco deslumbrante. Y en los hilos largos, tienes que bajar hasta el final cada vez para leer la última respuesta.
+Dark Reverse Thread resuelve las dos cosas.
+
+■ Modo oscuro hasta en tus correos, conservando sus tonos
+• Los fondos se oscurecen y el texto se aclara, pero el rojo sigue siendo rojo y los enlaces azules siguen siendo azules; solo se ajusta el brillo. No es una simple inversión de colores, así que los correos mantienen su diseño.
+• Las imágenes que desaparecerían en modo oscuro, como los logotipos transparentes, recuperan su fondo original.
+• Además de la vista del hilo, también se oscurecen el cuadro de respuesta, la ventana de redacción, las sugerencias de destinatarios y los menús. Con el tema Oscuro de Gmail, también el cuadro de búsqueda y sus sugerencias.
+• Activar o desactivar el modo oscuro nunca mueve ni cambia el tamaño de nada.
+
+■ El correo más reciente, arriba
+• Los hilos se muestran con lo más nuevo primero, así que la última respuesta es lo primero que ves.
+• Coloca los botones Responder / Reenviar y el cuadro de respuesta justo debajo (predeterminado) o justo encima del correo más reciente.
+
+■ Pensado para combinar con el tema de Gmail
+• La bandeja de entrada y el resto del marco de Gmail mantienen el tema propio de Gmail. Elige el tema Oscuro para tener un Gmail totalmente oscuro.
+• «Cambiar el tema de Gmail», en la ventana de ajustes, abre al instante el selector de temas de Gmail. Tú eliges el tema; la extensión nunca cambia la configuración de Gmail por su cuenta.
+
+■ Cambios con un clic
+• Cambia el modo oscuro, el orden invertido y la posición de la respuesta en cualquier momento desde el icono de la barra de herramientas. También puedes añadir una pequeña barra rápida en la esquina inferior derecha.
+• Al imprimir, vuelven los colores originales y el orden de más antiguo a más reciente.
+
+■ Privacidad
+• No se recopila ni se envía ningún dato. Todo ocurre dentro de tu navegador.
+• Solo se guardan tus ajustes de visualización (activado / desactivado, etc.) y si Gmail usa un tema claro.
+
+Dark Reverse Thread es un proyecto independiente, sin relación con Google ni respaldado por Google. Gmail es una marca comercial de Google LLC.
+
+Si te hace la bandeja de entrada un poco más agradable, puedes invitarme a un café:
+https://buymeacoffee.com/mukumukusan
+```
+
+---
+
+## 3c. Descrição detalhada (Português do Brasil)
+
+```
+Mesmo com o tema Escuro do Gmail, os e-mails que você abre continuam de um branco ofuscante. E nas conversas longas, você rola até o fim toda vez só para ler a última resposta.
+O Dark Reverse Thread resolve as duas coisas.
+
+■ Modo escuro até nos seus e-mails, mantendo os tons
+• Os fundos escurecem e o texto clareia, mas o vermelho continua vermelho e os links azuis continuam azuis; só o brilho é ajustado. Não é uma simples inversão de cores, então os e-mails mantêm o design.
+• Imagens que sumiriam no modo escuro, como logotipos transparentes, recebem de volta o fundo original.
+• Além da conversa, a caixa de resposta, a janela de escrever, as sugestões de destinatários e os menus também ficam escuros. Com o tema Escuro do Gmail, a caixa de pesquisa e as sugestões também.
+• Ligar ou desligar o modo escuro nunca move nem redimensiona nada.
+
+■ O e-mail mais recente no topo
+• As conversas aparecem com o mais recente primeiro, então a última resposta é a primeira coisa que você vê.
+• Coloque os botões Responder / Encaminhar e a caixa de resposta logo abaixo (padrão) ou logo acima do e-mail mais recente.
+
+■ Feito para combinar com o tema do Gmail
+• A caixa de entrada e o resto da moldura do Gmail mantêm o tema do próprio Gmail. Escolha o tema Escuro para um Gmail totalmente escuro.
+• "Mudar o tema do Gmail", na janela de configurações, abre na hora o seletor de temas do Gmail. Você escolhe o tema; a extensão nunca muda as configurações do Gmail por conta própria.
+
+■ Troca com um clique
+• Troque o modo escuro, a ordem invertida e a posição da resposta a qualquer momento pelo ícone na barra de ferramentas. Você também pode adicionar uma pequena barra rápida no canto inferior direito.
+• Ao imprimir, as cores originais e a ordem do mais antigo para o mais recente voltam.
+
+■ Privacidade
+• Nenhum dado é coletado ou enviado. Tudo acontece dentro do seu navegador.
+• Só são salvos seus ajustes de exibição (ligado / desligado etc.) e se o Gmail usa um tema claro.
+
+O Dark Reverse Thread é um projeto independente, sem vínculo com o Google nem endossado por ele. Gmail é uma marca registrada da Google LLC.
+
+Se ele deixar sua caixa de entrada um pouco mais agradável, você pode me pagar um café:
+https://buymeacoffee.com/mukumukusan
+```
+
+---
+
+## 3d. Ausführliche Beschreibung (Deutsch)
+
+```
+Selbst mit dem Gmail-Design „Dunkel“ bleiben geöffnete E-Mails grell weiß. Und in langen Unterhaltungen scrollst du jedes Mal ganz nach unten, nur um die neueste Antwort zu lesen.
+Dark Reverse Thread löst beides.
+
+■ Dunkelmodus bis in die E-Mails – mit erhaltenen Farbtönen
+• Hintergründe werden dunkel und Text hell, aber Rot bleibt Rot und blaue Links bleiben blau; nur die Helligkeit wird angepasst. Es ist keine einfache Farbumkehr, daher behalten E-Mails ihr Design.
+• Bilder, die im Dunkelmodus verschwinden würden, etwa transparente Logos, erhalten ihren ursprünglichen Hintergrund zurück.
+• Neben der Unterhaltung werden auch das Antwortfeld, das Fenster zum Schreiben, die Empfängervorschläge und die Menüs dunkel. Mit dem Gmail-Design „Dunkel“ auch das Suchfeld und seine Vorschläge.
+• Das Ein- und Ausschalten des Dunkelmodus verschiebt oder vergrößert nichts.
+
+■ Die neueste E-Mail oben
+• Unterhaltungen werden mit der neuesten Nachricht zuerst angezeigt – die letzte Antwort ist das Erste, was du siehst.
+• Die Schaltflächen Antworten / Weiterleiten und das Antwortfeld lassen sich direkt unter (Standard) oder direkt über der neuesten E-Mail platzieren.
+
+■ Passend zum Gmail-Design
+• Der Posteingang und der übrige Rahmen von Gmail behalten das eigene Gmail-Design. Wähle das Design „Dunkel“ für ein komplett dunkles Gmail.
+• „Gmail-Design ändern“ im Einstellungsfenster öffnet sofort die Designauswahl von Gmail. Du wählst das Design selbst; die Erweiterung ändert niemals eigenständig die Einstellungen von Gmail.
+
+■ Umschalten mit einem Klick
+• Dunkelmodus, umgekehrte Reihenfolge und Position der Antwort lassen sich jederzeit über das Symbol in der Symbolleiste umschalten. Optional gibt es eine kleine Schnellleiste unten rechts.
+• Beim Drucken werden die ursprünglichen Farben und die Reihenfolge von alt nach neu wiederhergestellt.
+
+■ Datenschutz
+• Es werden keinerlei Daten erhoben oder gesendet. Alles passiert in deinem Browser.
+• Gespeichert werden nur deine Anzeigeeinstellungen (an / aus usw.) und ob Gmail ein helles Design verwendet.
+
+Dark Reverse Thread ist ein unabhängiges Projekt und steht in keiner Verbindung zu Google und wird nicht von Google unterstützt. Gmail ist eine Marke der Google LLC.
+
+Wenn dein Posteingang dadurch ein bisschen angenehmer wird, kannst du mir einen Kaffee spendieren:
 https://buymeacoffee.com/mukumukusan
 ```
 
