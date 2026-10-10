@@ -22,7 +22,7 @@ Text to paste into the matching fields of the Chrome Web Store Developer Dashboa
 ## 2. 詳しい説明（日本語） / Detailed description (Japanese)
 
 ```
-Gmail のダークテーマにしても、背景が白い HTML メールはまぶしいまま。長いスレッドでは、最新の返信を読むために毎回いちばん下までスクロール――。
+Gmail のダークテーマにしても、開いたメールは白いまま、まぶしいまま。長いスレッドでは、最新の返信を読むために毎回いちばん下までスクロール――。
 Dark Reverse Thread は、この2つをまとめて解決する拡張機能です。
 
 ■ メールまで、色を残したままダークに
@@ -58,7 +58,7 @@ https://buymeacoffee.com/mukumukusan
 ## 3. Detailed description (English)
 
 ```
-Even with Gmail's Dark theme, HTML emails with white backgrounds stay blinding. And in long threads, you scroll all the way down every time just to read the latest reply.
+Even with Gmail's Dark theme, the emails you open stay bright white. And in long threads, you scroll all the way down every time just to read the latest reply.
 Dark Reverse Thread fixes both.
 
 ■ Dark mode that reaches your emails and keeps their colors
