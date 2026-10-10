@@ -785,6 +785,23 @@
   filter: invert(1) !important;
 }
 
+/* 設定の画面（#settings）。Gmail のダークテーマでも中身（.nH.r4、タブごとに1つ）とタブの並び（.nH.fY）が白い。
+   フォームや表が多く部品ごとに色を変えると抜けが出るので、明るい灰色を敷いてから全体を反転する
+   （rgb(224, 224, 224) が反転するとスレッドと同じ #1f1f1f になる）。画像は二重に反転して元の色に戻す。
+   どちらも設定の画面にしか表示されない部品 */
+.gmail-dark-active.gtr-gmail-dark-theme :is(.nH.r4, .nH.fY[role="tablist"]) {
+  background-color: rgb(224, 224, 224) !important;
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .nH.fY[role="tablist"] .f1 {
+  background-color: transparent !important;
+}
+
+.gmail-dark-active.gtr-gmail-dark-theme .nH.r4 :is(img, video, picture, canvas) {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
 /* 右上の「あ」の入力ツールのメニュー（.d-Na-JG-M）と、そこから開く「入力ツールの設定」（.d-Qs-Md）。
    どちらも入力ツール専用の部品で、メニューの項目から設定を開くため、押した場所では判定せずに暗くする。
    アイコンは画像なので反転して明るくする */
