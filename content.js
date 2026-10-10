@@ -52,6 +52,13 @@
     return el && el !== document.body ? el : null;
   }
 
+  /**
+   * Leaving a conversation hides its view before the batched pass runs; the scroller tag (below)
+   * must go in that same frame, or the inbox rows with transparent backgrounds show its dark color
+   * for a moment. A ResizeObserver reports the hidden (zero-size) view after layout, before paint.
+   */
+  const threadViewSize = new ResizeObserver(() => markThreadScrollers());
+
   /** Returns the roots that were newly marked, so their whole contents can be processed. */
   function markThreadViews() {
     const newRoots = new Set();
@@ -59,12 +66,16 @@
       const root = findThreadRoot(anchor);
       if (root && !root.classList.contains('gtr-thread')) {
         root.classList.add('gtr-thread');
+        threadViewSize.observe(root);
         newRoots.add(root);
       }
     });
 
     document.querySelectorAll('.gtr-thread').forEach((root) => {
-      if (!root.querySelector(THREAD_ANCHORS)) root.classList.remove('gtr-thread');
+      if (!root.querySelector(THREAD_ANCHORS)) {
+        root.classList.remove('gtr-thread');
+        threadViewSize.unobserve(root);
+      }
     });
     markThreadScrollers();
     return newRoots;
