@@ -153,7 +153,7 @@ O Dark Reverse Thread resolve as duas coisas.
 
 ■ Privacidade
 • Nenhum dado é coletado ou enviado. Tudo acontece dentro do seu navegador.
-• Só são salvos seus ajustes de exibição (ligado / desligado etc.) e se o Gmail usa um tema claro.
+• Só são salvas suas configurações de exibição (ligado / desligado etc.) e se o Gmail usa um tema claro.
 
 O Dark Reverse Thread é um projeto independente, não afiliado nem endossado pelo Google. Gmail é uma marca registrada da Google LLC.
 
