@@ -6,7 +6,7 @@
     "message": "Dark Reverse Thread"
   },
   "extDescription": {
-    "message": "Gmail をメール本文までダークモードに。色はそのまま、目に優しく。スレッドは新しい順（逆順）に並べ替え、最新の返信が一番上に。"
+    "message": "Gmail をメール本文までダークモードに。色合いを残して、目に優しく。スレッドは新しい順（逆順）に並べ替え、最新の返信が一番上に。"
   },
   "popupSubtitle": {
     "message": "Gmail のダークモード & 新しい順のスレッド表示"
@@ -15,7 +15,7 @@
     "message": "ダークモード"
   },
   "settingDarkDesc": {
-    "message": "スレッドとメール本文を色味を保ったまま暗く表示"
+    "message": "スレッドとメール本文を、色合いを残して暗く表示"
   },
   "settingReverse": {
     "message": "スレッドを新しい順に表示"

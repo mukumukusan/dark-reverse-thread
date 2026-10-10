@@ -25,8 +25,8 @@ Text to paste into the matching fields of the Chrome Web Store Developer Dashboa
 Gmail をダークテーマにしても、開いたメールは真っ白でまぶしい。長いスレッドでは、最新の返信を読むたびに一番下までスクロール――。
 Dark Reverse Thread なら、この2つをまとめて解決できます。
 
-■ メール本文まで、色を残したままダークに
-・背景を暗く、文字を明るくしながら、赤字やハイライトなどの色はそのまま残します。単純な白黒反転ではないので、メールのデザインを崩しにくいのが特長です。
+■ メール本文まで、色合いを残したままダークに
+・背景を暗く、文字を明るくしながら、赤字は赤、青いリンクは青のまま、明るさだけを調整します。単純な白黒反転ではないので、メールのデザインを崩しにくいのが特長です。
 ・背景が透明なロゴなど、暗くすると見えなくなる画像には、元の背景色を敷いて表示します。
 ・スレッド画面のほか、返信欄、新規作成ウィンドウ、宛先の候補、メニューまで暗くなります。Gmail がダークテーマのときは、検索欄と検索候補も対象です。
 ・ダークを ON / OFF しても、メールの位置や大きさは変わりません。
@@ -61,8 +61,8 @@ https://buymeacoffee.com/mukumukusan
 Turn on Gmail's Dark theme, and the emails you open are still bright white. In long threads, you scroll all the way down every time just to read the latest reply.
 Dark Reverse Thread fixes both.
 
-■ Dark emails that keep their colors
-• Backgrounds turn dark and text turns light, while red text, highlights and other colors keep their hue. It is not a simple color inversion, so emails keep their design.
+■ Dark emails that keep their hues
+• Backgrounds turn dark and text turns light, but red stays red and blue links stay blue, just adjusted in brightness. It is not a simple color inversion, so emails keep their design.
 • Images that would disappear in dark mode, such as transparent logos, get their original backdrop back.
 • Beyond the thread view, the reply box, compose window, recipient suggestions and menus go dark too. On Gmail's Dark theme, so do the search box and its suggestions.
 • Turning dark mode on or off never moves or resizes anything.
@@ -96,7 +96,7 @@ https://buymeacoffee.com/mukumukusan
 ### 単一用途 / Single purpose
 
 - 日本語: Gmail の表示を変更する（スレッド画面・作成画面などのダークモード表示と、スレッドを新しい順に並べ替えること）。
-- English: Changes how Gmail is displayed: a color-preserving dark mode for the conversation and compose views (and related menus), and newest-first thread order.
+- English: Changes how Gmail is displayed: a hue-preserving dark mode for the conversation and compose views (and related menus), and newest-first thread order.
 
 ### 権限が必要な理由 / Permission justification
 

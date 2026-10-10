@@ -8,7 +8,7 @@
     "description": "Short name for the popup heading and where space is tight."
   },
   "extDescription": {
-    "message": "Dark mode for Gmail that reaches your emails and keeps their colors, plus reverse thread order with the newest reply on top.",
+    "message": "Dark mode for Gmail that reaches your emails and keeps their hues, plus reverse thread order with the newest reply on top.",
     "description": "Extension description shown in Chrome and the Web Store (max 132 characters)."
   },
   "popupSubtitle": {
@@ -20,7 +20,7 @@
     "description": "Popup setting label: dark mode on/off."
   },
   "settingDarkDesc": {
-    "message": "Darken conversations and email bodies, keeping their colors",
+    "message": "Darken conversations and email bodies, keeping their hues",
     "description": "Popup setting description for dark mode."
   },
   "settingReverse": {
