@@ -28,11 +28,11 @@ Dark Reverse Thread なら、この2つをまとめて解決できます。
 ■ メール本文まで、色を残したままダークに
 ・背景を暗く、文字を明るくしながら、赤字やハイライトなどの色はそのまま残します。単純な白黒反転ではないので、メールのデザインが崩れにくくなっています。
 ・透明な背景のロゴなど、暗い背景で見えなくなる画像には、元の背景色を敷いて表示します。
-・スレッド画面のほか、返信欄、新規作成ウィンドウ、宛先の候補、メニューまで暗くなります。Gmail がダークテーマなら、検索欄と検索候補も暗くなります。
+・スレッド画面のほか、返信欄、新規作成ウィンドウ、宛先の候補、メニューまで暗くなります。Gmail がダークテーマのときは、検索欄と検索候補も対象です。
 ・ダークを ON / OFF しても、メールの位置や大きさは変わりません。
 
 ■ 最新のメールが一番上に
-・スレッドを新しい順に並べ替えるので、開いた瞬間に最新の返信が読めます。
+・スレッドを新しい順に並べるので、開いた瞬間に最新の返信が目に入ります。
 ・返信・転送ボタンと返信欄は、最新のメールのすぐ下（標準）か、すぐ上に置けます。
 
 ■ Gmail のテーマと組み合わせて
@@ -41,7 +41,7 @@ Dark Reverse Thread なら、この2つをまとめて解決できます。
 
 ■ ワンクリックで切り替え
 ・ツールバーの拡張機能アイコンから、ダーク・新しい順・返信欄の位置をいつでも切り替えられます。画面右下に切り替えボタン（クイックバー）を出すこともできます。
-・印刷するときは、元の色・古い順に戻して印刷します。
+・印刷時は、元の色と古い順に戻ります。
 
 ■ プライバシー
 ・データの収集や外部への送信は一切ありません。表示の変更は、すべてお使いのブラウザの中で行います。
@@ -76,8 +76,8 @@ Dark Reverse Thread fixes both.
 • "Change Gmail's theme" in the settings popup opens Gmail's theme picker right away. You pick the theme; the extension never changes Gmail's settings itself.
 
 ■ One-click switching
-• Switch dark mode, newest-first order and the reply position anytime from the toolbar icon, or turn on a small quick bar in the bottom-right corner.
-• Printing uses the original colors and oldest-first order.
+• Switch dark mode, newest-first order and the reply position anytime from the toolbar icon. You can also add a small quick bar in the bottom-right corner.
+• When you print, the original colors and oldest-first order come back.
 
 ■ Privacy
 • Nothing is collected or sent anywhere. All changes happen inside your browser.
