@@ -1,4 +1,4 @@
-# Dark Reverse Thread (v1.0.2)
+# Dark Reverse Thread (v1.0.3)
 
 Web版Gmailのスレッド画面・メール本文・作成ウィンドウを、元の色味を保ったままダークモードで表示し、スレッドを新しい順に並べ替える Chrome 拡張機能（Manifest V3）です。
 A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads, email bodies and the compose window that keeps original colors, plus newest-first conversation threads.
