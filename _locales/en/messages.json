@@ -118,5 +118,9 @@
   "openThemeLink": {
     "message": "🎨 Change Gmail's theme",
     "description": "Small popup link (shown unless the dark-theme tip is shown): opens Gmail's theme picker."
+  },
+  "openThemeNote": {
+    "message": "It may take a moment to open.",
+    "description": "Small note under the theme link and button: Gmail's theme picker can take a moment to open."
   }
 }

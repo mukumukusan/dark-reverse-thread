@@ -88,5 +88,8 @@
   },
   "openThemeLink": {
     "message": "🎨 Gmail のテーマを変える"
+  },
+  "openThemeNote": {
+    "message": "開くまで少し時間がかかることがあります"
   }
 }

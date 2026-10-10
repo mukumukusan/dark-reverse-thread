@@ -128,6 +128,17 @@ label {
   padding: 0 16px 10px;
 }
 
+.theme-note {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: #9aa0a6;
+}
+
+.tip .theme-note {
+  margin-top: 8px;
+}
+
 .theme-link[hidden] {
   display: none;
 }
