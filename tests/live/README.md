@@ -12,7 +12,9 @@
 - **info**: context only (theme background, message header).
 
 Run it once in a conversation and once on a settings page (`#settings/general`): the settings
-checks only run there.
+checks only run there. If you use Gmail's reading pane (split view), also run it with a
+conversation open in the pane: the **split** checks (the pane is the thread root, the mail list
+keeps Gmail's own look) only run there. The automated `suite-split` covers the same on a fixture.
 
 ## How to run
 

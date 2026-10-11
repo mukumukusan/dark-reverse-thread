@@ -8,6 +8,8 @@
  *
  * How to run: open Gmail with the extension loaded, open a conversation that has at least two
  * messages, then paste this whole file into DevTools' console (or run it through Claude in Chrome).
+ * With Gmail's reading pane (split view) on, open the conversation in the pane: the "split" checks
+ * then run as well.
  * The result is returned as an object and also printed as a table.
  *
  * Each check: { area, what, ok, detail }. "required" checks failing means Gmail probably changed;
@@ -48,6 +50,21 @@
     const subject = first('h2.hP');
     const main = subject.closest('div[role="main"]');
     add('required', 'thread', 'subject is inside div[role="main"] (thread root)', main);
+
+    // ---- Reading pane (split view): role="main" also holds the mail list -------------------------
+    const split = !!(main && main.querySelector('tr.zA'));
+    add('info', 'split', 'reading pane (split view) is on', true, split ? 'yes: split checks run' : 'no');
+    if (split) {
+      add('required', 'split', 'conversation sits in its own pane .Nu.S3 (beside the list)', subject.closest('.Nu.S3'));
+      add('required', 'split', 'mail list rows tr.zA sit outside that pane', !subject.closest('.Nu.S3')?.querySelector('tr.zA'));
+      const root = subject.closest('.gtr-thread');
+      add('state', 'split', 'thread root is the pane, not role="main"', root && root !== main && !main.classList.contains('gtr-thread'),
+        root ? root.className : 'no root');
+      add('state', 'split', 'thread root does not contain the mail list', root && !root.querySelector('tr.zA'));
+      const listPane = main.querySelector('tr.zA').closest('.Nu');
+      add('state', 'split', 'mail list keeps Gmail\'s own background (no dark thread color)', listPane && !listPane.closest('.gtr-thread'),
+        listPane ? bg(listPane) : 'not found');
+    }
     const messages = Array.from(document.querySelectorAll('.adn')).filter(visible);
     add('required', 'thread', 'expanded messages .adn', messages.length > 0, `${messages.length} visible`);
     add('required', 'thread', 'email bodies .a3s', first('.a3s'));
@@ -62,9 +79,10 @@
 
     // ---- What the extension did --------------------------------------------------------------
     add('state', 'extension', 'html.gmail-dark-active (dark mode on)', darkOn, darkOn ? '' : 'dark mode is off in the popup, or the extension is not running');
-    add('state', 'extension', 'thread root marked .gtr-thread', main && main.classList.contains('gtr-thread'));
-    if (darkOn && main) {
-      add('state', 'extension', 'thread background is dark', lightness(bg(main)) !== null && lightness(bg(main)) < 0.3, bg(main));
+    const threadRoot = split ? subject.closest('.gtr-thread') : main;
+    add('state', 'extension', 'thread root marked .gtr-thread', threadRoot && threadRoot.classList.contains('gtr-thread'));
+    if (darkOn && threadRoot) {
+      add('state', 'extension', 'thread background is dark', lightness(bg(threadRoot)) !== null && lightness(bg(threadRoot)) < 0.3, bg(threadRoot));
       const adapted = document.querySelectorAll('.gtr-thread .a3s [data-gtr-c]').length;
       add('state', 'extension', 'email body elements adapted (data-gtr-c)', adapted > 0, `${adapted} elements`);
       const body = first('.gtr-thread .a3s');
@@ -73,8 +91,9 @@
         const l = lightness(getComputedStyle(text).color);
         add('state', 'extension', 'body text is light on the dark page', l !== null && l > 0.5, getComputedStyle(text).color);
       }
+      // In split view the pane is the thread root and scrolls itself, so it needs no scroller tag
       const scroller = document.querySelector('.gtr-thread-scroller');
-      add('state', 'extension', 'scroller tagged .gtr-thread-scroller (fast-scroll flash fix)', scroller, scroller ? bg(scroller) : 'not found');
+      if (!split) add('state', 'extension', 'scroller tagged .gtr-thread-scroller (fast-scroll flash fix)', scroller, scroller ? bg(scroller) : 'not found');
       const toggle = first('.gtr-thread .adn td.acX .gtr-original-toggle');
       add('state', 'extension', 'original-colors button in the message header', toggle);
       const amsButton = first('.gtr-thread .amn .ams');
@@ -107,6 +126,9 @@
     add('state', 'extension', 'Gmail theme class matches the background', html.classList.contains('gtr-gmail-dark-theme') === (bodyLight <= 0.5),
       `gtr-gmail-dark-theme=${html.classList.contains('gtr-gmail-dark-theme')}`);
   }
+
+  add('state', 'extension', 'page body not scrolled (Gmail never scrolls it)', document.body.scrollTop === 0 && document.body.scrollLeft === 0,
+    `${document.body.scrollLeft},${document.body.scrollTop}`);
 
   const failed = checks.filter((c) => !c.ok && c.level !== 'info');
   const summary = {
