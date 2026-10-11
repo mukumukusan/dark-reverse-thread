@@ -28,6 +28,7 @@ Dark Reverse Thread なら、この2つをまとめて解決できます。
 ■ メール本文まで、色合いを残したままダークに
 ・背景を暗く、文字を明るくしながら、赤字は赤、青いリンクは青のまま、明るさだけを調整します。単純な白黒反転ではないので、メールのデザインを崩しにくいのが特長です。
 ・背景が透明なロゴなど、暗くすると見えなくなる画像には、元の背景色を敷いて表示します。
+・読みにくいメールがあっても大丈夫。メールの ◐ ボタンを押せば、そのメールだけ元の色で表示できます。
 ・スレッド画面のほか、返信欄、新規作成ウィンドウ、宛先の候補、メニューまで暗くなります。Gmail がダークテーマのときは、検索欄と検索候補も対象です。
 ・ダークを ON / OFF しても、メールの位置や大きさは変わりません。
 
@@ -64,6 +65,7 @@ Dark Reverse Thread fixes both.
 ■ Dark emails that keep their hues
 • Backgrounds turn dark and text turns light, but red stays red and blue links stay blue, just adjusted in brightness. It is not a simple color inversion, so emails keep their design.
 • Images that would disappear in dark mode, such as transparent logos, get their original backdrop back.
+• If an email ever looks off, the ◐ button in its header shows just that email in its original colors.
 • Beyond the thread view, the reply box, compose window, recipient suggestions and menus go dark too. On Gmail's Dark theme, so do the search box and its suggestions.
 • Turning dark mode on or off never moves or resizes anything.
 
@@ -100,6 +102,7 @@ Dark Reverse Thread resuelve las dos cosas.
 ■ Modo oscuro hasta en tus correos, conservando sus tonos
 • Los fondos se oscurecen y el texto se aclara, pero el rojo sigue siendo rojo y los enlaces azules siguen siendo azules; solo se ajusta el brillo. No es una simple inversión de colores, así que los correos mantienen su diseño.
 • Las imágenes que desaparecerían en modo oscuro, como los logotipos transparentes, recuperan su fondo original.
+• Si algún correo no se lee bien, el botón ◐ de su encabezado muestra solo ese correo con sus colores originales.
 • Además de la vista del hilo, también se oscurecen el cuadro de respuesta, la ventana de redacción, las sugerencias de destinatarios y los menús. Con el tema Oscuro de Gmail, también el cuadro de búsqueda y sus sugerencias.
 • Activar o desactivar el modo oscuro nunca mueve ni cambia el tamaño de nada.
 
@@ -136,6 +139,7 @@ O Dark Reverse Thread resolve as duas coisas.
 ■ Modo escuro até nos seus e-mails, mantendo os tons
 • Os fundos escurecem e o texto clareia, mas o vermelho continua vermelho e os links azuis continuam azuis; só o brilho é ajustado. Não é uma simples inversão de cores, então os e-mails mantêm o design.
 • Imagens que sumiriam no modo escuro, como logotipos transparentes, recebem de volta o fundo original.
+• Se algum e-mail não ficar legível, o botão ◐ no cabeçalho mostra só esse e-mail com as cores originais.
 • Além da conversa, a caixa de resposta, a janela de nova mensagem, as sugestões de destinatários e os menus também ficam escuros. Com o tema Escuro do Gmail, a caixa de pesquisa e as sugestões também.
 • Ligar ou desligar o modo escuro nunca move nem redimensiona nada.
 
@@ -172,6 +176,7 @@ Dark Reverse Thread löst beides.
 ■ Dunkelmodus bis in die E-Mails – mit erhaltenen Farbtönen
 • Hintergründe werden dunkel und Text hell, aber Rot bleibt Rot und blaue Links bleiben blau; nur die Helligkeit wird angepasst. Es ist keine einfache Farbumkehr, daher behalten E-Mails ihr Design.
 • Bilder, die im Dunkelmodus verschwinden würden, etwa transparente Logos, erhalten ihren ursprünglichen Hintergrund zurück.
+• Ist eine E-Mail einmal schlecht lesbar, zeigt die ◐-Schaltfläche in ihrer Kopfzeile nur diese E-Mail in den Originalfarben.
 • Neben der Unterhaltung werden auch das Antwortfeld, das Fenster für neue Nachrichten, die Empfängervorschläge und die Menüs dunkel. Mit dem Gmail-Design „Dunkel“ auch das Suchfeld und seine Vorschläge.
 • Das Ein- und Ausschalten des Dunkelmodus verändert weder Position noch Größe von Elementen.
 
@@ -242,6 +247,7 @@ Japanese images are in `screenshots/ja/` and English ones in `screenshots/en/`, 
 | `2-reply-below-newest.png` | 返信ボタンが最新メールの直下、その下に古いメール / Reply buttons right below the newest email, older ones below |
 | `3-dark-compose.png` | ダークの作成ウィンドウ / Dark compose window |
 | `4-popup-settings.png` | 設定のポップアップと「テーマを選ぶ」ボタン（1.0.2 以降） / Settings popup with the "Choose a theme" button (1.0.2+) |
+| `5-original-colors.png` | ◐ ボタンで、1通だけ元の色で表示（1.1.0 以降） / The ◐ button showing one email in its original colors (1.1.0+) |
 
 - すべて 1280×800。実解像度（2倍）の 2276×1422 ピクセルから縮小しています。
 - All 1280×800, downscaled from a native 2x capture (2276×1422 px).

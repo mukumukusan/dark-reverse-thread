@@ -16,9 +16,12 @@ buildGmail();
   document.getElementById('body' + i).insertAdjacentHTML('beforebegin',
     `<table><tbody><tr><td class="gH acX" id="group${i}"><button id="reply${i}">Reply</button></td></tr></tbody></table>`);
 });
+const png = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c.toDataURL(); };
 document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <span id="black" style="color: #000000">black</span>
-  <div id="white-bg" style="background: #ffffff">white</div>`);
+  <div id="white-bg" style="background: #ffffff">white</div>
+  <div id="card-image" style="background-image: url(${png(4, 4)}); color: #5f6368">on a light picture</div>
+  <img id="logo" src="${png(40, 40)}">`);
 window.__GTR_MOCK__ = { messages: { originalColorsShow: 'Show original colors', originalColorsHide: 'Show in dark' } };
 </script>
   <script src="chrome-mock.js"></script>
@@ -94,7 +97,22 @@ test('pressing it shows that message in its own colors on a white card', () => {
 });
 
 test('the press does not reach Gmail\'s header (which would collapse the message)', () => {
+  button(1).dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
   assertEqual(headerClicks, 0);
+});
+
+test('in original colors, background pictures and logo backdrops are left as designed too', async () => {
+  await waitFor(() => $('logo').hasAttribute('data-gtr-img'), 2000);
+  assertEqual(getComputedStyle($('card-image')).backgroundBlendMode, 'normal');
+  assertEqual(getComputedStyle($('logo')).backgroundColor, 'rgba(0, 0, 0, 0)');
+  assertEqual(getComputedStyle($('logo')).boxShadow, 'none');
+});
+
+test('text Gmail adds while the email shows its original colors keeps its own color', async () => {
+  $('body1').insertAdjacentHTML('beforeend', '<span id="late" style="color: #000000">late</span>');
+  assertEqual(getComputedStyle($('late')).color, 'rgb(0, 0, 0)', 'right away (before it is read)');
+  await waitFor(() => $('late').hasAttribute('data-gtr-c'), 2000);
+  assertEqual(getComputedStyle($('late')).color, 'rgb(0, 0, 0)', 'after it is read');
 });
 
 test('the tooltip follows the new label when pressed while shown', async () => {
@@ -117,6 +135,48 @@ test('pressing it again turns the message dark again', () => {
   assert(!hasClass(message(1), 'gtr-original'));
   assertEqual(getComputedStyle($('black')).color, 'rgb(227, 227, 227)');
   assertEqual(button(1).getAttribute('aria-label'), 'Show original colors');
+});
+
+test('keyboard focus shows the tooltip, blur hides it', () => {
+  button(2).dispatchEvent(new FocusEvent('focus'));
+  assertEqual(getComputedStyle(tip()).display, 'block');
+  assertEqual(tip().textContent, 'Show original colors');
+  button(2).dispatchEvent(new FocusEvent('blur'));
+  assertEqual(getComputedStyle(tip()).display, 'none');
+});
+
+test('scrolling hides the tooltip', async () => {
+  button(2).dispatchEvent(new PointerEvent('pointerenter'));
+  await sleep(200);
+  assertEqual(getComputedStyle(tip()).display, 'block');
+  $('scroller').dispatchEvent(new Event('scroll'));
+  assertEqual(getComputedStyle(tip()).display, 'none');
+});
+
+test('with no room above, the tooltip goes below the button', async () => {
+  const scroller = $('scroller');
+  scroller.scrollTop = 0;
+  window.scrollTo(0, 0);
+  const b = button(1).getBoundingClientRect();
+  const room = b.top;
+  document.body.style.marginTop = `${-room}px`; // put the button at the very top of the window
+  button(1).dispatchEvent(new PointerEvent('pointerenter'));
+  await sleep(200);
+  const nb = button(1).getBoundingClientRect();
+  const t = tip().getBoundingClientRect();
+  document.body.style.marginTop = '';
+  button(1).dispatchEvent(new PointerEvent('pointerleave'));
+  assert(t.top >= nb.bottom, `tip top ${t.top}, button bottom ${nb.bottom}`);
+});
+
+test('a new button is added when Gmail redraws the header group', async () => {
+  const fresh = document.createElement('td');
+  fresh.className = 'gH acX';
+  fresh.id = 'group2';
+  fresh.innerHTML = '<button>Reply</button>';
+  $('group2').replaceWith(fresh);
+  await sleep(500);
+  assertEqual($('group2').querySelectorAll('.gtr-original-toggle').length, 1);
 });
 
 test('no duplicate buttons after Gmail updates the thread', async () => {
