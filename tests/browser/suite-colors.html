@@ -24,6 +24,7 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <div id="half-bg" style="background: rgba(255, 255, 255, 0.5)">half</div>
   <div id="card-image" style="background-image: url(${png(4, 4)}); color: #5f6368">on a light picture</div>
   <div id="photo-image" style="background-image: url(${png(4, 4)}); color: #ffffff">on a photo</div>
+  <div id="gradient-card" style="background-image: linear-gradient(#ffffff, #f1f3f4); color: #202124">on a light gradient</div>
   <div id="tinted-image" style="background: #ffff00 url(${png(4, 4)}); color: #000000">tinted</div>
   <img id="logo" src="${png(40, 40)}">
   <img id="big" src="${png(400, 200)}">
@@ -89,6 +90,12 @@ test('a background picture under dark text is multiplied by the dark page color'
   assertEqual(background('card-image'), 'rgb(31, 31, 31)');
   assertEqual(getComputedStyle($('card-image')).backgroundBlendMode, 'multiply');
   assert(getComputedStyle($('card-image')).backgroundImage.includes('url('), 'the picture stays');
+});
+
+test('a light gradient under dark text is darkened the same way', () => {
+  assert($('gradient-card').hasAttribute('data-gtr-bgimg'));
+  assertEqual(getComputedStyle($('gradient-card')).backgroundBlendMode, 'multiply');
+  assertEqual(background('gradient-card'), 'rgb(31, 31, 31)');
 });
 
 test('a background picture under light text (a photo) is left alone', () => {

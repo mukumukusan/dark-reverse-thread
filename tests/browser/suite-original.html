@@ -91,7 +91,7 @@ test('pressing it shows that message in its own colors on a white card', () => {
   assertEqual(getComputedStyle($('black')).color, 'rgb(0, 0, 0)');
   assertEqual(getComputedStyle($('white-bg')).backgroundColor, 'rgb(255, 255, 255)');
   assertEqual(getComputedStyle($('body1')).backgroundColor, 'rgb(255, 255, 255)');
-  assertEqual(button(1).getAttribute('aria-label'), 'Show in dark');
+  assertEqual(button(1).getAttribute('aria-label'), 'Show original colors', 'screen readers: same label, aria-pressed tells the state');
   assertEqual(button(1).getAttribute('aria-pressed'), 'true');
   assertEqual(getComputedStyle(button(1).querySelector('path')).fill, 'rgb(227, 227, 227)', 'pressed: plain icon color');
 });
@@ -183,6 +183,52 @@ test('no duplicate buttons after Gmail updates the thread', async () => {
   $('body1').appendChild(document.createElement('p'));
   await sleep(500);
   assertEqual($('group1').querySelectorAll('.gtr-original-toggle').length, 1);
+});
+
+test('the tooltip goes away when its button vanishes under the pointer (no pointerleave)', async () => {
+  button(2).dispatchEvent(new PointerEvent('pointerenter'));
+  await sleep(200);
+  assertEqual(getComputedStyle(tip()).display, 'block');
+  const old = $('group2');
+  const fresh = old.cloneNode(false); // Gmail redraws the group: our button is gone with the old one
+  old.replaceWith(fresh);
+  await sleep(500);
+  assertEqual(getComputedStyle(tip()).display, 'none');
+});
+
+test('the tooltip goes away when the view changes (hashchange)', async () => {
+  button(1).dispatchEvent(new PointerEvent('pointerenter'));
+  await sleep(200);
+  assertEqual(getComputedStyle(tip()).display, 'block');
+  window.dispatchEvent(new HashChangeEvent('hashchange'));
+  assertEqual(getComputedStyle(tip()).display, 'none');
+  await sleep(500);
+});
+
+test('after the extension is updated, pressing still works in an open tab', async () => {
+  const realGetMessage = chrome.i18n.getMessage;
+  const realManifest = chrome.runtime.getManifest;
+  chrome.i18n.getMessage = () => { throw new Error('Extension context invalidated.'); };
+  chrome.runtime.getManifest = () => { throw new Error('Extension context invalidated.'); };
+  const errors = [];
+  const onError = (e) => errors.push(e.message);
+  window.addEventListener('error', onError);
+  try {
+    const before = hasClass(message(1), 'gtr-original');
+    button(1).dispatchEvent(new PointerEvent('pointerenter'));
+    await sleep(200);
+    button(1).click();
+    assertEqual(hasClass(message(1), 'gtr-original'), !before);
+    assertEqual(button(1).getAttribute('aria-pressed'), String(!before));
+    assertEqual(tip().textContent, before ? 'Show original colors' : 'Show in dark');
+    assertEqual(errors.length, 0, errors.join(' / '));
+    button(1).click(); // back to where it was
+    button(1).dispatchEvent(new PointerEvent('pointerleave'));
+  } finally {
+    window.removeEventListener('error', onError);
+    chrome.i18n.getMessage = realGetMessage;
+    chrome.runtime.getManifest = realManifest;
+  }
 });
 
 test('the button is hidden while dark mode is off', async () => {

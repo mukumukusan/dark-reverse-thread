@@ -33,6 +33,11 @@
     }
   };
   const RELOAD_HINT = chrome.i18n.getMessage('quickReloadNeeded'); // read now: not available once invalidated
+  // The original-colors button's texts, read now for the same reason (its clicks keep working after an update)
+  const ORIGINAL_LABELS = {
+    show: chrome.i18n.getMessage('originalColorsShow'),
+    hide: chrome.i18n.getMessage('originalColorsHide')
+  };
 
   /**
    * Mark each conversation view (the main pane that holds a subject h2.hP) with .gtr-thread
@@ -220,7 +225,7 @@
       const colors = nodes.map((node) => {
         if (SKIP_TAGS.has(node.tagName.toUpperCase()) || node.closest('svg, .ajR')) return null;
         const style = getComputedStyle(node);
-        return { fg: parseRGB(style.color), bg: parseRGB(style.backgroundColor), bgImage: style.backgroundImage.includes('url(') };
+        return { fg: parseRGB(style.color), bg: parseRGB(style.backgroundColor), bgImage: style.backgroundImage !== 'none' };
       });
 
       nodes.forEach((node, i) => {
@@ -238,7 +243,7 @@
           node.style.setProperty('--gtr-bg', remapLightness(c.bg, toDarkBackground));
           node.setAttribute('data-gtr-bg', '');
         }
-        // A background picture under dark text was drawn light (often a white card made of an image):
+        // A background picture or gradient under dark text was drawn light (often a white card made of one):
         // multiplied by the dark background it becomes as dark as a white background would. Pictures
         // under light text (a photo behind a white headline) are left as they are.
         if (c.bgImage && c.fg && rgbToHsl(c.fg).l < 0.5) {
@@ -306,6 +311,10 @@
   const TOOLTIP_DELAY = 100;
   const TOOLTIP_GAP = 4;
   let tooltipTimer = null;
+  let tooltipOwner = null; // the button the tooltip is shown for
+
+  // The tooltip says what a press will do; the button's aria-label stays the same (aria-pressed tells the state)
+  const tooltipText = (button) => (button.getAttribute('aria-pressed') === 'true' ? ORIGINAL_LABELS.hide : ORIGINAL_LABELS.show);
 
   function placeTooltip(button) {
     let tip = document.getElementById(TOOLTIP_ID);
@@ -316,8 +325,9 @@
       document.body.appendChild(tip);
       document.addEventListener('scroll', hideTooltip, true);
     }
-    tip.textContent = button.getAttribute('aria-label');
+    tip.textContent = tooltipText(button);
     tip.classList.add('gtr-tooltip-visible');
+    tooltipOwner = button;
     const b = button.getBoundingClientRect();
     const t = tip.getBoundingClientRect();
     const above = b.top - t.height - TOOLTIP_GAP;
@@ -328,13 +338,18 @@
 
   function hideTooltip() {
     clearTimeout(tooltipTimer);
+    tooltipOwner = null;
     const tip = document.getElementById(TOOLTIP_ID);
     if (tip) tip.classList.remove('gtr-tooltip-visible');
   }
 
-  function labelOriginalButton(button, original) {
-    const label = chrome.i18n.getMessage(original ? 'originalColorsHide' : 'originalColorsShow');
-    button.setAttribute('aria-label', label);
+  // The button can vanish under the pointer (keyboard navigation, Back, Gmail redrawing the header)
+  // without a pointerleave: then the tooltip would stay on screen
+  function hideOrphanedTooltip() {
+    if (tooltipOwner && !tooltipOwner.isConnected) hideTooltip();
+  }
+
+  function setOriginalPressed(button, original) {
     button.setAttribute('aria-pressed', String(original));
   }
 
@@ -347,15 +362,15 @@
       button.type = 'button';
       button.className = ORIGINAL_BUTTON_CLASS;
       button.appendChild(makeOriginalIcon());
-      labelOriginalButton(button, message.classList.contains(ORIGINAL_CLASS));
+      button.setAttribute('aria-label', ORIGINAL_LABELS.show);
+      setOriginalPressed(button, message.classList.contains(ORIGINAL_CLASS));
       // Gmail collapses the message when its header is clicked: keep our presses to ourselves
       ['mousedown', 'mouseup'].forEach((type) => button.addEventListener(type, (event) => event.stopPropagation()));
       button.addEventListener('click', (event) => {
         event.stopPropagation();
         event.preventDefault();
-        const original = message.classList.toggle(ORIGINAL_CLASS);
-        labelOriginalButton(button, original);
-        if (document.getElementById(TOOLTIP_ID)?.classList.contains('gtr-tooltip-visible')) placeTooltip(button);
+        setOriginalPressed(button, message.classList.toggle(ORIGINAL_CLASS));
+        if (tooltipOwner === button) placeTooltip(button);
       });
       button.addEventListener('pointerenter', () => {
         clearTimeout(tooltipTimer);
@@ -916,6 +931,7 @@
   function flushPending() {
     flushTimeout = null;
     flushDeadline = 0;
+    hideOrphanedTooltip();
     noteGmailTheme(); // cheap; Gmail may apply its theme after the first pass
     if (needFullPass) {
       needFullPass = false;
@@ -1002,6 +1018,7 @@
 
   // Opening / leaving a conversation changes the hash (#inbox/<thread id>)
   window.addEventListener('hashchange', () => {
+    hideTooltip(); // a new view: whatever the tooltip pointed at is gone or moved
     needFullPass = true;
     scheduleFlush();
   });

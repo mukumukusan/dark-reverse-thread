@@ -1170,7 +1170,7 @@
   background-color: var(--gtr-bg) !important;
 }
 
-/* 暗い文字が乗っていた背景画像（画像で作った白いカードなど）は、暗い背景色と乗算して
+/* 暗い文字が乗っていた背景画像・グラデーション（それで作った白いカードなど）は、暗い背景色と乗算して
    白い背景色と同じくらいの暗さにする（content.js が --gtr-bgimg と data-gtr-bgimg を付ける）。
    明るい文字が乗った写真の背景は対象外 */
 .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bgimg] {
