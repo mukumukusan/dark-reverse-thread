@@ -855,6 +855,15 @@
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
+/* 右のバーのサイドパネル（カレンダー・Keep のメモ・連絡先）。中身は Google の別ページ（iframe）で、Gmail のテーマに
+   関係なく白いので、アプリごとの枠（.brC-brG-Jz-bBA、iframe はその直下）を反転する。ToDo リストは自分で暗くなるので対象外。
+   隠れた枠も残るため、読み込み先（src）でアプリを見分ける。反転を 0.88 に抑えて白をページと同じ #1f1f1f にする。
+   iframe の中の写真（連絡先のアイコンなど）は元に戻せないので、色が反転したまま */
+.gmail-dark-active.gtr-gmail-dark-theme .brC-brG-Jz-bBA:has(> iframe:is([src*="calendar.google.com"], [src*="keep.google.com"], [src*="contacts.google.com"])) {
+  background-color: rgb(224, 224, 224) !important;
+  filter: invert(0.88) hue-rotate(180deg) !important;
+}
+
 /* ？のヘルプのメニュー（.t9） */
 .gmail-dark-active.gtr-gmail-dark-theme .t9[role="menu"] {
   background-color: var(--gtr-dark-surface) !important;
