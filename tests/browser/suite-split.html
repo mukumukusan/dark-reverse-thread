@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Reading pane (split view)</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script>
+// Gmail with the reading pane on: role="main" holds the mail list (tr.zA rows) and, next to it,
+// the pane (.Nu.S3, which scrolls itself) with the open conversation
+document.body.insertAdjacentHTML('afterbegin', `
+  <header role="banner"><a class="FH" role="button" aria-expanded="false">⚙</a></header>
+  <div role="main" id="main">
+    <div class="Nr" id="split">
+      <div class="Nu tf" id="list-pane">
+        <table><tbody><tr class="zA" id="row"><td id="row-text">An email in the list</td></tr></tbody></table>
+      </div>
+      <div class="Nu S3" id="pane" style="height: 300px; overflow-y: auto">
+        <h2 class="hP" id="subject">Subject</h2>
+        <div role="list" id="list">
+          <div class="msg" id="m1"><div class="adn"><div class="a3s" id="body1"><p id="text1">Message 1</p></div></div></div>
+          <div class="msg" id="m2"><div class="adn"><div class="a3s" id="body2"><p id="text2">Message 2</p></div></div></div>
+        </div>
+        <div id="footer"><div class="amn"><span class="ams">Reply</span></div></div>
+        <div style="height: 800px"></div>
+      </div>
+    </div>
+  </div>`);
+window.__GTR_MOCK__ = { local: { gmailLightTheme: true } };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const $ = (id) => document.getElementById(id);
+const bg = (id) => getComputedStyle($(id)).backgroundColor;
+
+test('the reading pane, not the whole role="main", is the thread root', async () => {
+  await sleep(500);
+  assert(hasClass($('pane'), 'gtr-thread'), 'pane marked');
+  assert(!hasClass($('main'), 'gtr-thread'), 'role="main" (with the mail list) not marked');
+});
+
+test('the mail list keeps Gmail\'s own look (no dark thread background)', () => {
+  assertEqual(bg('main'), 'rgba(0, 0, 0, 0)');
+  assertEqual(bg('list-pane'), 'rgba(0, 0, 0, 0)');
+});
+
+test('the pane gets the dark thread background (it is its own scroller: no white flash)', () => {
+  assertEqual(bg('pane'), 'rgb(31, 31, 31)');
+});
+
+test('the conversation in the pane is still newest-first and its body is adapted', () => {
+  assert(hasClass($('list'), 'gmail-thread-reversed'));
+  assert($('text1').hasAttribute('data-gtr-c'));
+});
+
+test('a right-click on the mail list does not count as a dark-menu source (light theme)', () => {
+  $('row-text').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+  assert(!hasClass(html, 'gtr-menu-source'));
+});
+
+test('switching the reading pane off moves the root back to role="main"', async () => {
+  // Gmail redraws the view: the list leaves role="main" and the conversation is put back in it
+  const subject = $('subject');
+  $('split').remove();
+  const view = document.createElement('div');
+  view.append(subject);
+  $('main').appendChild(view);
+  await sleep(500);
+  assert(hasClass($('main'), 'gtr-thread'), 'role="main" marked');
+  assert(!document.querySelector('#pane.gtr-thread'), 'the old root is dropped');
+});
+
+runTests();
+  </script>
+</body>
+</html>

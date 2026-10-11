@@ -151,6 +151,24 @@ test('side panels: Calendar, Keep and Contacts are flipped dark; Tasks (already 
   assertEqual(filter('side-tasks'), 'none');
 });
 
+test('the page body is put back when the browser scrolls it (focus inside a filtered panel)', async () => {
+  // Like Gmail: neither the page nor the body scrolls (both overflow: hidden), so the body is its own scroller
+  const root = document.documentElement;
+  const body = document.body;
+  const old = [root.style.cssText, body.style.cssText];
+  root.style.cssText = 'overflow: hidden; height: 100%';
+  body.style.cssText = 'overflow: hidden; height: 100%; margin: 0';
+  const filler = document.createElement('div');
+  filler.style.height = '3000px';
+  body.appendChild(filler);
+  body.scrollTop = 500;
+  assert(body.scrollTop > 0, 'the browser can scroll the body (as it did in Gmail)');
+  await waitFor(() => body.scrollTop === 0, 1000);
+  assertEqual(body.scrollTop, 0);
+  filler.remove();
+  [root.style.cssText, body.style.cssText] = old;
+});
+
 test('menus opened from the mail list (right-click) are dark on Gmail\'s dark theme', () => {
   press('outside');
   press('mail-row');

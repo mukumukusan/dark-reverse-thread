@@ -45,10 +45,21 @@
    * sidebar or header.
    */
   const THREAD_ANCHORS = 'h2.hP, .adn, .a3s';
+  const MAIL_LIST_ROW = 'tr.zA';
 
   function findThreadRoot(anchor) {
     const main = anchor.closest('div[role="main"]');
-    if (main) return main;
+    if (main) {
+      if (!main.querySelector(MAIL_LIST_ROW)) return main;
+      // Reading pane (split view): role="main" holds the mail list too, which must keep Gmail's own
+      // look (on a light theme the dark thread background would sit under its dark text). The root is
+      // then the pane: the highest ancestor of the conversation that doesn't contain the list.
+      let el = anchor;
+      while (el.parentElement && el.parentElement !== main && !el.parentElement.querySelector(MAIL_LIST_ROW)) {
+        el = el.parentElement;
+      }
+      return el;
+    }
     // Fallback when the conversation is not inside role="main": the container of the message list
     const list = anchor.closest('div[role="list"]');
     if (list && list.parentElement) return list.parentElement;
@@ -66,18 +77,24 @@
 
   /** Returns the roots that were newly marked, so their whole contents can be processed. */
   function markThreadViews() {
-    const newRoots = new Set();
+    const roots = new Set();
     document.querySelectorAll(THREAD_ANCHORS).forEach((anchor) => {
       const root = findThreadRoot(anchor);
-      if (root && !root.classList.contains('gtr-thread')) {
+      if (root) roots.add(root);
+    });
+
+    const newRoots = new Set();
+    roots.forEach((root) => {
+      if (!root.classList.contains('gtr-thread')) {
         root.classList.add('gtr-thread');
         threadViewSize.observe(root);
         newRoots.add(root);
       }
     });
 
+    // Also drops a root that is no longer the right one (e.g. the reading pane was switched on or off)
     document.querySelectorAll('.gtr-thread').forEach((root) => {
-      if (!root.querySelector(THREAD_ANCHORS)) {
+      if (!roots.has(root)) {
         root.classList.remove('gtr-thread');
         threadViewSize.unobserve(root);
       }
@@ -750,6 +767,21 @@
    * Hovering never clears it: on the way from the button to its menu the pointer may cross other parts
    * of the page, and the open menu must not turn white. Only the next press elsewhere clears it.
    */
+  /**
+   * Gmail's page body never scrolls (overflow: hidden; each pane scrolls itself). But panels this
+   * extension flips with a CSS filter (quick settings, settings, Gemini) become the containing block of
+   * their position: fixed children, so Gmail's off-screen radio buttons (fixed at left: -10000px) end up
+   * inside the panel, and pressing one makes the browser scroll the body to reveal it: the whole page
+   * slid up out of view. Put the body back right away (before it is painted).
+   */
+  document.addEventListener('scroll', (event) => {
+    const body = document.body;
+    if ((event.target === body || event.target === document) && (body.scrollTop || body.scrollLeft)) {
+      body.scrollTop = 0;
+      body.scrollLeft = 0;
+    }
+  }, true);
+
   const MENU_SOURCE_CLASS = 'gtr-menu-source';
   const MENU_SELECTOR = '[role="menu"], .J-M, .tB5Jxf-M-X';
   // thread, compose window, toolbar (left / right part), advanced search panel
