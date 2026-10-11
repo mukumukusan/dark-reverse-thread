@@ -1140,23 +1140,24 @@
 }
 
 /* ヘッダーのボタンの中身を塗る規則（.gH button *）に塗りつぶされないよう、輪と半円の色をそれより強く指定する。
-   押している間（元の色で表示中）はリンク色 */
+   ダーク表示中はリンク色の青にして、この機能があることに気づきやすくする。押して元の色で表示している間は、
+   隣の Gmail のボタンと同じ色 */
 .gmail-dark-active .gtr-thread .gH .gtr-original-toggle svg circle {
   fill: none !important;
-  stroke: var(--gtr-dark-text) !important;
+  stroke: var(--gtr-dark-link) !important;
 }
 
 .gmail-dark-active .gtr-thread .gH .gtr-original-toggle svg path {
-  fill: var(--gtr-dark-text) !important;
+  fill: var(--gtr-dark-link) !important;
   stroke: none !important;
 }
 
 .gmail-dark-active .gtr-thread .gH .gtr-original-toggle[aria-pressed="true"] svg circle {
-  stroke: var(--gtr-dark-link) !important;
+  stroke: var(--gtr-dark-text) !important;
 }
 
 .gmail-dark-active .gtr-thread .gH .gtr-original-toggle[aria-pressed="true"] svg path {
-  fill: var(--gtr-dark-link) !important;
+  fill: var(--gtr-dark-text) !important;
 }
 
 /* 本文内の各要素は content.js が元の色の色相・彩度を保ったまま明度だけ調整し、
