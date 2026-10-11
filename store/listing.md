@@ -241,17 +241,18 @@ Japanese images are in `screenshots/ja/` and English ones in `screenshots/en/`, 
 
 | ファイル / File | 内容 / Shows |
 |---|---|
-| `00-problem.png` | 「まぶしい」「長い」で困る封筒のイラスト。最初の1枚におすすめ / Illustration of the two pains (too bright, too long); recommended first |
-| `0-compare-off-on.png` | ダーク OFF（上）と ON（下）の比較。2枚目におすすめ / OFF (top) vs ON (bottom); recommended second |
-| `1-dark-newest-first.png` | ダークで、最新のメールが一番上 / Dark, newest email on top |
-| `2-reply-below-newest.png` | 返信ボタンが最新メールの直下、その下に古いメール / Reply buttons right below the newest email, older ones below |
-| `3-dark-compose.png` | ダークの作成ウィンドウ / Dark compose window |
-| `4-popup-settings.png` | 設定のポップアップと「テーマを選ぶ」ボタン（1.0.2 以降） / Settings popup with the "Choose a theme" button (1.0.2+) |
-| `5-original-colors.png` | ◐ ボタンで、1通だけ元の色で表示（1.1.0 以降） / The ◐ button showing one email in its original colors (1.1.0+) |
+| `1-problem.png` | 「まぶしい」「長い」で困る封筒のイラスト / Illustration of the two pains (too bright, too long) |
+| `2-compare-off-on.png` | ダーク OFF（上）と ON（下）の比較 / OFF (top) vs ON (bottom) |
+| `3-reply-below-newest.png` | 返信ボタンが最新メールの直下、その下に古いメール / Reply buttons right below the newest email, older ones below |
+| `4-original-colors.png` | ◐ ボタンで、1通だけ元の色で表示（1.1.0 以降） / The ◐ button showing one email in its original colors (1.1.0+) |
+| `5-popup-settings.png` | 設定のポップアップと「テーマを選ぶ」ボタン（1.0.2 以降） / Settings popup with the "Choose a theme" button (1.0.2+) |
+
+- 番号の順にアップロードしてください（ストアに載せられるのは最大5枚）。
+- Upload them in numbered order (the store allows up to 5).
 
 - すべて 1280×800。実解像度（2倍）の 2276×1422 ピクセルから縮小しています。
 - All 1280×800, downscaled from a native 2x capture (2276×1422 px).
-- `00-problem.png` はイラストで、1280×800（2倍で描画して縮小）。
+- `1-problem.png` はイラストで、1280×800（2倍で描画して縮小）。
 - メールの内容・人物・アドレス（example.com）は架空のものです。
 - Every name, address (example.com) and message is fictional.
 - アイコン（128×128）: `icons/icon128.png`
