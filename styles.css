@@ -246,8 +246,8 @@
 }
 
 /* メール本文内の引用（リンク色は本文の色調整で元の色相のまま明るくなる） */
-.gmail-dark-active .gtr-thread .a3s .gmail_quote,
-.gmail-dark-active .gtr-thread .a3s blockquote {
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) .gmail_quote,
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) blockquote {
   border-left: 2px solid var(--gtr-dark-outline) !important;
   color: var(--gtr-dark-text-subtle) !important;
   padding-left: 8px !important;
@@ -1070,43 +1070,107 @@
 }
 
 /* メール本文（HTMLメールの白背景・固定文字色を上書き。bgcolor / color 属性もCSSで無効化される） */
-.gmail-dark-active .gtr-thread .ii.gt,
-.gmail-dark-active .gtr-thread .a3s {
+.gmail-dark-active .gtr-thread .ii.gt:not(.gtr-original .ii.gt),
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) {
   background-color: var(--gtr-dark-page) !important;
   color: var(--gtr-dark-text) !important;
 }
 
+/* メールごとの「元の色で表示」（content.js がヘッダーにボタンを足し、押すと .adn に .gtr-original を付ける）。
+   上の本文の規則はどれも :not(.gtr-original .a3s) で外れるので、本文はメールのデザインどおりの色になる。
+   白いカードに載せる（場所を取らない影で余白を付ける） */
+.gmail-dark-active .gtr-thread .gtr-original .a3s {
+  background-color: #ffffff !important;
+  color: #222222 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 0 12px #ffffff !important;
+}
+
+/* ボタン本体：Gmail の絵文字・返信・︙ボタンと同じ 40px の丸いボタン。ダークモードOFFのときは出さない */
+.gtr-original-toggle {
+  display: none;
+}
+
+.gmail-dark-active .gtr-thread .gtr-original-toggle {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.gmail-dark-active .gtr-thread .gtr-original-toggle:hover {
+  background-color: rgba(227, 227, 227, 0.08);
+}
+
+.gmail-dark-active .gtr-thread .gtr-original-toggle:focus-visible {
+  outline: 2px solid var(--gtr-dark-link);
+  outline-offset: -2px;
+}
+
+.gtr-original-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ヘッダーのボタンの中身を塗る規則（.gH button *）に塗りつぶされないよう、輪と半円の色をそれより強く指定する。
+   押している間（元の色で表示中）はリンク色 */
+.gmail-dark-active .gtr-thread .gH .gtr-original-toggle svg circle {
+  fill: none !important;
+  stroke: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active .gtr-thread .gH .gtr-original-toggle svg path {
+  fill: var(--gtr-dark-text) !important;
+  stroke: none !important;
+}
+
+.gmail-dark-active .gtr-thread .gH .gtr-original-toggle[aria-pressed="true"] svg circle {
+  stroke: var(--gtr-dark-link) !important;
+}
+
+.gmail-dark-active .gtr-thread .gH .gtr-original-toggle[aria-pressed="true"] svg path {
+  fill: var(--gtr-dark-link) !important;
+}
+
 /* 本文内の各要素は content.js が元の色の色相・彩度を保ったまま明度だけ調整し、
    --gtr-fg / --gtr-bg に書き込む（ダークモードOFF時はこのルールが外れて元の色に戻る） */
-.gmail-dark-active .gtr-thread .a3s [data-gtr-fg] {
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-fg] {
   color: var(--gtr-fg) !important;
 }
 
-.gmail-dark-active .gtr-thread .a3s [data-gtr-bg] {
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bg] {
   background-color: var(--gtr-bg) !important;
 }
 
 /* 暗い文字が乗っていた背景画像（画像で作った白いカードなど）は、暗い背景色と乗算して
    白い背景色と同じくらいの暗さにする（content.js が --gtr-bgimg と data-gtr-bgimg を付ける）。
    明るい文字が乗った写真の背景は対象外 */
-.gmail-dark-active .gtr-thread .a3s [data-gtr-bgimg] {
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bgimg] {
   background-color: var(--gtr-bgimg) !important;
   background-blend-mode: multiply !important;
 }
 
 /* 透過画像（白い背景前提の黒いロゴなど）の背後に、元のメールでの背景色を敷く（小さいスペーサー画像は対象外） */
-.gmail-dark-active .gtr-thread .a3s img[data-gtr-img] {
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) img[data-gtr-img] {
   background-color: var(--gtr-img-bg) !important;
 }
 
 /* ロゴくらいの小さな画像は、角を丸めて同じ色の縁（場所を取らない影）を付け、カードのように見せる */
-.gmail-dark-active .gtr-thread .a3s img[data-gtr-img-card] {
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) img[data-gtr-img-card] {
   border-radius: 6px !important;
   box-shadow: 0 0 0 4px var(--gtr-img-bg) !important;
 }
 
 /* 色の調整がまだ済んでいない要素（読み込み直後・引用展開直後）の一時的な表示 */
-.gmail-dark-active .gtr-thread .a3s:not(.gtr-reading) *:not([data-gtr-c]):not(img):not(video):not(iframe):not(svg):not(canvas):not(picture) {
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s):not(.gtr-reading) *:not([data-gtr-c]):not(img):not(video):not(iframe):not(svg):not(canvas):not(picture) {
   background-color: transparent !important;
   color: inherit !important;
 }
@@ -1242,6 +1306,7 @@
   .gmail-dark-active .gtr-thread .ii.gt,
   .gmail-dark-active .gtr-thread .a3s,
   .gmail-dark-active .gtr-thread .eJPjde,
+  .gmail-dark-active .gtr-thread .gtr-original .a3s,
   .gmail-dark-active div[role="main"],
   .gmail-dark-active div[role="listitem"] {
     background: #ffffff !important;

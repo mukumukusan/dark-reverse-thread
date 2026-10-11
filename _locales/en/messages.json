@@ -122,5 +122,13 @@
   "openThemeNote": {
     "message": "It may take a moment to open.",
     "description": "Small note under the theme link and button: Gmail's theme picker can take a moment to open."
+  },
+  "originalColorsShow": {
+    "message": "Show original colors",
+    "description": "Tooltip of the per-message button that shows the email in its own colors"
+  },
+  "originalColorsHide": {
+    "message": "Show in dark",
+    "description": "Tooltip of the same button while the email shows its own colors"
   }
 }

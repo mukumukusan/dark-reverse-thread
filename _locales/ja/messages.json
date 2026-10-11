@@ -91,5 +91,11 @@
   },
   "openThemeNote": {
     "message": "開くまで少し時間がかかることがあります"
+  },
+  "originalColorsShow": {
+    "message": "元の色で表示"
+  },
+  "originalColorsHide": {
+    "message": "ダークで表示"
   }
 }

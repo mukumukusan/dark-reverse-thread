@@ -91,5 +91,11 @@
   },
   "openThemeNote": {
     "message": "Das Öffnen kann einen Moment dauern."
+  },
+  "originalColorsShow": {
+    "message": "Originalfarben anzeigen"
+  },
+  "originalColorsHide": {
+    "message": "Dunkel anzeigen"
   }
 }

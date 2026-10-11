@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Per-message original colors button</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0;  }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+// Gmail's message header: the emoji / Reply / ⋮ group sits in td.acX above the body
+['1', '2'].forEach((i) => {
+  document.getElementById('body' + i).insertAdjacentHTML('beforebegin',
+    `<table><tbody><tr><td class="gH acX" id="group${i}"><button id="reply${i}">Reply</button></td></tr></tbody></table>`);
+});
+document.getElementById('body1').insertAdjacentHTML('beforeend', `
+  <span id="black" style="color: #000000">black</span>
+  <div id="white-bg" style="background: #ffffff">white</div>`);
+window.__GTR_MOCK__ = { messages: { originalColorsShow: 'Show original colors', originalColorsHide: 'Show in dark' } };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const $ = (id) => document.getElementById(id);
+const button = (i) => $('group' + i).querySelector('.gtr-original-toggle');
+const message = (i) => $('body' + i).closest('.adn');
+let headerClicks = 0;
+message(1).addEventListener('click', () => headerClicks++);
+message(1).addEventListener('mousedown', () => headerClicks++);
+
+test('each message header gets one button, in front of Gmail\'s buttons', async () => {
+  await sleep(500);
+  assert(button(1) && button(2), 'both headers');
+  assertEqual($('group1').firstElementChild, button(1));
+  assertEqual($('group1').querySelectorAll('.gtr-original-toggle').length, 1);
+  assertEqual(getComputedStyle(button(1)).display, 'inline-flex');
+});
+
+test('messages without the header group get no button', () => {
+  assert(!$('m3').querySelector('.gtr-original-toggle'));
+});
+
+test('the icon is a ring with a filled half (not a solid disc)', () => {
+  assertEqual(getComputedStyle(button(1).querySelector('circle')).fill, 'none');
+  assertEqual(getComputedStyle(button(1).querySelector('circle')).stroke, 'rgb(227, 227, 227)');
+  assertEqual(getComputedStyle(button(1).querySelector('path')).fill, 'rgb(227, 227, 227)');
+});
+
+test('the button is labeled for showing the original colors', () => {
+  assertEqual(button(1).title, 'Show original colors');
+  assertEqual(button(1).getAttribute('aria-pressed'), 'false');
+});
+
+test('the body starts dark', () => {
+  assertEqual(getComputedStyle($('black')).color, 'rgb(227, 227, 227)');
+  assertEqual(getComputedStyle($('white-bg')).backgroundColor, 'rgb(31, 31, 31)');
+});
+
+test('pressing it shows that message in its own colors on a white card', () => {
+  button(1).dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+  button(1).click();
+  assert(hasClass(message(1), 'gtr-original'));
+  assertEqual(getComputedStyle($('black')).color, 'rgb(0, 0, 0)');
+  assertEqual(getComputedStyle($('white-bg')).backgroundColor, 'rgb(255, 255, 255)');
+  assertEqual(getComputedStyle($('body1')).backgroundColor, 'rgb(255, 255, 255)');
+  assertEqual(button(1).title, 'Show in dark');
+  assertEqual(button(1).getAttribute('aria-pressed'), 'true');
+  assertEqual(getComputedStyle(button(1).querySelector('path')).fill, 'rgb(138, 180, 248)', 'pressed: link color');
+});
+
+test('the press does not reach Gmail\'s header (which would collapse the message)', () => {
+  assertEqual(headerClicks, 0);
+});
+
+test('other messages stay dark', () => {
+  assert(!hasClass(message(2), 'gtr-original'));
+  assertEqual(getComputedStyle($('body2')).backgroundColor, 'rgb(31, 31, 31)');
+});
+
+test('pressing it again turns the message dark again', () => {
+  button(1).click();
+  assert(!hasClass(message(1), 'gtr-original'));
+  assertEqual(getComputedStyle($('black')).color, 'rgb(227, 227, 227)');
+  assertEqual(button(1).title, 'Show original colors');
+});
+
+test('no duplicate buttons after Gmail updates the thread', async () => {
+  $('body1').appendChild(document.createElement('p'));
+  await sleep(500);
+  assertEqual($('group1').querySelectorAll('.gtr-original-toggle').length, 1);
+});
+
+test('the button is hidden while dark mode is off', async () => {
+  chrome.storage.sync.set({ smartDark: false });
+  await waitFor(() => !hasClass(html, 'gmail-dark-active'));
+  assertEqual(getComputedStyle(button(1)).display, 'none');
+});
+
+runTests();
+  </script>
+</body>
+</html>

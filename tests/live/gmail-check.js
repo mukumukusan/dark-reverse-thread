@@ -58,6 +58,7 @@
     add('required', 'thread', 'Reply / Forward footer .amn with .ams buttons', first('.amn .ams'));
     add('required', 'thread', 'footer wrapper .nr.wR (white flash fix)', first('.nr.wR'));
     add('info', 'thread', 'message header .gs (inline composer placement)', first('.gs'));
+    add('required', 'thread', 'header button group td.acX (original-colors button goes here)', first('.adn td.acX'));
 
     // ---- What the extension did --------------------------------------------------------------
     add('state', 'extension', 'html.gmail-dark-active (dark mode on)', darkOn, darkOn ? '' : 'dark mode is off in the popup, or the extension is not running');
@@ -74,6 +75,8 @@
       }
       const scroller = document.querySelector('.gtr-thread-scroller');
       add('state', 'extension', 'scroller tagged .gtr-thread-scroller (fast-scroll flash fix)', scroller, scroller ? bg(scroller) : 'not found');
+      const toggle = first('.gtr-thread .adn td.acX .gtr-original-toggle');
+      add('state', 'extension', 'original-colors button in the message header', toggle);
       const amsButton = first('.gtr-thread .amn .ams');
       add('state', 'extension', 'Reply buttons are dark', amsButton && lightness(bg(amsButton)) !== null && lightness(bg(amsButton)) < 0.3, bg(amsButton));
     }

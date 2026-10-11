@@ -19,6 +19,8 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
 3. **本文白飛びの根本解消 / Direct Email Body Darkening**
    - 日本語: HTMLメールの文字色・背景色を、色相と彩度を保ったまま明るさだけ暗い背景向けに調整（黒文字→明るい灰色、白背景→暗色。赤字は明るい赤、青いリンクは明るい青のように色合いを残し、黄色のマーカーなど明るい背景色は同じ色合いの暗い色になる）。画像やロゴは本来の色を保護し、透過画像（黒いロゴなど）の背後には元のメールでの背景色を敷いて見えるように（白い背景は目に優しい明るい灰色にし、ロゴくらいの小さな画像は角の丸いカード風に表示）。印刷時は元の色で出力。
    - English: Adapts HTML email text and background colors for dark mode by remapping only their lightness, keeping the original hue and saturation (black text becomes light gray and white backgrounds turn dark; red text stays a lighter red and blue links a lighter blue, while light backgrounds such as yellow highlights become a dark shade of the same hue). Images keep their colors, transparent ones (e.g. dark logos) get their original backdrop back so they stay visible (a white backdrop is softened to light grey, and logo-sized images are shown as small rounded cards), and printing uses the original colors.
+   - 日本語: うまく読めないメールは、メールのヘッダーの ◐ ボタン（絵文字・返信ボタンの左）で、そのメールだけ元の色で表示できます。もう一度押すと暗い表示に戻ります（記憶はせず、開き直すと暗い表示）。
+   - English: If an email doesn't read well, the ◐ button in its header (left of the emoji and Reply buttons) shows just that email in its original colors; press it again to go back to dark. Nothing is remembered: reopening the conversation shows it dark again.
 4. **星アイコン・マーク・ラベルの視認性と操作性 / High-Contrast & Interactive UI**
    - 日本語: 星アイコンの完全なクリック・選択操作性、タイトル横マークのGoogleブルー復元、「受信トレイ」ラベル文字のくっきり表示を実現。
    - English: Fully interactive star toggling, restored Google Blue title-adjacent indicators, and crisp, legible label pill text.

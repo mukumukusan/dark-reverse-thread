@@ -268,10 +268,69 @@
     });
   }
 
+  /**
+   * Per-message "original colors" button, at the front of the header's emoji / Reply / ⋮ group (td.acX).
+   * Pressing it puts .gtr-original on that message (.adn): styles.css then leaves its body out of the
+   * dark rules, so the email shows exactly as designed on a white card. Nothing is stored; reopening
+   * the conversation shows it dark again. The button is hidden while dark mode is off.
+   */
+  const ORIGINAL_CLASS = 'gtr-original';
+  const ORIGINAL_BUTTON_CLASS = 'gtr-original-toggle';
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
+  function makeOriginalIcon() {
+    // A half-filled circle: the usual "contrast" symbol
+    const svg = document.createElementNS(SVG_NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    const ring = document.createElementNS(SVG_NS, 'circle');
+    ring.setAttribute('cx', '12');
+    ring.setAttribute('cy', '12');
+    ring.setAttribute('r', '8');
+    ring.setAttribute('fill', 'none');
+    ring.setAttribute('stroke', 'currentColor');
+    ring.setAttribute('stroke-width', '2');
+    const half = document.createElementNS(SVG_NS, 'path');
+    half.setAttribute('d', 'M12 4a8 8 0 0 1 0 16z');
+    half.setAttribute('fill', 'currentColor');
+    svg.append(ring, half);
+    return svg;
+  }
+
+  function labelOriginalButton(button, original) {
+    const label = chrome.i18n.getMessage(original ? 'originalColorsHide' : 'originalColorsShow');
+    button.title = label;
+    button.setAttribute('aria-label', label);
+    button.setAttribute('aria-pressed', String(original));
+  }
+
+  function addOriginalButtons() {
+    if (!isContextValid()) return;
+    document.querySelectorAll('.gtr-thread .adn').forEach((message) => {
+      const group = message.querySelector('td.acX');
+      if (!group || group.querySelector('.' + ORIGINAL_BUTTON_CLASS)) return;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = ORIGINAL_BUTTON_CLASS;
+      button.appendChild(makeOriginalIcon());
+      labelOriginalButton(button, message.classList.contains(ORIGINAL_CLASS));
+      // Gmail collapses the message when its header is clicked: keep our presses to ourselves
+      ['mousedown', 'mouseup'].forEach((type) => button.addEventListener(type, (event) => event.stopPropagation()));
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        const original = message.classList.toggle(ORIGINAL_CLASS);
+        labelOriginalButton(button, original);
+      });
+      group.prepend(button);
+    });
+  }
+
   function applyDarkMode(scopes) {
     document.documentElement.classList.toggle('gmail-dark-active', !!config.smartDark);
     if (!config.smartDark) return;
 
+    addOriginalButtons();
     markDarkLabelChips();
     const bodies = new Set();
     scopes.forEach((scope) => emailBodiesIn(scope).forEach((body) => bodies.add(body)));
