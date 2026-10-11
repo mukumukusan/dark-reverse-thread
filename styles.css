@@ -1120,6 +1120,25 @@
   height: 20px;
 }
 
+/* ボタンのツールチップ（content.js が body に1つ置く）。Gmail のボタンのツールチップと同じ見た目：
+   ボタンのすぐ上に出る小さな濃い灰色のラベル。title の標準ツールチップは出るまで遅く、マウスを止めないと出ないため */
+#gtr-tooltip {
+  display: none;
+  position: fixed;
+  z-index: 2101;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #303030;
+  color: #f2f2f2;
+  font: 400 12px/16px "Google Sans", Roboto, Arial, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+#gtr-tooltip.gtr-tooltip-visible {
+  display: block;
+}
+
 /* ヘッダーのボタンの中身を塗る規則（.gH button *）に塗りつぶされないよう、輪と半円の色をそれより強く指定する。
    押している間（元の色で表示中）はリンク色 */
 .gmail-dark-active .gtr-thread .gH .gtr-original-toggle svg circle {

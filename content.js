@@ -297,9 +297,43 @@
     return svg;
   }
 
+  /**
+   * Tooltip in Gmail's style (Gmail's own buttons don't use title, whose tooltip takes about a second
+   * and only appears once the mouse is completely still): a small dark label just above the button,
+   * shown shortly after the pointer arrives. One shared element, outside the thread.
+   */
+  const TOOLTIP_ID = 'gtr-tooltip';
+  const TOOLTIP_DELAY = 100;
+  const TOOLTIP_GAP = 4;
+  let tooltipTimer = null;
+
+  function placeTooltip(button) {
+    let tip = document.getElementById(TOOLTIP_ID);
+    if (!tip) {
+      tip = document.createElement('div');
+      tip.id = TOOLTIP_ID;
+      tip.setAttribute('aria-hidden', 'true'); // the button already has its aria-label
+      document.body.appendChild(tip);
+      document.addEventListener('scroll', hideTooltip, true);
+    }
+    tip.textContent = button.getAttribute('aria-label');
+    tip.classList.add('gtr-tooltip-visible');
+    const b = button.getBoundingClientRect();
+    const t = tip.getBoundingClientRect();
+    const above = b.top - t.height - TOOLTIP_GAP;
+    const left = b.left + b.width / 2 - t.width / 2;
+    tip.style.top = `${above >= 0 ? above : b.bottom + TOOLTIP_GAP}px`;
+    tip.style.left = `${Math.max(TOOLTIP_GAP, Math.min(left, window.innerWidth - t.width - TOOLTIP_GAP))}px`;
+  }
+
+  function hideTooltip() {
+    clearTimeout(tooltipTimer);
+    const tip = document.getElementById(TOOLTIP_ID);
+    if (tip) tip.classList.remove('gtr-tooltip-visible');
+  }
+
   function labelOriginalButton(button, original) {
     const label = chrome.i18n.getMessage(original ? 'originalColorsHide' : 'originalColorsShow');
-    button.title = label;
     button.setAttribute('aria-label', label);
     button.setAttribute('aria-pressed', String(original));
   }
@@ -321,7 +355,15 @@
         event.preventDefault();
         const original = message.classList.toggle(ORIGINAL_CLASS);
         labelOriginalButton(button, original);
+        if (document.getElementById(TOOLTIP_ID)?.classList.contains('gtr-tooltip-visible')) placeTooltip(button);
       });
+      button.addEventListener('pointerenter', () => {
+        clearTimeout(tooltipTimer);
+        tooltipTimer = setTimeout(() => button.isConnected && placeTooltip(button), TOOLTIP_DELAY);
+      });
+      button.addEventListener('focus', () => placeTooltip(button));
+      button.addEventListener('pointerleave', hideTooltip);
+      button.addEventListener('blur', hideTooltip);
       group.prepend(button);
     });
   }

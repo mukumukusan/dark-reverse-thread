@@ -52,8 +52,28 @@ test('the icon is a ring with a filled half (not a solid disc)', () => {
 });
 
 test('the button is labeled for showing the original colors', () => {
-  assertEqual(button(1).title, 'Show original colors');
+  assertEqual(button(1).getAttribute('aria-label'), 'Show original colors');
   assertEqual(button(1).getAttribute('aria-pressed'), 'false');
+  assert(!button(1).hasAttribute('title'), 'no slow native tooltip on top of ours');
+});
+
+const tip = () => document.getElementById('gtr-tooltip');
+
+test('hovering shows a Gmail-style tooltip just above the button, quickly', async () => {
+  button(1).dispatchEvent(new PointerEvent('pointerenter'));
+  await sleep(200);
+  assert(tip() && getComputedStyle(tip()).display === 'block', 'visible within 200 ms');
+  assertEqual(tip().textContent, 'Show original colors');
+  assertEqual(getComputedStyle(tip()).backgroundColor, 'rgb(48, 48, 48)');
+  const b = button(1).getBoundingClientRect();
+  const t = tip().getBoundingClientRect();
+  assert(t.bottom <= b.top || t.top >= b.bottom, `outside the button: tip ${t.top}-${t.bottom}, button ${b.top}-${b.bottom}`);
+  assert(Math.abs((t.left + t.width / 2) - (b.left + b.width / 2)) < 2 || t.left <= 4, 'centered on the button');
+});
+
+test('leaving the button hides the tooltip', () => {
+  button(1).dispatchEvent(new PointerEvent('pointerleave'));
+  assertEqual(getComputedStyle(tip()).display, 'none');
 });
 
 test('the body starts dark', () => {
@@ -68,13 +88,23 @@ test('pressing it shows that message in its own colors on a white card', () => {
   assertEqual(getComputedStyle($('black')).color, 'rgb(0, 0, 0)');
   assertEqual(getComputedStyle($('white-bg')).backgroundColor, 'rgb(255, 255, 255)');
   assertEqual(getComputedStyle($('body1')).backgroundColor, 'rgb(255, 255, 255)');
-  assertEqual(button(1).title, 'Show in dark');
+  assertEqual(button(1).getAttribute('aria-label'), 'Show in dark');
   assertEqual(button(1).getAttribute('aria-pressed'), 'true');
   assertEqual(getComputedStyle(button(1).querySelector('path')).fill, 'rgb(138, 180, 248)', 'pressed: link color');
 });
 
 test('the press does not reach Gmail\'s header (which would collapse the message)', () => {
   assertEqual(headerClicks, 0);
+});
+
+test('the tooltip follows the new label when pressed while shown', async () => {
+  button(1).dispatchEvent(new PointerEvent('pointerenter'));
+  await sleep(200);
+  button(1).click();
+  assertEqual(tip().textContent, 'Show original colors');
+  button(1).click();
+  assertEqual(tip().textContent, 'Show in dark');
+  button(1).dispatchEvent(new PointerEvent('pointerleave'));
 });
 
 test('other messages stay dark', () => {
@@ -86,7 +116,7 @@ test('pressing it again turns the message dark again', () => {
   button(1).click();
   assert(!hasClass(message(1), 'gtr-original'));
   assertEqual(getComputedStyle($('black')).color, 'rgb(227, 227, 227)');
-  assertEqual(button(1).title, 'Show original colors');
+  assertEqual(button(1).getAttribute('aria-label'), 'Show original colors');
 });
 
 test('no duplicate buttons after Gmail updates the thread', async () => {
