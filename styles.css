@@ -86,6 +86,13 @@
   color: var(--gtr-dark-text-strong) !important;
 }
 
+/* 件名の中の検索語のハイライト（.il）は明るい黄色のままだった：本文の中のハイライトと同じ暗い黄色に
+   （#fde293 の色相のまま明度だけ下げた色。文字はハイライトの元の黄色） */
+.gmail-dark-active .gtr-thread .hP .il {
+  background-color: rgb(82, 61, 2) !important;
+  color: rgb(253, 226, 147) !important;
+}
+
 /* 2.1 タイトル横のマーク（重要マーク・インジケーター）を青色(#8ab4f8)に復元
    .bns は重要マークのボタン本体（aria-label="重要な理由: ..."）。文言ではなくクラスで指定し、表示言語に依存しない。 */
 .gmail-dark-active .gtr-thread .ha .pG,
@@ -944,26 +951,14 @@
   color: var(--gtr-dark-link) !important;
 }
 
-/* カレンダーの招待状：上の案内の帯（.bzp、ボタン .bzq と「ⓘ」の画像 .a2k）と、予定のカード（.aRb）。
-   カードの文字は Gmail のライトテーマの暗い色のままで、暗い背景では読めなかった */
+/* メールの上の案内の帯（.bzp：招待状の「カレンダーに追加されていません」、迷惑メールの理由、危険なメールの警告など）。
+   帯ごと反転して明度だけ入れ替える（hue-rotate で色相は元に戻る）：灰色の帯は暗い灰色（#e0e0e0 → 約 #363636）、
+   赤い警告は暗い赤に赤い文字のまま。反転を 0.88 に抑えて、帯がページ（#1f1f1f）より少し明るく見えるようにする */
 .gmail-dark-active .gtr-thread .bzp {
-  background-color: var(--gtr-dark-surface-high) !important;
-  color: var(--gtr-dark-text) !important;
+  filter: invert(0.88) hue-rotate(180deg) !important;
 }
 
-.gmail-dark-active .gtr-thread .bzp * {
-  color: var(--gtr-dark-text) !important;
-}
-
-.gmail-dark-active .gtr-thread .bzp button {
-  background-color: var(--gtr-dark-raised) !important;
-  border-color: var(--gtr-dark-outline) !important;
-}
-
-.gmail-dark-active .gtr-thread .bzp .a2k {
-  filter: invert(1) hue-rotate(180deg) !important;
-}
-
+/* カレンダーの招待状の予定のカード（.aRb）。文字は Gmail のライトテーマの暗い色のままで、暗い背景では読めなかった */
 .gmail-dark-active .gtr-thread .aRb,
 .gmail-dark-active .gtr-thread .aRb :is(div, span, td, table) {
   color: var(--gtr-dark-text) !important;
@@ -1089,6 +1084,14 @@
 
 .gmail-dark-active .gtr-thread .a3s [data-gtr-bg] {
   background-color: var(--gtr-bg) !important;
+}
+
+/* 暗い文字が乗っていた背景画像（画像で作った白いカードなど）は、暗い背景色と乗算して
+   白い背景色と同じくらいの暗さにする（content.js が --gtr-bgimg と data-gtr-bgimg を付ける）。
+   明るい文字が乗った写真の背景は対象外 */
+.gmail-dark-active .gtr-thread .a3s [data-gtr-bgimg] {
+  background-color: var(--gtr-bgimg) !important;
+  background-blend-mode: multiply !important;
 }
 
 /* 透過画像（白い背景前提の黒いロゴなど）の背後に、元のメールでの背景色を敷く（小さいスペーサー画像は対象外） */
@@ -1253,6 +1256,11 @@
     color: #000000 !important;
   }
 
+  .gmail-dark-active .gtr-thread .hP .il {
+    background-color: rgb(253, 226, 147) !important;
+    color: #000000 !important;
+  }
+
   .gmail-dark-active a,
   .gmail-dark-active a * {
     color: #1a0dab !important;
@@ -1271,7 +1279,12 @@
     filter: none !important;
   }
 
-  /* 本文はダーク用に調整する前の元の色で印刷 */
+  /* 本文はダーク用に調整する前の元の色で印刷（背景画像の乗算も外す。自前の背景色は下の規則で戻る） */
+  .gmail-dark-active .gtr-thread .a3s [data-gtr-bgimg] {
+    background-color: transparent !important;
+    background-blend-mode: normal !important;
+  }
+
   .gmail-dark-active .gtr-thread .a3s [data-gtr-fg] {
     color: var(--gtr-fg0) !important;
   }

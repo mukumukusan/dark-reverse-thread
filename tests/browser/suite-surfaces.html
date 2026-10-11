@@ -15,6 +15,7 @@ buildGmail();
 document.getElementById('body1').insertAdjacentHTML('afterend', `
   <a class="aQy" id="attachment"><div class="aSG" id="attachment-thumb"></div><div class="aYy" id="attachment-cover"><span>name.xlsx</span></div><span class="aV3" id="attachment-name">name.xlsx</span></a>
   <div class="ajA SK" id="details"><span class="gI" id="details-label">From:</span><span id="details-name">Someone</span></div>
+  <h2 class="hP" id="subject-hl">Order <span class="il" id="subject-highlight">Yodobashi</span></h2>
   <div class="bzp" id="invite-banner"><p id="invite-banner-text">Not in your calendar</p><button id="invite-banner-button">Add</button><div class="a2k" id="invite-info"></div></div>
   <div class="aRb" id="invite-card"><table class="aU9"><tr><td class="aRi" id="invite-tile"><span class="aRh" id="invite-month">Apr</span></td><td><div class="aRo" id="invite-title">Interview</div><div class="aRn" id="invite-label">When</div><a id="invite-link">View</a></td></tr></table></div>
   <div class="hq gt"><div class="aXK"><span class="aXL" id="file-name">invite.ics</span><a class="e" id="file-download">Download</a></div></div>`);
@@ -69,16 +70,18 @@ test('recipient details popup is dark and readable', () => {
   assertEqual(color('details-label'), 'rgb(154, 160, 166)');
 });
 
-test('calendar invite: banner, card text, date tile and links are readable', () => {
-  assertEqual(bg('invite-banner'), 'rgb(53, 54, 58)');
-  assertEqual(color('invite-banner-text'), 'rgb(227, 227, 227)');
-  assertEqual(bg('invite-banner-button'), 'rgb(60, 64, 67)');
-  assertEqual(filter('invite-info'), INVERT);
+test('message banner (flipped) and calendar invite card: text, date tile and links are readable', () => {
+  assertEqual(filter('invite-banner'), 'invert(0.88) hue-rotate(180deg)', 'banner flipped as a whole, hue kept');
   assertEqual(color('invite-title'), 'rgb(227, 227, 227)');
   assertEqual(color('invite-label'), 'rgb(154, 160, 166)');
   assertEqual(color('invite-link'), 'rgb(138, 180, 248)');
   assertEqual(bg('invite-tile'), 'rgb(53, 54, 58)');
   assertEqual(color('invite-month'), 'rgb(255, 255, 255)');
+});
+
+test('a search-term highlight in the subject is dark yellow, like in the body', () => {
+  assertEqual(bg('subject-highlight'), 'rgb(82, 61, 2)');
+  assertEqual(color('subject-highlight'), 'rgb(253, 226, 147)');
 });
 
 test('plain attachment list: file name and download link are readable', () => {

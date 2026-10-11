@@ -22,6 +22,9 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <div id="yellow-bg" style="background: #ffff00"><img id="logo-on-yellow" src="${png(40, 40)}"></div>
   <div id="dark-bg" style="background: #101010">dark</div>
   <div id="half-bg" style="background: rgba(255, 255, 255, 0.5)">half</div>
+  <div id="card-image" style="background-image: url(${png(4, 4)}); color: #5f6368">on a light picture</div>
+  <div id="photo-image" style="background-image: url(${png(4, 4)}); color: #ffffff">on a photo</div>
+  <div id="tinted-image" style="background: #ffff00 url(${png(4, 4)}); color: #000000">tinted</div>
   <img id="logo" src="${png(40, 40)}">
   <img id="big" src="${png(400, 200)}">
   <img id="spacer" src="${png(2, 2)}">`);
@@ -79,6 +82,23 @@ test('original colors are kept for turning dark mode off', () => {
 
 test('elements without their own background are not given one', () => {
   assert(!$('black').hasAttribute('data-gtr-bg'));
+});
+
+test('a background picture under dark text is multiplied by the dark page color', () => {
+  assert($('card-image').hasAttribute('data-gtr-bgimg'));
+  assertEqual(background('card-image'), 'rgb(31, 31, 31)');
+  assertEqual(getComputedStyle($('card-image')).backgroundBlendMode, 'multiply');
+  assert(getComputedStyle($('card-image')).backgroundImage.includes('url('), 'the picture stays');
+});
+
+test('a background picture under light text (a photo) is left alone', () => {
+  assert(!$('photo-image').hasAttribute('data-gtr-bgimg'));
+  assertEqual(getComputedStyle($('photo-image')).backgroundBlendMode, 'normal');
+});
+
+test('a background picture on a colored box is multiplied by that box\'s dark color', () => {
+  assertEqual(background('tinted-image'), 'rgb(112, 112, 0)');
+  assertEqual(getComputedStyle($('tinted-image')).backgroundBlendMode, 'multiply');
 });
 
 test('a transparent logo gets a softened white backdrop and a card frame', async () => {

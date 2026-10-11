@@ -220,7 +220,7 @@
       const colors = nodes.map((node) => {
         if (SKIP_TAGS.has(node.tagName.toUpperCase()) || node.closest('svg, .ajR')) return null;
         const style = getComputedStyle(node);
-        return { fg: parseRGB(style.color), bg: parseRGB(style.backgroundColor) };
+        return { fg: parseRGB(style.color), bg: parseRGB(style.backgroundColor), bgImage: style.backgroundImage.includes('url(') };
       });
 
       nodes.forEach((node, i) => {
@@ -237,6 +237,14 @@
           node.style.setProperty('--gtr-bg0', `rgba(${c.bg.r}, ${c.bg.g}, ${c.bg.b}, ${c.bg.a})`);
           node.style.setProperty('--gtr-bg', remapLightness(c.bg, toDarkBackground));
           node.setAttribute('data-gtr-bg', '');
+        }
+        // A background picture under dark text was drawn light (often a white card made of an image):
+        // multiplied by the dark background it becomes as dark as a white background would. Pictures
+        // under light text (a photo behind a white headline) are left as they are.
+        if (c.bgImage && c.fg && rgbToHsl(c.fg).l < 0.5) {
+          const base = c.bg && c.bg.a >= 1 ? remapLightness(c.bg, toDarkBackground) : remapLightness({ r: 255, g: 255, b: 255, a: 1 }, toDarkBackground);
+          node.style.setProperty('--gtr-bgimg', base);
+          node.setAttribute('data-gtr-bgimg', '');
         }
       });
       body.classList.remove('gtr-reading');
