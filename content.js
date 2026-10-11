@@ -178,11 +178,58 @@
     return `rgba(${r}, ${g}, ${b}, ${rgb.a})`;
   }
 
-  // Text: dark colors are mirrored to light (black -> #e3e3e3-ish), never dimmer than 0.65.
-  // Both mappings are idempotent, so re-reading an already adapted color leaves it unchanged.
+  // Text: dark colors are mirrored to light (black -> #e3e3e3-ish), never dimmer than 0.65
+  // (then raised further to a readable contrast, below). Both mappings are idempotent, so re-reading an already adapted color leaves it unchanged.
   const toDarkText = (l) => (l < 0.5 ? Math.min(Math.max(1 - l, 0.65), 0.89) : Math.max(l, 0.65));
   // Background: light colors fold into 0.12-0.22 (white -> #1f1f1f), dark ones stay dark.
   const toDarkBackground = (l) => (l > 0.5 ? 0.12 + (1 - l) * 0.2 : Math.min(l, 0.22));
+
+  /**
+   * HSL lightness is not what the eye sees: a pure blue at 0.65 is still dark (contrast 2.9 on the
+   * page). After the mapping, text keeps getting lighter (same hue) until it reaches contrast 4.5
+   * against the dark page, the usual minimum for body text. Already readable colors are unchanged,
+   * so this stays idempotent.
+   */
+  const DARK_PAGE = { r: 31, g: 31, b: 31 };
+  const MIN_TEXT_CONTRAST = 4.5;
+
+  function relativeLuminance({ r, g, b }) {
+    const f = (v) => {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    };
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+  }
+
+  function contrastOnPage(rgb) {
+    return (relativeLuminance(rgb) + 0.05) / (relativeLuminance(DARK_PAGE) + 0.05);
+  }
+
+  function toReadableText(rgb) {
+    const hsl = rgbToHsl(rgb);
+    hsl.l = toDarkText(hsl.l);
+    let out = hslToRgb(hsl);
+    while (contrastOnPage(out) < MIN_TEXT_CONTRAST && hsl.l < 0.95) {
+      hsl.l = Math.min(0.95, hsl.l + 0.01);
+      out = hslToRgb(hsl);
+    }
+    return `rgba(${out.r}, ${out.g}, ${out.b}, ${rgb.a})`;
+  }
+
+  /**
+   * Some emails (bank and service notices) set colors inline with !important, which beats any
+   * stylesheet rule, so the dark colors never applied. Such a declaration is rewritten to prefer
+   * the extension's color while dark mode is on (styles.css sets --gtr-fg-live / --gtr-bg-live) and
+   * to fall back to the email's own value otherwise (dark mode off, printing, original colors).
+   */
+  const CSS_WIDE_KEYWORD = /^(inherit|initial|unset|revert|revert-layer|currentcolor)$/i;
+
+  function deferImportantInline(node, property, liveVar) {
+    if (node.style.getPropertyPriority(property) !== 'important') return;
+    const value = node.style.getPropertyValue(property).trim();
+    if (!value || value.includes(liveVar) || CSS_WIDE_KEYWORD.test(value)) return;
+    node.style.setProperty(property, `var(${liveVar}, ${value})`, 'important');
+  }
 
   function emailBodiesIn(scope) {
     const enclosing = scope.closest('.a3s');
@@ -252,13 +299,15 @@
         if (!c) return;
         if (c.fg) {
           node.style.setProperty('--gtr-fg0', `rgba(${c.fg.r}, ${c.fg.g}, ${c.fg.b}, ${c.fg.a})`);
-          node.style.setProperty('--gtr-fg', remapLightness(c.fg, toDarkText));
+          node.style.setProperty('--gtr-fg', toReadableText(c.fg));
           node.setAttribute('data-gtr-fg', '');
+          deferImportantInline(node, 'color', '--gtr-fg-live');
         }
         if (c.bg && c.bg.a > 0) {
           node.style.setProperty('--gtr-bg0', `rgba(${c.bg.r}, ${c.bg.g}, ${c.bg.b}, ${c.bg.a})`);
           node.style.setProperty('--gtr-bg', remapLightness(c.bg, toDarkBackground));
           node.setAttribute('data-gtr-bg', '');
+          deferImportantInline(node, 'background-color', '--gtr-bg-live');
         }
         // A background picture or gradient under dark text was drawn light (often a white card made of one):
         // multiplied by the dark background it becomes as dark as a white background would. Pictures

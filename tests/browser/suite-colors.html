@@ -19,6 +19,9 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <a id="link" style="color: #1a0dab">link</a>
   <span id="light-text" style="color: #e0e0e0">already light</span>
   <div id="white-bg" style="background: #ffffff">white</div>
+  <span id="important-text" style="color: #414552 !important">a bank notice's gray, set with !important</span>
+  <div id="important-bg" style="background-color: #ffffff !important">white box set with !important</div>
+  <a id="pure-blue" style="color: #0000ff">pure blue link</a>
   <div id="yellow-bg" style="background: #ffff00"><img id="logo-on-yellow" src="${png(40, 40)}"></div>
   <div id="dark-bg" style="background: #101010">dark</div>
   <div id="half-bg" style="background: rgba(255, 255, 255, 0.5)">half</div>
@@ -53,11 +56,25 @@ test('red text keeps its hue and gets lighter', () => {
 });
 
 test('a dark blue link becomes a lighter blue', () => {
-  assertEqual(color('link'), 'rgb(102, 89, 242)');
+  assertEqual(color('link'), 'rgb(128, 118, 245)', 'lighter blue, readable on the dark page');
 });
 
 test('text that is already light keeps its lightness', () => {
   assertEqual(color('light-text'), 'rgb(224, 224, 224)');
+});
+
+test('colors the email set inline with !important are adapted too', () => {
+  assertEqual(color('important-text'), 'rgb(173, 177, 190)');
+  assertEqual(background('important-bg'), 'rgb(31, 31, 31)');
+});
+
+test('a pure blue link is raised to a readable contrast on the dark page (same hue)', () => {
+  const [r, g, b] = color('pure-blue').match(/\d+/g).map(Number);
+  const lum = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  const L = 0.2126 * lum(r) + 0.7152 * lum(g) + 0.0722 * lum(b);
+  const page = 0.2126 * lum(31) + 0.7152 * lum(31) + 0.0722 * lum(31);
+  assert((L + 0.05) / (page + 0.05) >= 4.5, `contrast of ${color('pure-blue')}`);
+  assert(b > r && b > g, 'still blue');
 });
 
 test('white backgrounds turn dark', () => {
@@ -130,12 +147,40 @@ test('tiny images (spacers, tracking pixels) are left alone', async () => {
   assert(!$('spacer').hasAttribute('data-gtr-img'));
 });
 
+// Printing: the screen rules still apply, and the @media print block must win over them. Emulate it by
+// appending the print block's rules unconditionally (same cascade order as when printing).
+function emulatePrint() {
+  const sheet = [...document.styleSheets].find((s) => (s.href || '').endsWith('styles.css'));
+  const print = [...sheet.cssRules].find((r) => r.media && r.media.mediaText === 'print');
+  const style = document.createElement('style');
+  style.textContent = [...print.cssRules].map((r) => r.cssText).join('\n');
+  document.head.appendChild(style);
+  return () => style.remove();
+}
+
+test('printing uses the email\'s original colors (the print rules beat the dark ones)', () => {
+  const undo = emulatePrint();
+  try {
+    assertEqual(color('black'), 'rgb(0, 0, 0)', 'text');
+    assertEqual(color('red'), 'rgb(255, 0, 0)', 'red text');
+    assertEqual(background('white-bg'), 'rgb(255, 255, 255)', 'background');
+    assertEqual(background('yellow-bg'), 'rgb(255, 255, 0)', 'highlight');
+    assertEqual(getComputedStyle($('card-image')).backgroundBlendMode, 'normal', 'no multiply on paper');
+    assertEqual(color('important-text'), 'rgb(65, 69, 82)', 'inline !important text');
+    assertEqual(background('important-bg'), 'rgb(255, 255, 255)', 'inline !important background');
+  } finally {
+    undo();
+  }
+});
+
 test('turning dark mode off shows the original colors again', async () => {
   chrome.storage.sync.set({ smartDark: false });
   await waitFor(() => !hasClass(html, 'gmail-dark-active'), 2000);
   assertEqual(color('black'), 'rgb(0, 0, 0)');
   assertEqual(background('white-bg'), 'rgb(255, 255, 255)');
   assertEqual(background('yellow-bg'), 'rgb(255, 255, 0)');
+  assertEqual(color('important-text'), 'rgb(65, 69, 82)', 'inline !important text');
+  assertEqual(background('important-bg'), 'rgb(255, 255, 255)', 'inline !important background');
 });
 
 runTests();

@@ -1173,10 +1173,12 @@
    --gtr-fg / --gtr-bg に書き込む（ダークモードOFF時はこのルールが外れて元の色に戻る） */
 .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-fg] {
   color: var(--gtr-fg) !important;
+  --gtr-fg-live: var(--gtr-fg); /* used by colors the email set inline with !important (content.js) */
 }
 
 .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bg] {
   background-color: var(--gtr-bg) !important;
+  --gtr-bg-live: var(--gtr-bg);
 }
 
 /* 暗い文字が乗っていた背景画像・グラデーション（それで作った白いカードなど）は、暗い背景色と乗算して
@@ -1332,8 +1334,8 @@
   .gmail-dark-active h1,
   .gmail-dark-active h2,
   .gmail-dark-active h3,
-  .gmail-dark-active .gtr-thread .ii.gt,
-  .gmail-dark-active .gtr-thread .a3s,
+  .gmail-dark-active .gtr-thread .ii.gt:not(.gtr-original .ii.gt),
+  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s),
   .gmail-dark-active .gtr-thread .eJPjde,
   .gmail-dark-active .gtr-thread .gtr-original .a3s,
   .gmail-dark-active div[role="main"],
@@ -1373,22 +1375,25 @@
     filter: none !important;
   }
 
-  /* 本文はダーク用に調整する前の元の色で印刷（背景画像の乗算も外す。自前の背景色は下の規則で戻る） */
-  .gmail-dark-active .gtr-thread .a3s [data-gtr-bgimg] {
+  /* 本文は画面用の規則（:not(.gtr-original .a3s) 付き）と同じ詳細度で上書きする。弱いと画面用が勝ち、
+     明るい灰色の文字のまま白い紙に印刷される。本文はダーク用に調整する前の元の色で印刷（背景画像の乗算も外す。自前の背景色は下の規則で戻る） */
+  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bgimg] {
     background-color: transparent !important;
     background-blend-mode: normal !important;
   }
 
-  .gmail-dark-active .gtr-thread .a3s [data-gtr-fg] {
+  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-fg] {
     color: var(--gtr-fg0) !important;
+    --gtr-fg-live: var(--gtr-fg0);
   }
 
-  .gmail-dark-active .gtr-thread .a3s [data-gtr-bg] {
+  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bg] {
     background-color: var(--gtr-bg0) !important;
+    --gtr-bg-live: var(--gtr-bg0);
   }
 
   /* 画像の後ろの背景とカードの縁も外す（白い紙では不要） */
-  .gmail-dark-active .gtr-thread .a3s img[data-gtr-img] {
+  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) img[data-gtr-img] {
     background-color: transparent !important;
     border-radius: 0 !important;
     box-shadow: none !important;
