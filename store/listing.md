@@ -244,7 +244,7 @@ Japanese images are in `screenshots/ja/` and English ones in `screenshots/en/`, 
 | `1-problem.png` | 「まぶしい」「長い」で困る封筒のイラスト / Illustration of the two pains (too bright, too long) |
 | `2-compare-off-on.png` | ダーク OFF（上）と ON（下）の比較 / OFF (top) vs ON (bottom) |
 | `3-reply-below-newest.png` | 返信ボタンが最新メールの直下、その下に古いメール / Reply buttons right below the newest email, older ones below |
-| `4-original-colors.png` | ◐ ボタンで、1通だけ元の色で表示（1.1.0 以降） / The ◐ button showing one email in its original colors (1.1.0+) |
+| `4-original-colors.png` | ◐ ボタンで、1通だけ元の色で表示（1.1.1 以降） / The ◐ button showing one email in its original colors (1.1.1+) |
 | `5-popup-settings.png` | 設定のポップアップと「テーマを選ぶ」ボタン（1.0.2 以降） / Settings popup with the "Choose a theme" button (1.0.2+) |
 
 - 番号の順にアップロードしてください（ストアに載せられるのは最大5枚）。
