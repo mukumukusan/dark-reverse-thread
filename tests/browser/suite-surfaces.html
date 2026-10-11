@@ -14,10 +14,13 @@ buildGmail();
 // Gmail surfaces fixed one by one in the full sweep (class names as in Gmail)
 document.getElementById('body1').insertAdjacentHTML('afterend', `
   <a class="aQy" id="attachment"><div class="aSG" id="attachment-thumb"></div><div class="aYy" id="attachment-cover"><span>name.xlsx</span></div><span class="aV3" id="attachment-name">name.xlsx</span></a>
-  <div class="ajA SK" id="details"><span class="gI" id="details-label">From:</span><span id="details-name">Someone</span></div>`);
+  <div class="ajA SK" id="details"><span class="gI" id="details-label">From:</span><span id="details-name">Someone</span></div>
+  <div class="bzp" id="invite-banner"><p id="invite-banner-text">Not in your calendar</p><button id="invite-banner-button">Add</button><div class="a2k" id="invite-info"></div></div>
+  <div class="aRb" id="invite-card"><table class="aU9"><tr><td class="aRi" id="invite-tile"><span class="aRh" id="invite-month">Apr</span></td><td><div class="aRo" id="invite-title">Interview</div><div class="aRn" id="invite-label">When</div><a id="invite-link">View</a></td></tr></table></div>
+  <div class="hq gt"><div class="aXK"><span class="aXL" id="file-name">invite.ics</span><a class="e" id="file-download">Download</a></div></div>`);
 document.getElementById('m3').querySelector('.inner').insertAdjacentHTML('beforeend', '<div class="Bswxkd" id="undo"></div>');
 document.body.insertAdjacentHTML('beforeend', `
-  <div class="J-M" role="menu" id="label-menu"><input class="bqf" id="label-search"><div class="J-N-Jo" id="menu-icon"></div></div>
+  <div class="J-M" role="menu" id="label-menu"><input class="bqf" id="label-search"><div class="J-N-Jo" id="menu-icon"></div><div class="J-LC-Jo" id="menu-checkbox"></div></div>
   <div class="eVDL2-aLs" id="link-popup"><input id="link-input"></div>
   <div class="aM7" id="emoji-picker"><button class="bAr" id="emoji-tab">x</button></div>
   <div class="uW2Fw-bHo" id="date-dialog"><div class="cER4xe" id="dialog-header" style="border-bottom: 1px solid #e1e1e1">Pick date</div><hr class="a81" id="dialog-rule"><div class="a8Y" id="dialog-footer">Cancel</div><span id="date-title">Pick date</span><div class="J-JB-KA" id="date-calendar"><table><tr><td class="J-JB-KA-a1R-JB" id="past-day">1</td><td class="J-JB-KA-JB" id="day">20</td></tr></table></div></div>
@@ -66,6 +69,23 @@ test('recipient details popup is dark and readable', () => {
   assertEqual(color('details-label'), 'rgb(154, 160, 166)');
 });
 
+test('calendar invite: banner, card text, date tile and links are readable', () => {
+  assertEqual(bg('invite-banner'), 'rgb(53, 54, 58)');
+  assertEqual(color('invite-banner-text'), 'rgb(227, 227, 227)');
+  assertEqual(bg('invite-banner-button'), 'rgb(60, 64, 67)');
+  assertEqual(filter('invite-info'), INVERT);
+  assertEqual(color('invite-title'), 'rgb(227, 227, 227)');
+  assertEqual(color('invite-label'), 'rgb(154, 160, 166)');
+  assertEqual(color('invite-link'), 'rgb(138, 180, 248)');
+  assertEqual(bg('invite-tile'), 'rgb(53, 54, 58)');
+  assertEqual(color('invite-month'), 'rgb(255, 255, 255)');
+});
+
+test('plain attachment list: file name and download link are readable', () => {
+  assertEqual(color('file-name'), 'rgb(227, 227, 227)');
+  assertEqual(color('file-download'), 'rgb(138, 180, 248)');
+});
+
 test('undo / redo pill is dark', () => {
   assertEqual(bg('undo'), 'rgb(60, 64, 67)');
 });
@@ -77,6 +97,7 @@ test('popups opened from the thread are dark: label search, link, emoji, menu ic
   assertEqual(bg('emoji-picker'), SURFACE);
   assertEqual(bg('emoji-tab'), 'rgb(60, 64, 67)');
   assertEqual(filter('menu-icon'), INVERT);
+  assertEqual(filter('menu-checkbox'), INVERT);
 });
 
 test('the same popups keep Gmail\'s look when opened from elsewhere', () => {

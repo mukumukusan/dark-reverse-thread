@@ -557,7 +557,7 @@
   border-color: var(--gtr-dark-raised) !important;
 }
 
-.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is(.aqdrmf-Kf-KkROqb, .J-N-JX, .J-Ph-hFsbo, .J-N-Jo) {
+.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is(.aqdrmf-Kf-KkROqb, .J-N-JX, .J-Ph-hFsbo, .J-N-Jo, .J-LC-Jo) {
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
@@ -933,6 +933,62 @@
 
 .gmail-dark-active .gtr-thread .aQy :is(.aV3, .aYy *) {
   color: var(--gtr-dark-text) !important;
+}
+
+/* カード形式でない添付ファイルの一覧（招待状の invite.ics など）：ファイル名（.aXL）とダウンロードのリンク */
+.gmail-dark-active .gtr-thread .hq.gt .aXL {
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active .gtr-thread .hq.gt a.e {
+  color: var(--gtr-dark-link) !important;
+}
+
+/* カレンダーの招待状：上の案内の帯（.bzp、ボタン .bzq と「ⓘ」の画像 .a2k）と、予定のカード（.aRb）。
+   カードの文字は Gmail のライトテーマの暗い色のままで、暗い背景では読めなかった */
+.gmail-dark-active .gtr-thread .bzp {
+  background-color: var(--gtr-dark-surface-high) !important;
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active .gtr-thread .bzp * {
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active .gtr-thread .bzp button {
+  background-color: var(--gtr-dark-raised) !important;
+  border-color: var(--gtr-dark-outline) !important;
+}
+
+.gmail-dark-active .gtr-thread .bzp .a2k {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+.gmail-dark-active .gtr-thread .aRb,
+.gmail-dark-active .gtr-thread .aRb :is(div, span, td, table) {
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active .gtr-thread .aRb :is(.aRn, .aRk) {
+  color: var(--gtr-dark-text-subtle) !important;
+}
+
+.gmail-dark-active .gtr-thread .aRb a {
+  color: var(--gtr-dark-link) !important;
+}
+
+.gmail-dark-active .gtr-thread .aRb table.aU9 {
+  border-color: var(--gtr-dark-raised) !important;
+}
+
+/* 予定のカードの日付のタイル（上の「4月」の帯は画像なので白い文字のまま） */
+.gmail-dark-active .gtr-thread .aRb td.aRi {
+  background-color: var(--gtr-dark-surface-high) !important;
+  border-color: var(--gtr-dark-raised) !important;
+}
+
+.gmail-dark-active .gtr-thread .aRb .aRh {
+  color: #ffffff !important;
 }
 
 /* 宛先の「▾」で開く詳細（From / To / 日付など）のポップアップ（.ajA）。白い背景に明るい文字で読めなかった */
