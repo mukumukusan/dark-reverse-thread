@@ -22,6 +22,8 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <span id="important-text" style="color: #414552 !important">a bank notice's gray, set with !important</span>
   <div id="important-bg" style="background-color: #ffffff !important">white box set with !important</div>
   <a id="pure-blue" style="color: #0000ff">pure blue link</a>
+  <style>#common_contents .stts_color { color: #0e3dad !important; background-color: #ffffff !important; }</style>
+  <div id="common_contents"><table><tr><td class="stts_color" id="id-rule-text">a balance set by an ID rule with !important</td></tr></table></div>
   <div id="yellow-bg" style="background: #ffff00"><img id="logo-on-yellow" src="${png(40, 40)}"></div>
   <div id="dark-bg" style="background: #101010">dark</div>
   <div id="half-bg" style="background: rgba(255, 255, 255, 0.5)">half</div>
@@ -66,6 +68,12 @@ test('text that is already light keeps its lightness', () => {
 test('colors the email set inline with !important are adapted too', () => {
   assertEqual(color('important-text'), 'rgb(173, 177, 190)');
   assertEqual(background('important-bg'), 'rgb(31, 31, 31)');
+});
+
+test('colors from the email\'s own CSS with an ID and !important are adapted too', () => {
+  const [r, g, b] = color('id-rule-text').match(/\d+/g).map(Number);
+  assert(r > 60 && g > 100 && b > 200, `light blue, got ${color('id-rule-text')}`);
+  assertEqual(background('id-rule-text'), 'rgb(31, 31, 31)');
 });
 
 test('a pure blue link is raised to a readable contrast on the dark page (same hue)', () => {
@@ -168,6 +176,7 @@ test('printing uses the email\'s original colors (the print rules beat the dark 
     assertEqual(getComputedStyle($('card-image')).backgroundBlendMode, 'normal', 'no multiply on paper');
     assertEqual(color('important-text'), 'rgb(65, 69, 82)', 'inline !important text');
     assertEqual(background('important-bg'), 'rgb(255, 255, 255)', 'inline !important background');
+    assertEqual(color('id-rule-text'), 'rgb(14, 61, 173)', 'ID rule text');
   } finally {
     undo();
   }

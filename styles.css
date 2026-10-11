@@ -1169,14 +1169,17 @@
   fill: var(--gtr-dark-text) !important;
 }
 
+/* 本文の文字色・背景色の規則の末尾の :is(#gtr-boost#gtr-boost#gtr-boost, *) は、どの要素にも当てはまる（*）まま
+   詳細度だけ ID 3 つ分に上げるための書き方。メールの CSS が ID を含む !important（例：#common .note { color: … !important }）
+   で色を決めていると、クラスだけの規則では負けて暗い文字が残ったため。印刷用の規則も同じ詳細度にしてある */
 /* 本文内の各要素は content.js が元の色の色相・彩度を保ったまま明度だけ調整し、
    --gtr-fg / --gtr-bg に書き込む（ダークモードOFF時はこのルールが外れて元の色に戻る） */
-.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-fg] {
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-fg]:is(#gtr-boost#gtr-boost#gtr-boost, *) {
   color: var(--gtr-fg) !important;
   --gtr-fg-live: var(--gtr-fg); /* used by colors the email set inline with !important (content.js) */
 }
 
-.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bg] {
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bg]:is(#gtr-boost#gtr-boost#gtr-boost, *) {
   background-color: var(--gtr-bg) !important;
   --gtr-bg-live: var(--gtr-bg);
 }
@@ -1382,12 +1385,12 @@
     background-blend-mode: normal !important;
   }
 
-  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-fg] {
+  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-fg]:is(#gtr-boost#gtr-boost#gtr-boost, *) {
     color: var(--gtr-fg0) !important;
     --gtr-fg-live: var(--gtr-fg0);
   }
 
-  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bg] {
+  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bg]:is(#gtr-boost#gtr-boost#gtr-boost, *) {
     background-color: var(--gtr-bg0) !important;
     --gtr-bg-live: var(--gtr-bg0);
   }
