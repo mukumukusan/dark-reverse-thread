@@ -756,6 +756,11 @@
   background-color: transparent !important;
 }
 
+/* 絵文字の検索欄のヒント（「検索」）。Gmail の濃い灰色のままで暗い背景に溶けていた */
+.gmail-dark-active.gtr-menu-source :is(.eVDL2-aLs, .aM7) input::placeholder {
+  color: var(--gtr-dark-text-subtle) !important;
+}
+
 .gmail-dark-active.gtr-menu-source :is(.eVDL2-aLs, .aM7) svg {
   fill: var(--gtr-dark-text-muted) !important;
   color: var(--gtr-dark-text-muted) !important;

@@ -70,7 +70,8 @@
     add('required', 'thread', 'email bodies .a3s', first('.a3s'));
     const list = messages[0] && messages[0].closest('div[role="list"]');
     add('required', 'thread', 'messages sit in div[role="list"]', list, list ? `${list.children.length} items` : '');
-    add('required', 'thread', 'every list item holds a message (.adn or collapsed row)', list && Array.from(list.children).every((c) => c.querySelector('.adn, .kv, .kQ') || c.matches('.kv, .kQ')),
+    // .kx: messages folded behind the "N more" row of a long conversation
+    add('required', 'thread', 'every list item holds a message (.adn or collapsed row)', list && Array.from(list.children).every((c) => c.querySelector('.adn, .kv, .kQ') || c.matches('.kv, .kQ, .kx')),
       list ? Array.from(list.children).map((c) => c.className.split(' ')[0] || c.tagName).join(', ') : '');
     add('required', 'thread', 'Reply / Forward footer .amn with .ams buttons', first('.amn .ams'));
     add('required', 'thread', 'footer wrapper .nr.wR (white flash fix)', first('.nr.wR'));
