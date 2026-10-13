@@ -890,6 +890,15 @@
   background-color: var(--gtr-dark-page) !important;
 }
 
+/* 同じ画面のスクロールバー。レールは透明で後ろのページ（Gmail の明るい #eee）が透け、白く見えていた。
+   スクロールする枠（.Tm.aeJ）に目印（gtr-thread-scroller）が付く前でも暗いように、ページごと暗くする */
+html.gmail-dark-active.gtr-popout,
+.gmail-dark-active.gtr-popout body,
+.gmail-dark-active.gtr-popout .Tm.aeJ {
+  background-color: var(--gtr-dark-page) !important;
+  color-scheme: dark;
+}
+
 /* ⚙ のクイック設定のパネル（.IU）も同じく白いので、上と同じ方法で反転する。写真（img と、テーマの見本 .XO）は元に戻す */
 .gmail-dark-active.gtr-gmail-dark-theme .IU :is(img, .XO) {
   filter: invert(1) hue-rotate(180deg) !important;
