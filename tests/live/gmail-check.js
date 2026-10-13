@@ -92,9 +92,15 @@
         const l = lightness(getComputedStyle(text).color);
         add('state', 'extension', 'body text is light on the dark page', l !== null && l > 0.5, getComputedStyle(text).color);
       }
-      // In split view the pane is the thread root and scrolls itself, so it needs no scroller tag
+      // In split view the pane is the thread root and scrolls itself, so it needs no scroller tag.
+      // A conversation short enough to fit doesn't scroll, so it has nothing to tag either
       const scroller = document.querySelector('.gtr-thread-scroller');
-      if (!split) add('state', 'extension', 'scroller tagged .gtr-thread-scroller (fast-scroll flash fix)', scroller, scroller ? bg(scroller) : 'not found');
+      let overflows = false;
+      for (let node = threadRoot.parentElement; node && node !== document.body; node = node.parentElement) {
+        const overflowY = getComputedStyle(node).overflowY;
+        if ((overflowY === 'auto' || overflowY === 'scroll') && node.scrollHeight > node.clientHeight) overflows = true;
+      }
+      if (!split && overflows) add('state', 'extension', 'scroller tagged .gtr-thread-scroller (fast-scroll flash fix)', scroller, scroller ? bg(scroller) : 'not found');
       const toggle = first('.gtr-thread .adn td.acX .gtr-original-toggle');
       add('state', 'extension', 'original-colors button in the message header', toggle);
       const amsButton = first('.gtr-thread .amn .ams');
