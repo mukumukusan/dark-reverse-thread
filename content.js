@@ -302,13 +302,15 @@
       // Disable the CSS fallback to read original colors, then write; no paint happens in between
       body.classList.add('gtr-reading');
       const colors = nodes.map((node) => {
-        if (SKIP_TAGS.has(node.tagName.toUpperCase()) || node.closest('svg, .ajR')) return null;
+        if (node.closest('svg, .ajR')) return null;
         const style = getComputedStyle(node);
         const borders = BORDER_SIDES.map(([side]) => {
           const shown = parseFloat(style.getPropertyValue(`border-${side}-width`)) > 0 &&
             !['none', 'hidden'].includes(style.getPropertyValue(`border-${side}-style`));
           return shown ? parseRGB(style.getPropertyValue(`border-${side}-color`)) : null;
         });
+        // Images keep their own colors; only a light frame drawn around one (a book cover's #ddd border) is adapted
+        if (SKIP_TAGS.has(node.tagName.toUpperCase())) return { fg: null, bg: null, bgImage: false, borders };
         return { fg: parseRGB(style.color), bg: parseRGB(style.backgroundColor), bgImage: style.backgroundImage !== 'none', borders };
       });
 

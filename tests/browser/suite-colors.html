@@ -36,6 +36,7 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <div id="photo-image" style="background-image: url(${png(4, 4)}); color: #ffffff">on a photo</div>
   <div id="gradient-card" style="background-image: linear-gradient(#ffffff, #f1f3f4); color: #202124">on a light gradient</div>
   <div id="tinted-image" style="background: #ffff00 url(${png(4, 4)}); color: #000000">tinted</div>
+  <img id="framed-cover" src="${png(40, 60)}" style="border: 2px solid #dddddd">
   <img id="logo" src="${png(40, 40)}">
   <img id="big" src="${png(400, 200)}">
   <img id="spacer" src="${png(2, 2)}">`);
@@ -105,6 +106,8 @@ test('light borders drawn for a white page turn a subtle dark gray; dark borders
   const [r, g, b] = style.borderLeftColor.match(/\d+/g).map(Number);
   assert(r === g && g === b && r > 31 && r < 80, `subtle gray, got ${style.borderLeftColor}`);
   assertEqual(getComputedStyle($('dark-border')).borderLeftColor, 'rgb(51, 51, 51)');
+  const cover = getComputedStyle($('framed-cover')).borderLeftColor.match(/\d+/g).map(Number);
+  assert(cover[0] < 80, `frame around an image, got ${getComputedStyle($('framed-cover')).borderLeftColor}`);
   const imp = getComputedStyle($('important-border')).borderLeftColor.match(/\d+/g).map(Number);
   assert(imp[0] < 80, `inline !important border, got ${getComputedStyle($('important-border')).borderLeftColor}`);
 });
