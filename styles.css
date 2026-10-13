@@ -899,6 +899,32 @@ html.gmail-dark-active.gtr-popout,
   color-scheme: dark;
 }
 
+/* 本物の別ウィンドウでは、Gmail がスクロールする枠に明るいテーマ用のスクロールバー（.Qqr4Bd：地が白、つまみが黒 20%）を付ける。
+   Gmail のダークテーマと同じ色（地は透明、つまみは白 40%、乗せると 80%）にする */
+.gmail-dark-active.gtr-popout .Tm::-webkit-scrollbar,
+.gmail-dark-active.gtr-popout .Tm::-webkit-scrollbar-corner {
+  background-color: transparent !important;
+}
+
+.gmail-dark-active.gtr-popout .Tm::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
+}
+
+.gmail-dark-active.gtr-popout .Tm::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.gmail-dark-active.gtr-popout .Tm::-webkit-scrollbar-thumb:active {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.gmail-dark-active.gtr-popout .Tm::-webkit-scrollbar-track:hover,
+.gmail-dark-active.gtr-popout .Tm::-webkit-scrollbar-track:active {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+}
+
 /* ⚙ のクイック設定のパネル（.IU）も同じく白いので、上と同じ方法で反転する。写真（img と、テーマの見本 .XO）は元に戻す */
 .gmail-dark-active.gtr-gmail-dark-theme .IU :is(img, .XO) {
   filter: invert(1) hue-rotate(180deg) !important;
@@ -1243,6 +1269,19 @@ html.gmail-dark-active.gtr-popout,
   --gtr-bg-live: var(--gtr-bg);
 }
 
+/* 白い紙のために描かれた明るい枠線（カードを囲む #f0f0f0 など）。暗い画面では光る線になるので、content.js が
+   控えめな濃い灰色にして --gtr-bd-t/r/b/l に書き込む（線の無い辺は元の値のまま、幅が 0 なので見えない） */
+.gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bd]:is(#gtr-boost#gtr-boost#gtr-boost, *) {
+  border-top-color: var(--gtr-bd-t, transparent) !important;
+  border-right-color: var(--gtr-bd-r, transparent) !important;
+  border-bottom-color: var(--gtr-bd-b, transparent) !important;
+  border-left-color: var(--gtr-bd-l, transparent) !important;
+  --gtr-bd-t-live: var(--gtr-bd-t);
+  --gtr-bd-r-live: var(--gtr-bd-r);
+  --gtr-bd-b-live: var(--gtr-bd-b);
+  --gtr-bd-l-live: var(--gtr-bd-l);
+}
+
 /* 暗い文字が乗っていた背景画像・グラデーション（それで作った白いカードなど）は、暗い背景色と乗算して
    白い背景色と同じくらいの暗さにする（content.js が --gtr-bgimg と data-gtr-bgimg を付ける）。
    明るい文字が乗った写真の背景は対象外 */
@@ -1452,6 +1491,17 @@ html.gmail-dark-active.gtr-popout,
   .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bg]:is(#gtr-boost#gtr-boost#gtr-boost, *) {
     background-color: var(--gtr-bg0) !important;
     --gtr-bg-live: var(--gtr-bg0);
+  }
+
+  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) [data-gtr-bd]:is(#gtr-boost#gtr-boost#gtr-boost, *) {
+    border-top-color: var(--gtr-bd0-t, transparent) !important;
+    border-right-color: var(--gtr-bd0-r, transparent) !important;
+    border-bottom-color: var(--gtr-bd0-b, transparent) !important;
+    border-left-color: var(--gtr-bd0-l, transparent) !important;
+    --gtr-bd-t-live: var(--gtr-bd0-t);
+    --gtr-bd-r-live: var(--gtr-bd0-r);
+    --gtr-bd-b-live: var(--gtr-bd0-b);
+    --gtr-bd-l-live: var(--gtr-bd0-l);
   }
 
   /* 画像の後ろの背景とカードの縁も外す（白い紙では不要） */

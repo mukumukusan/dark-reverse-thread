@@ -192,6 +192,10 @@
   const toDarkText = (l) => (l < 0.5 ? Math.min(Math.max(1 - l, 0.65), 0.89) : Math.max(l, 0.65));
   // Background: light colors fold into 0.12-0.22 (white -> #1f1f1f), dark ones stay dark.
   const toDarkBackground = (l) => (l > 0.5 ? 0.12 + (1 - l) * 0.2 : Math.min(l, 0.22));
+  // Borders: light lines drawn for a white page (e.g. #f0f0f0 around a card) turn into a subtle dark gray
+  // (white -> 0.18) so they still separate without glaring; dark borders are left as they are.
+  const toDarkBorder = (l) => (l > 0.5 ? 0.18 + (1 - l) * 0.3 : l);
+  const BORDER_SIDES = [['top', 't'], ['right', 'r'], ['bottom', 'b'], ['left', 'l']];
 
   /**
    * HSL lightness is not what the eye sees: a pure blue at 0.65 is still dark (contrast 2.9 on the
@@ -300,7 +304,12 @@
       const colors = nodes.map((node) => {
         if (SKIP_TAGS.has(node.tagName.toUpperCase()) || node.closest('svg, .ajR')) return null;
         const style = getComputedStyle(node);
-        return { fg: parseRGB(style.color), bg: parseRGB(style.backgroundColor), bgImage: style.backgroundImage !== 'none' };
+        const borders = BORDER_SIDES.map(([side]) => {
+          const shown = parseFloat(style.getPropertyValue(`border-${side}-width`)) > 0 &&
+            !['none', 'hidden'].includes(style.getPropertyValue(`border-${side}-style`));
+          return shown ? parseRGB(style.getPropertyValue(`border-${side}-color`)) : null;
+        });
+        return { fg: parseRGB(style.color), bg: parseRGB(style.backgroundColor), bgImage: style.backgroundImage !== 'none', borders };
       });
 
       // The adapted color behind each element, so text on a highlight is raised against the highlight's
@@ -333,6 +342,17 @@
           node.style.setProperty('--gtr-fg', toReadableText(c.fg, backdropOf(node)));
           node.setAttribute('data-gtr-fg', '');
           deferImportantInline(node, 'color', '--gtr-fg-live');
+        }
+        if (c.borders.some((b) => b && b.a > 0 && rgbToHsl(b).l > 0.5)) {
+          BORDER_SIDES.forEach(([side, key], k) => {
+            const b = c.borders[k];
+            if (!b) return;
+            const original = `rgba(${b.r}, ${b.g}, ${b.b}, ${b.a})`;
+            node.style.setProperty(`--gtr-bd0-${key}`, original);
+            node.style.setProperty(`--gtr-bd-${key}`, rgbToHsl(b).l > 0.5 ? remapLightness(b, toDarkBorder) : original);
+            deferImportantInline(node, `border-${side}-color`, `--gtr-bd-${key}-live`);
+          });
+          node.setAttribute('data-gtr-bd', '');
         }
         // A background picture or gradient under dark text was drawn light (often a white card made of one):
         // multiplied by the dark background it becomes as dark as a white background would. Pictures
