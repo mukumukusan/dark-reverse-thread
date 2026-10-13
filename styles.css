@@ -436,6 +436,12 @@
   color: var(--gtr-dark-text) !important;
 }
 
+/* 宛先の欄から離れたときに出る、宛先をまとめた1行（.aoD.hl）。Gmail の濃い文字のままで背景に溶けて見えなかった */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aoD.hl,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aoD.hl * {
+  color: var(--gtr-dark-text) !important;
+}
+
 /* 返信欄のアイコン（宛先行・ツールバー）は画像のため、明度を反転して明るくする
    （hue-rotate で色付きアイコンの色相は維持）。青い送信ボタン(.T-I-atl)は対象外 */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG [role="button"]:not([role="button"] [role="button"]),

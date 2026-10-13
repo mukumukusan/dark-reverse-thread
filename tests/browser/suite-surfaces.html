@@ -36,6 +36,7 @@ document.body.insertAdjacentHTML('beforeend', `
   <div class="brC-brG-Jz-bBA" id="side-keep"><iframe src="about:blank#https://keep.google.com/companion"></iframe></div>
   <div class="brC-brG-Jz-bBA" id="side-contacts"><iframe src="about:blank#https://contacts.google.com/widget"></iframe></div>
   <div class="brC-brG-Jz-bBA" id="side-tasks"><iframe src="about:blank#https://tasks.google.com/embed"></iframe></div>
+  <div class="Hd" role="dialog" id="compose"><div class="aoD hl" id="to-summary"><div class="oL aDm az9"><span id="to-summary-name" style="color: #222">someone@example.com</span></div></div></div>
   <div role="main" id="mail-list"><span id="mail-row">row</span></div>
   <div role="navigation" id="sidebar"><span id="sidebar-label">News</span></div>`);
 document.getElementById('date-dialog').append(
@@ -204,6 +205,11 @@ test('settings pages are inverted over a light grey base; images are inverted ba
   assertEqual(bg('settings'), 'rgb(224, 224, 224)');
   assertEqual(filter('settings-tabs'), INVERT);
   assertEqual(filter('settings-image'), INVERT);
+});
+
+test('compose: the recipients line shown after leaving the To field is light (was dark text on dark)', () => {
+  assertEqual(color('to-summary'), 'rgb(227, 227, 227)');
+  assertEqual(color('to-summary-name'), 'rgb(227, 227, 227)');
 });
 
 runTests();
