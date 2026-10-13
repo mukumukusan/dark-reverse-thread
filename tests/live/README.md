@@ -48,6 +48,10 @@ A screen only shows what is open, so run it once per state. The states that hid 
   quoted text opened with "…" (links in it were dark blue)
 - conversation: a few threads, the message "⋮" menu, the toolbar menus, the recipient details popup
 - the conversation both in the reading pane (split view) and full width
+- "open in new window" (the /popout page): Gmail ignores the theme there. Claude can't reach a new
+  window, so patch `window.open` once to drop the window size (`orig.call(window, url, name)`) and
+  click the button: the page then opens as a tab in the same group. Opening the /popout address
+  directly shows a blank page (it needs the window that opened it)
 - settings pages (each tab), the search options panel, the gear's quick settings
 
 Close a menu by clicking an empty part of the message body, not its button again: the font menu opens

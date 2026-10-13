@@ -17,6 +17,10 @@
 
   const config = { ...GTR_DEFAULT_SETTINGS };
 
+  // "Open in new window" shows the conversation on its own page (/popout), where Gmail ignores the
+  // user's theme and draws the toolbar above the thread white; styles.css darkens it there
+  if (/\/popout$/.test(location.pathname)) document.documentElement.classList.add('gtr-popout');
+
   let lastQuickBarState = null;
 
   /**
