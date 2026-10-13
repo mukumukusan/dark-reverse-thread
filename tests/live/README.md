@@ -51,7 +51,9 @@ A screen only shows what is open, so run it once per state. The states that hid 
 - "open in new window" (the /popout page): Gmail ignores the theme there. Claude can't reach a new
   window, so patch `window.open` once to drop the window size (`orig.call(window, url, name)`) and
   click the button: the page then opens as a tab in the same group. Opening the /popout address
-  directly shows a blank page (it needs the window that opened it)
+  directly shows a blank page (it needs the window that opened it). The tab is not quite the real
+  window: only the real one gives the scroller Gmail's light scrollbar (`.Qqr4Bd`). To check that,
+  keep the window `window.open` returns and read its `document` from the opener tab (same origin)
 - settings pages (each tab), the search options panel, the gear's quick settings
 
 Close a menu by clicking an empty part of the message body, not its button again: the font menu opens
