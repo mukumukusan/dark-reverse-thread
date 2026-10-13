@@ -377,6 +377,12 @@
   color: var(--gtr-dark-text-strong) !important;
 }
 
+/* 返信欄の本文に入るリンク（「…」で開く引用の中のメールアドレスなど）。Gmail の濃い青のままで暗い背景では読みにくかった */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]) a,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]) a * {
+  color: var(--gtr-dark-link) !important;
+}
+
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .gU.Up,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aDh,

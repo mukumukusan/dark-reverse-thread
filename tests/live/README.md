@@ -43,8 +43,15 @@ A screen only shows what is open, so run it once per state. The states that hid 
 - compose window: To field focused (chips) **and** after leaving it (the one-line summary), Cc/Bcc
   open, the formatting bar and each of its menus (font, size, text color palette, alignment, more),
   the "⋮" and send "▾" menus, the link and emoji popups
+- reply box (ask the user to open one: opening it saves a draft): the box itself, the "↩▾" menu, the
+  recipients expanded and left, the "⋮" menu, the formatting bar and its menus, link, emoji, and the
+  quoted text opened with "…" (links in it were dark blue)
 - conversation: a few threads, the message "⋮" menu, the toolbar menus, the recipient details popup
+- the conversation both in the reading pane (split view) and full width
 - settings pages (each tab), the search options panel, the gear's quick settings
+
+Close a menu by clicking an empty part of the message body, not its button again: the font menu opens
+over its own button, so a second click there picks a font.
 
 Faint disabled buttons, images, text over background images and anything inside an `<iframe>`
 (side panels, emoji grid) are skipped; check icon-only menus by eye, since icons are images.

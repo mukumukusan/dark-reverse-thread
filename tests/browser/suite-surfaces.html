@@ -36,7 +36,7 @@ document.body.insertAdjacentHTML('beforeend', `
   <div class="brC-brG-Jz-bBA" id="side-keep"><iframe src="about:blank#https://keep.google.com/companion"></iframe></div>
   <div class="brC-brG-Jz-bBA" id="side-contacts"><iframe src="about:blank#https://contacts.google.com/widget"></iframe></div>
   <div class="brC-brG-Jz-bBA" id="side-tasks"><iframe src="about:blank#https://tasks.google.com/embed"></iframe></div>
-  <div class="Hd" role="dialog" id="compose"><div class="aoD hl" id="to-summary"><div class="oL aDm az9"><span id="to-summary-name" style="color: #222">someone@example.com</span></div></div></div>
+  <div class="Hd" role="dialog" id="compose"><div class="aoD hl" id="to-summary"><div class="oL aDm az9"><span id="to-summary-name" style="color: #222">someone@example.com</span></div></div><div class="Am Al editable" contenteditable="true"><div class="gmail_quote"><a id="quote-link" href="#">someone@example.com</a> <a href="#" style="color: #0563c1"><span id="quote-link-inner" style="color: #0563c1">link</span></a></div></div></div>
   <div role="main" id="mail-list"><span id="mail-row">row</span></div>
   <div role="navigation" id="sidebar"><span id="sidebar-label">News</span></div>`);
 document.getElementById('date-dialog').append(
@@ -211,6 +211,11 @@ test('settings pages are inverted over a light grey base; images are inverted ba
 test('compose: the recipients line shown after leaving the To field is light (was dark text on dark)', () => {
   assertEqual(color('to-summary'), 'rgb(227, 227, 227)');
   assertEqual(color('to-summary-name'), 'rgb(227, 227, 227)');
+});
+
+test('reply / compose body: links (e.g. in the quoted text opened with "…") are light blue, not Gmail\'s dark blue', () => {
+  assertEqual(color('quote-link'), 'rgb(138, 180, 248)');
+  assertEqual(color('quote-link-inner'), 'rgb(138, 180, 248)');
 });
 
 runTests();
