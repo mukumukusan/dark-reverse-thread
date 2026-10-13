@@ -39,6 +39,18 @@
       assertEqual(win.document.getElementById('version').textContent, 'v9.9.9');
     });
 
+    test('rate and report links open the store reviews and the issue tracker in a new tab', async () => {
+      const win = await openPopup({});
+      const rate = win.document.getElementById('rateLink');
+      const report = win.document.getElementById('reportLink');
+      assertEqual(rate.textContent, messagesEn.rateLink);
+      assertEqual(report.textContent, messagesEn.reportLink);
+      assertEqual(rate.href, 'https://chromewebstore.google.com/detail/nkbapoheeghahneaomcecckkeeobmkja/reviews');
+      assertEqual(report.href, 'https://github.com/mukumukusan/dark-reverse-thread/issues');
+      assert(rate.target === '_blank' && report.target === '_blank', 'new tab');
+      assert(rate.relList.contains('noopener') && report.relList.contains('noopener'), 'noopener');
+    });
+
     test('defaults are shown when nothing is saved', async () => {
       const win = await openPopup({});
       const d = win.document;

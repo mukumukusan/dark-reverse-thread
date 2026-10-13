@@ -77,6 +77,12 @@
   "quickReloadNeeded": {
     "message": "La extensión se actualizó. Vuelve a cargar la página."
   },
+  "rateLink": {
+    "message": "⭐ Valorar"
+  },
+  "reportLink": {
+    "message": "Informar de un problema"
+  },
   "supportLink": {
     "message": "☕ ¿Te gusta? Invítame a un café"
   },

@@ -196,3 +196,13 @@ label {
 .support a:hover {
   text-decoration: underline;
 }
+
+/* 評価・問題の報告のリンク。応援のリンクより一段控えめに */
+.support-links {
+  margin-top: 4px;
+  color: #5f6368;
+}
+
+.support-links a {
+  color: #9aa0a6;
+}

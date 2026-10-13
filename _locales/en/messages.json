@@ -103,6 +103,14 @@
     "message": "The extension was updated. Please reload the page.",
     "description": "Quick bar: shown when the extension was reloaded or updated while this Gmail tab stayed open."
   },
+  "rateLink": {
+    "message": "⭐ Rate it",
+    "description": "Popup link to the extension's reviews page in the Chrome Web Store."
+  },
+  "reportLink": {
+    "message": "Report a problem",
+    "description": "Popup link to the project's issue tracker for reporting a problem."
+  },
   "supportLink": {
     "message": "☕ Like it? Buy me a coffee",
     "description": "Popup link to the developer's Buy Me a Coffee page."

@@ -77,6 +77,12 @@
   "quickReloadNeeded": {
     "message": "Die Erweiterung wurde aktualisiert. Bitte lade die Seite neu."
   },
+  "rateLink": {
+    "message": "⭐ Bewerten"
+  },
+  "reportLink": {
+    "message": "Problem melden"
+  },
   "supportLink": {
     "message": "☕ Gefällt’s dir? Spendier mir einen Kaffee"
   },

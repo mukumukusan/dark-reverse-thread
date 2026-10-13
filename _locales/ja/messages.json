@@ -77,6 +77,12 @@
   "quickReloadNeeded": {
     "message": "拡張機能が更新されました。ページを再読み込みしてください"
   },
+  "rateLink": {
+    "message": "⭐ 評価する"
+  },
+  "reportLink": {
+    "message": "問題を報告"
+  },
   "supportLink": {
     "message": "☕ 気に入ったら応援する（Buy Me a Coffee）"
   },
