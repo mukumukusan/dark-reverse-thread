@@ -358,6 +358,12 @@
   border-radius: 20px !important;
 }
 
+/* メールの下の返信候補（「かしこまりました。」などのボタン、.brb の中）。Gmail のライトテーマでは濃い青の文字のままで、
+   暗いスレッドの上では薄かった */
+.gmail-dark-active .gtr-thread .brb button *:not(svg):not(svg *) {
+  color: var(--gtr-dark-link) !important;
+}
+
 /* 返信・全員に返信・転送のボタン（span.ams）。上の共通ルールの枠線（raised）だと暗い背景に沈むので一段明るく */
 .gmail-dark-active .gtr-thread .amn .ams {
   border-color: var(--gtr-dark-outline) !important;

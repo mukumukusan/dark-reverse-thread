@@ -15,6 +15,7 @@ buildGmail();
 document.getElementById('body1').insertAdjacentHTML('afterend', `
   <a class="aQy" id="attachment"><div class="aSG" id="attachment-thumb"></div><div class="aYy" id="attachment-cover"><span>name.xlsx</span></div><span class="aV3" id="attachment-name">name.xlsx</span></a>
   <h3 class="iw gFxsud"><div class="Xg2J0b"><span class="Ca" role="link" id="unsubscribe" style="color: #1a73e8">Unsubscribe</span></div></h3>
+  <div class="brb"><button class="Rju2Ue-aoh"><span class="Rju2Ue-Rx-J9" id="smart-reply" style="color: #1a73e8">Sounds good</span></button></div>
   <div class="ajA SK" id="details"><span class="gI" id="details-label">From:</span><span id="details-name">Someone</span></div>
   <h2 class="hP" id="subject-hl">Order <span class="il" id="subject-highlight">Yodobashi</span></h2>
   <div class="bzp" id="invite-banner"><p id="invite-banner-text">Not in your calendar</p><button id="invite-banner-button">Add</button><div class="a2k" id="invite-info"></div></div>
@@ -207,6 +208,10 @@ test('settings pages are inverted over a light grey base; images are inverted ba
   assertEqual(bg('settings'), 'rgb(224, 224, 224)');
   assertEqual(filter('settings-tabs'), INVERT);
   assertEqual(filter('settings-image'), INVERT);
+});
+
+test('suggested replies under the message are light blue (Gmail\'s light theme leaves them dark blue)', () => {
+  assertEqual(color('smart-reply'), 'rgb(138, 180, 248)');
 });
 
 test('the "Unsubscribe" link next to the sender is light blue', () => {
