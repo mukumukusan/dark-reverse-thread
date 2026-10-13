@@ -171,6 +171,11 @@
     };
   }
 
+  function blendOver(top, under) {
+    const mix = (a, b) => Math.round(a * top.a + b * (1 - top.a));
+    return { r: mix(top.r, under.r), g: mix(top.g, under.g), b: mix(top.b, under.b), a: 1 };
+  }
+
   function remapLightness(rgb, mapL) {
     const hsl = rgbToHsl(rgb);
     hsl.l = mapL(hsl.l);
@@ -201,15 +206,17 @@
     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
   }
 
-  function contrastOnPage(rgb) {
-    return (relativeLuminance(rgb) + 0.05) / (relativeLuminance(DARK_PAGE) + 0.05);
+  function contrastBetween(a, b) {
+    const [hi, lo] = [relativeLuminance(a), relativeLuminance(b)].sort((x, y) => y - x);
+    return (hi + 0.05) / (lo + 0.05);
   }
 
-  function toReadableText(rgb) {
+  // backdrop: the adapted color behind the text (a dark shade of a highlight, or the page)
+  function toReadableText(rgb, backdrop = DARK_PAGE) {
     const hsl = rgbToHsl(rgb);
     hsl.l = toDarkText(hsl.l);
     let out = hslToRgb(hsl);
-    while (contrastOnPage(out) < MIN_TEXT_CONTRAST && hsl.l < 0.95) {
+    while (contrastBetween(out, backdrop) < MIN_TEXT_CONTRAST && hsl.l < 0.95) {
       hsl.l = Math.min(0.95, hsl.l + 0.01);
       out = hslToRgb(hsl);
     }
@@ -292,22 +299,36 @@
         return { fg: parseRGB(style.color), bg: parseRGB(style.backgroundColor), bgImage: style.backgroundImage !== 'none' };
       });
 
+      // The adapted color behind each element, so text on a highlight is raised against the highlight's
+      // dark shade rather than the page (gray text on a yellow marker stayed dim on the olive it became).
+      // Parents come before children (document order); elements adapted earlier are read from --gtr-bg.
+      const backdrops = new Map();
+      const backdropOf = (el) => {
+        if (!el || el === body || !body.contains(el)) return DARK_PAGE;
+        if (backdrops.has(el)) return backdrops.get(el);
+        const parent = backdropOf(el.parentElement);
+        const own = el.hasAttribute('data-gtr-bg') ? parseRGB(el.style.getPropertyValue('--gtr-bg')) : null;
+        const result = own && own.a > 0 ? blendOver(own, parent) : parent;
+        backdrops.set(el, result);
+        return result;
+      };
+
       nodes.forEach((node, i) => {
         node.setAttribute('data-gtr-c', '');
         if (node.tagName === 'IMG') restoreImageBackdrop(node, body); // ancestors are written first (document order)
         const c = colors[i];
         if (!c) return;
-        if (c.fg) {
-          node.style.setProperty('--gtr-fg0', `rgba(${c.fg.r}, ${c.fg.g}, ${c.fg.b}, ${c.fg.a})`);
-          node.style.setProperty('--gtr-fg', toReadableText(c.fg));
-          node.setAttribute('data-gtr-fg', '');
-          deferImportantInline(node, 'color', '--gtr-fg-live');
-        }
         if (c.bg && c.bg.a > 0) {
           node.style.setProperty('--gtr-bg0', `rgba(${c.bg.r}, ${c.bg.g}, ${c.bg.b}, ${c.bg.a})`);
           node.style.setProperty('--gtr-bg', remapLightness(c.bg, toDarkBackground));
           node.setAttribute('data-gtr-bg', '');
           deferImportantInline(node, 'background-color', '--gtr-bg-live');
+        }
+        if (c.fg) {
+          node.style.setProperty('--gtr-fg0', `rgba(${c.fg.r}, ${c.fg.g}, ${c.fg.b}, ${c.fg.a})`);
+          node.style.setProperty('--gtr-fg', toReadableText(c.fg, backdropOf(node)));
+          node.setAttribute('data-gtr-fg', '');
+          deferImportantInline(node, 'color', '--gtr-fg-live');
         }
         // A background picture or gradient under dark text was drawn light (often a white card made of one):
         // multiplied by the dark background it becomes as dark as a white background would. Pictures

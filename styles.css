@@ -163,6 +163,11 @@
   color: var(--gtr-dark-text-subtle) !important;
 }
 
+/* 宣伝メールの差出人の横の「登録解除」（.iw の中の .Ca）。Gmail の濃い青のままで暗い背景では薄かった */
+.gmail-dark-active .gtr-thread .iw .Ca[role="link"] {
+  color: var(--gtr-dark-link) !important;
+}
+
 /* --------------------------------------------------------------------------
    4. STAR ICON & TOP-RIGHT ACTION ICONS (星アイコン・操作ボタン)
    -------------------------------------------------------------------------- */

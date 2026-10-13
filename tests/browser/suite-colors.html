@@ -26,6 +26,8 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <div id="common_contents"><table><tr><td class="stts_color" id="id-rule-text">a balance set by an ID rule with !important</td></tr></table></div>
   <div id="yellow-bg" style="background: #ffff00"><img id="logo-on-yellow" src="${png(40, 40)}"></div>
   <div id="dark-bg" style="background: #101010">dark</div>
+  <p id="marker" style="background: #ffff00"><span><strong id="marker-text" style="color: #555555">gray on a yellow marker</strong></span></p>
+  <table><tr><td id="teal-cell" style="background: #c8eef7"><a id="teal-link" style="color: #1a73e8">blue link on a pale teal cell</a></td></tr></table>
   <div id="half-bg" style="background: rgba(255, 255, 255, 0.5)">half</div>
   <div id="card-image" style="background-image: url(${png(4, 4)}); color: #5f6368">on a light picture</div>
   <div id="photo-image" style="background-image: url(${png(4, 4)}); color: #ffffff">on a photo</div>
@@ -83,6 +85,15 @@ test('a pure blue link is raised to a readable contrast on the dark page (same h
   const page = 0.2126 * lum(31) + 0.7152 * lum(31) + 0.0722 * lum(31);
   assert((L + 0.05) / (page + 0.05) >= 4.5, `contrast of ${color('pure-blue')}`);
   assert(b > r && b > g, 'still blue');
+});
+
+test('text on a highlight is raised against the highlight\'s dark shade, not the page', () => {
+  const lum = (c) => { const [r, g, b] = c.match(/\d+/g).map(Number).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const ratio = (a, b) => { const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x); return (hi + 0.05) / (lo + 0.05); };
+  assert(ratio(color('marker-text'), background('marker')) >= 4.5, `${color('marker-text')} on ${background('marker')}`);
+  assert(ratio(color('teal-link'), background('teal-cell')) >= 4.5, `${color('teal-link')} on ${background('teal-cell')}`);
+  const [r, g, b] = color('teal-link').match(/\d+/g).map(Number);
+  assert(b > r, 'the link stays blue');
 });
 
 test('white backgrounds turn dark', () => {
