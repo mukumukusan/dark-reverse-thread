@@ -29,3 +29,24 @@ checked by hand: open the message "⋮" menu and the toolbar "⋮" menu (both sh
 compose window (dark), and the gear's quick settings should still have the theme "View all" button
 (`button[jsname="JFZqac"]`). Close everything without saving; never open a reply box, which creates
 a draft.
+
+# Contrast sweep
+
+`contrast-sweep.js` catches text that can't be read: for every piece of text on screen (and text or
+hints in input fields) it works out the color drawn and the color behind it, including the
+extension's `filter: invert(...)` flips, and lists the places with contrast below 3. It also lists
+large light boxes inside the areas the extension darkens. Like `gmail-check.js`, it only reads the
+page.
+
+A screen only shows what is open, so run it once per state. The states that hid problems before:
+
+- compose window: To field focused (chips) **and** after leaving it (the one-line summary), Cc/Bcc
+  open, the formatting bar and each of its menus (font, size, text color palette, alignment, more),
+  the "⋮" and send "▾" menus, the link and emoji popups
+- conversation: a few threads, the message "⋮" menu, the toolbar menus, the recipient details popup
+- settings pages (each tab), the search options panel, the gear's quick settings
+
+Faint disabled buttons, images, text over background images and anything inside an `<iframe>`
+(side panels, emoji grid) are skipped; check icon-only menus by eye, since icons are images.
+Gmail's menus fade in, and in a background tab a menu can stay at opacity 0 for scripts while it is
+already on screen, so opacity is not used to skip anything.

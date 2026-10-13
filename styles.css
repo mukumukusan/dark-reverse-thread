@@ -560,6 +560,16 @@
   color: var(--gtr-dark-text) !important;
 }
 
+/* 書式バーの文字色パレットの見出し（「背景色」「テキストの色」）。Gmail の濃い文字のままで暗いメニューに溶けていた */
+.gmail-dark-active.gtr-menu-source .J-M .aAi {
+  color: var(--gtr-dark-text-muted) !important;
+}
+
+/* 書式バーの「配置」「その他の書式」メニューのアイコン（.J-Kw の中の .J-Z-I）。画像の暗いアイコンなので反転して明るくする */
+.gmail-dark-active.gtr-menu-source .J-M .J-Kw .J-Z-I {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
 .gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) :is([role="menuitem"], [role="menuitemcheckbox"]):hover,
 .gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) .J-N.J-N-JT {
   background-color: var(--gtr-dark-raised) !important;

@@ -9,7 +9,11 @@
 <body>
   <script src="harness.js"></script>
   <script src="gmail-fixture.js"></script>
-  <script>buildGmail(); window.__GTR_MOCK__ = {};</script>
+  <script>buildGmail(); window.__GTR_MOCK__ = {};
+document.body.insertAdjacentHTML('beforeend', `
+  <div class="J-M" role="menu" id="palette"><table class="aAj"><tr><td class="aAi" id="palette-heading" style="color: #1f1f1f">Text color</td></tr></table></div>
+  <div class="J-M" role="menu" id="align-menu"><div class="J-Kw"><div class="J-Z-I" id="align-icon"><div class="e4"></div></div></div></div>`);
+</script>
   <script src="chrome-mock.js"></script>
   <script src="../../settings.js"></script>
   <script src="../../content.js"></script>
@@ -64,6 +68,13 @@ test('hovering a dark area notes the source (menus that open on hover)', () => {
 test('hovering elsewhere does not clear it (the menu must not turn white on the way)', () => {
   hover('outside');
   assert(hasClass(html, SOURCE));
+});
+
+test('formatting menus from the compose window: palette headings are readable, icon grids are flipped light', () => {
+  press('outside');
+  press('compose-button');
+  assertEqual(getComputedStyle($('palette-heading')).color, 'rgb(196, 199, 197)');
+  assertEqual(getComputedStyle($('align-icon')).filter, 'invert(1) hue-rotate(180deg)');
 });
 
 runTests();
