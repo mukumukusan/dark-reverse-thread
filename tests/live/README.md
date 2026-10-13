@@ -53,6 +53,16 @@ A screen only shows what is open, so run it once per state. The states that hid 
 Close a menu by clicking an empty part of the message body, not its button again: the font menu opens
 over its own button, so a second click there picks a font.
 
+Pasting the file runs it once and keeps it as `gtrSweep(options)` for the next states (paste again
+after a page reload). `gtrSweep({ minContrast: 4.5, scope: '.gtr-thread' })` checks only the open
+conversation against 4.5, the contrast the extension aims for in email text (the default 3 lists only
+text that is hard to read).
+
+Email bodies vary the most, so also open a batch of designed emails (newsletters, shops, banks) and run
+`gtrSweep({ minContrast: 4.5, scope: '.gtr-thread' })` in each. Search `category:promotions is:read` and
+open only read emails, so nothing is marked as read. Keep the tab in front: in a background tab Chrome
+slows timers down to one run every few tens of seconds.
+
 Faint disabled buttons, images, text over background images and anything inside an `<iframe>`
 (side panels, emoji grid) are skipped; check icon-only menus by eye, since icons are images.
 Gmail's menus fade in, and in a background tab a menu can stay at opacity 0 for scripts while it is

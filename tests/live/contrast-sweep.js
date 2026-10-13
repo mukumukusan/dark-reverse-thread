@@ -13,9 +13,14 @@
  *
  * Limits: text over a background image, inside an <iframe>, or drawn by <img>/<canvas> can't be judged
  * and is skipped. Under a CSS filter: invert(...) both colors are inverted before comparing.
+ *
+ * Pasting the file also keeps it as window.gtrSweep(options) for the next states, so it needs pasting
+ * once per page load. Options:
+ *   minContrast  report text below this (default 3: hard to read; 4.5: the target for body text)
+ *   scope        a selector to check only part of the page (e.g. '.gtr-thread' for email bodies)
  */
-(() => {
-  const MIN_CONTRAST = 3; // below this, text is hard to read on any screen
+window.gtrSweep = ({ minContrast = 3, scope = null } = {}) => {
+  const MIN_CONTRAST = minContrast;
   const LIGHT_BOX_MIN_AREA = 40 * 24;
   const DARK_SCOPES = '.gtr-thread, .Hd[role="dialog"], [role="menu"], .afC, .J-M';
 
@@ -88,7 +93,9 @@
   const visible = (el) => el.checkVisibility ? el.checkVisibility({ checkVisibilityCSS: true }) : el.offsetParent !== null;
 
   const lowContrast = new Map();
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const root = scope ? document.querySelector(scope) : document.body;
+  if (!root) return { error: `nothing matches ${scope}` };
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   let checked = 0;
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
     if (!node.textContent.trim()) continue;
@@ -120,7 +127,7 @@
 
   // Text typed into input fields is not a text node: check those fields' own color, or the hint
   // (placeholder) color when the field is empty
-  document.querySelectorAll('input:not([type=hidden], [type=checkbox], [type=radio], [type=button], [type=submit]), textarea').forEach((el) => {
+  root.querySelectorAll('input:not([type=hidden], [type=checkbox], [type=radio], [type=button], [type=submit]), textarea').forEach((el) => {
     if ((!el.value && !el.placeholder) || el.disabled || !visible(el)) return;
     const r = el.getBoundingClientRect();
     if (r.width < 2 || r.height < 2 || r.right <= 0 || r.bottom <= 0) return;
@@ -139,10 +146,12 @@
   // Large light boxes inside the areas the extension darkens
   const lightBoxes = [];
   if (document.documentElement.classList.contains('gmail-dark-active')) {
-    document.querySelectorAll(DARK_SCOPES).forEach((scope) => {
-      if (!visible(scope)) return;
-      [scope, ...scope.querySelectorAll('*')].forEach((el) => {
-        if (el.matches('img, svg, canvas, video, [role=separator]') || el.closest('.gtr-original .a3s, iframe')) return;
+    // Gmail's own label chips next to the subject (.hN) are light on purpose
+    const areas = [...(root.matches(DARK_SCOPES) ? [root] : []), ...root.querySelectorAll(DARK_SCOPES)];
+    areas.forEach((area) => {
+      if (!visible(area)) return;
+      [area, ...area.querySelectorAll('*')].forEach((el) => {
+        if (el.matches('img, svg, canvas, video, [role=separator]') || el.closest('.gtr-original .a3s, iframe, .hN')) return;
         const c = parse(getComputedStyle(el).backgroundColor);
         if (!c || c.a < 0.9 || !visible(el)) return;
         const drawn = resolve(el);
@@ -163,4 +172,5 @@
   };
   if (typeof console !== 'undefined' && console.table) { console.table(result.lowContrast); console.table(result.lightBoxes); }
   return result;
-})();
+};
+window.gtrSweep();
