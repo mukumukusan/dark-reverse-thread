@@ -369,6 +369,13 @@
   border-color: var(--gtr-dark-outline) !important;
 }
 
+/* 返信・転送ボタンの矢印（::before の画像、Gmail の濃い灰色）と、メールの宛先「To 自分」の横の ▾（img.ajz、黒）。
+   暗い背景に沈んで見えないので、文字と同じ明るい灰色（brightness(0) で黒に揃えてから invert(.89) で #e3e3e3）にする */
+.gmail-dark-active .gtr-thread .amn .ams::before,
+.gmail-dark-active .gtr-thread img.ajz {
+  filter: brightness(0) invert(.89) !important;
+}
+
 .gmail-dark-active .gtr-thread .amn [role="button"]:hover,
 .gmail-dark-active .gtr-thread .amn button:hover {
   background-color: var(--gtr-dark-surface-high) !important;

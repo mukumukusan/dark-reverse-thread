@@ -11,16 +11,25 @@
  * screen state: a field that shows different markup when focused and when not (like the To field) needs
  * a run in each state.
  *
+ * It also checks icons drawn as background images (on an element or its ::before/::after, like the
+ * Reply / Forward arrows): it loads the image, draws it through the same CSS filters the page applies,
+ * and compares its average color with the background (WCAG asks 3 for icons). The text check alone
+ * missed the dark arrows on the Reply buttons.
+ *
  * Limits: text over a background image, inside an <iframe>, or drawn by <img>/<canvas> can't be judged
- * and is skipped. Under a CSS filter: invert(...) both colors are inverted before comparing.
+ * and is skipped. Under a CSS filter: invert(...) both colors are inverted before comparing. Icons as
+ * <img> or <svg>, SVG backgrounds, and images that don't allow reading their pixels, are not checked. A sprite sheet is
+ * judged by its average color.
  *
  * Pasting the file also keeps it as window.gtrSweep(options) for the next states, so it needs pasting
- * once per page load. Options:
+ * once per page load. It returns a promise (the icon images load first). Options:
  *   minContrast  report text below this (default 3: hard to read; 4.5: the target for body text)
  *   scope        a selector to check only part of the page (e.g. '.gtr-thread' for email bodies)
  */
-window.gtrSweep = ({ minContrast = 3, scope = null } = {}) => {
+window.gtrSweep = async ({ minContrast = 3, scope = null } = {}) => {
   const MIN_CONTRAST = minContrast;
+  const MIN_ICON_CONTRAST = 3;
+  const MAX_ICON_SIZE = 48;
   const LIGHT_BOX_MIN_AREA = 40 * 24;
   const DARK_SCOPES = '.gtr-thread, .Hd[role="dialog"], [role="menu"], .afC, .J-M';
 
@@ -63,9 +72,10 @@ window.gtrSweep = ({ minContrast = 3, scope = null } = {}) => {
   // What is drawn for an element's text and behind it. Stacks the backgrounds of the element and its
   // ancestors until one is opaque. A filter: invert(...) on an element changes that element's own
   // background and everything inside it (the text included), but not what lies behind it.
-  // Returns null when a background image is in the way (can't be judged).
+  // Returns null when a background image is in the way (can't be judged); ownImage lets an icon's own
+  // background image through, since that image is what is being judged.
   const filterAmount = (cs) => { const m = cs.filter.match(/invert\(([\d.]+)\)/); return m ? +m[1] : 0; };
-  const resolve = (el, ownColor) => {
+  const resolve = (el, ownColor, ownImage = false) => {
     const chain = [];
     for (let e = el; e; e = e.parentElement) chain.push(e);
     const styles = chain.map((e) => getComputedStyle(e));
@@ -75,7 +85,7 @@ window.gtrSweep = ({ minContrast = 3, scope = null } = {}) => {
     };
     const layers = [];
     for (let i = 0; i < chain.length; i++) {
-      if (styles[i].backgroundImage !== 'none') return null;
+      if (styles[i].backgroundImage !== 'none' && !(ownImage && i === 0)) return null;
       const c = parse(styles[i].backgroundColor);
       if (c && c.a > 0) {
         layers.push({ c, i });
@@ -165,12 +175,89 @@ window.gtrSweep = ({ minContrast = 3, scope = null } = {}) => {
     });
   }
 
+  // Icons drawn as background images. The image goes through the filters in the order the browser
+  // applies them (the pseudo-element's own, then the element's, then each ancestor's), on a canvas
+  // fetch + createImageBitmap, not new Image(): in a background tab an <img> never finishes loading.
+  // Some images (the side panel's app icons) never answer, so each gets 3 seconds
+  const images = new Map();
+  const loadImage = (url) => {
+    if (!images.has(url)) {
+      const load = fetch(url, { mode: 'cors', credentials: 'omit' }).then((r) => r.blob()).then(createImageBitmap).catch(() => null);
+      images.set(url, Promise.race([load, new Promise((done) => setTimeout(() => done(null), 3000))]));
+    }
+    return images.get(url);
+  };
+  const iconColor = async (url, filters) => {
+    const img = await loadImage(url);
+    if (!img || !img.width) return null;
+    let source = img;
+    let canvas;
+    for (const filter of filters.length ? filters : ['none']) {
+      canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.filter = filter;
+      ctx.drawImage(source, 0, 0);
+      source = canvas;
+    }
+    let data;
+    try { data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data; } catch (e) { return null; }
+    let r = 0, g = 0, b = 0, n = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] < 128) continue; // edges and the empty parts of the icon
+      r += data[i]; g += data[i + 1]; b += data[i + 2]; n++;
+    }
+    return n ? { r: r / n, g: g / n, b: b / n, a: 1 } : null;
+  };
+  const lowIcons = new Map();
+  let checkedIcons = 0;
+  let unreadableIcons = 0;
+  const iconJobs = [];
+  [root, ...root.querySelectorAll('*')].forEach((el) => {
+    // Email bodies are the sender's pictures; faint disabled buttons are meant to look faint
+    if (el.closest('.a3s, .gtr-original, iframe, :disabled, [aria-disabled="true"]')) return;
+    for (const pseudo of [null, '::before', '::after']) {
+      const cs = getComputedStyle(el, pseudo);
+      const url = (cs.backgroundImage.match(/url\("?([^")]+)"?\)/) || [])[1];
+      if (!url || (pseudo && (cs.content === 'none' || cs.content === 'normal'))) continue;
+      const width = parseFloat(cs.width), height = parseFloat(cs.height);
+      if (!(width > 0 && height > 0) || width > MAX_ICON_SIZE || height > MAX_ICON_SIZE) continue;
+      if (!visible(el)) return;
+      const r = el.getBoundingClientRect();
+      if (r.width < 2 || r.height < 2 || r.right <= 0 || r.bottom <= 0) return;
+      const filters = [];
+      if (pseudo && cs.filter !== 'none') filters.push(cs.filter);
+      for (let e = el; e; e = e.parentElement) {
+        const filter = getComputedStyle(e).filter;
+        if (filter !== 'none') filters.push(filter);
+      }
+      const drawn = resolve(el, null, !pseudo);
+      if (!drawn) continue;
+      iconJobs.push(iconColor(url, filters).then((color) => {
+        if (!color) { unreadableIcons++; return; }
+        checkedIcons++;
+        const ratio = contrast(color, drawn.bg);
+        if (ratio >= MIN_ICON_CONTRAST) return;
+        const where = describe(el) + (pseudo || '');
+        const key = where + ' | ' + url;
+        const entry = lowIcons.get(key) || { where, icon: url.split('/').pop(), color: rgb(color), background: rgb(drawn.bg), contrast: +ratio.toFixed(2), count: 0 };
+        entry.count++;
+        lowIcons.set(key, entry);
+      }));
+    }
+  });
+  await Promise.all(iconJobs);
+
   const result = {
     checkedText: checked,
     lowContrast: Array.from(lowContrast.values()).sort((a, b) => a.contrast - b.contrast),
-    lightBoxes
+    lightBoxes,
+    checkedIcons,
+    unreadableIcons,
+    lowContrastIcons: Array.from(lowIcons.values()).sort((a, b) => a.contrast - b.contrast)
   };
-  if (typeof console !== 'undefined' && console.table) { console.table(result.lowContrast); console.table(result.lightBoxes); }
+  if (typeof console !== 'undefined' && console.table) { console.table(result.lowContrast); console.table(result.lightBoxes); console.table(result.lowContrastIcons); }
   return result;
 };
 window.gtrSweep();

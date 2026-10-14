@@ -35,8 +35,10 @@ a draft.
 `contrast-sweep.js` catches text that can't be read: for every piece of text on screen (and text or
 hints in input fields) it works out the color drawn and the color behind it, including the
 extension's `filter: invert(...)` flips, and lists the places with contrast below 3. It also lists
-large light boxes inside the areas the extension darkens. Like `gmail-check.js`, it only reads the
-page.
+large light boxes inside the areas the extension darkens. It also checks icons drawn as background
+images (Gmail's arrows and buttons): it draws each through the page's CSS filters and lists those below
+3 against their background (the dark Reply / Forward arrows were missed by the text check alone). Like
+`gmail-check.js`, it only reads the page. It returns a promise, since the icons load first.
 
 A screen only shows what is open, so run it once per state. The states that hid problems before:
 
@@ -70,6 +72,7 @@ open only read emails, so nothing is marked as read. Keep the tab in front: in a
 slows timers down to one run every few tens of seconds.
 
 Faint disabled buttons, images, text over background images and anything inside an `<iframe>`
-(side panels, emoji grid) are skipped; check icon-only menus by eye, since icons are images.
+(side panels, emoji grid) are skipped; icons as `<img>` or `<svg>` and SVG backgrounds aren't checked, so
+still look at icon-only menus by eye.
 Gmail's menus fade in, and in a background tab a menu can stay at opacity 0 for scripts while it is
 already on screen, so opacity is not used to skip anything.

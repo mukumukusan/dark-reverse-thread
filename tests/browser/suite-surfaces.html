@@ -15,6 +15,8 @@ buildGmail();
 document.getElementById('body1').insertAdjacentHTML('afterend', `
   <a class="aQy" id="attachment"><div class="aSG" id="attachment-thumb"></div><div class="aYy" id="attachment-cover"><span>name.xlsx</span></div><span class="aV3" id="attachment-name">name.xlsx</span></a>
   <h3 class="iw gFxsud"><div class="Xg2J0b"><span class="Ca" role="link" id="unsubscribe" style="color: #1a73e8">Unsubscribe</span></div></h3>
+  <div class="amn"><span class="ams bkH" role="link" id="reply-button">Reply</span></div>
+  <div class="ajy" role="button"><img class="ajz" id="details-arrow" src=""></div>
   <div class="brb"><button class="Rju2Ue-aoh"><span class="Rju2Ue-Rx-J9" id="smart-reply" style="color: #1a73e8">Sounds good</span></button></div>
   <div class="ajA SK" id="details"><span class="gI" id="details-label">From:</span><span id="details-name">Someone</span></div>
   <h2 class="hP" id="subject-hl">Order <span class="il" id="subject-highlight">Yodobashi</span></h2>
@@ -214,6 +216,12 @@ test('settings pages are inverted over a light grey base; images are inverted ba
 
 test('suggested replies under the message are light blue (Gmail\'s light theme leaves them dark blue)', () => {
   assertEqual(color('smart-reply'), 'rgb(138, 180, 248)');
+});
+
+test('icons Gmail draws dark: the Reply / Forward arrows and the ▾ after "To me" turn light gray', () => {
+  const ICON = 'brightness(0) invert(0.89)';
+  assertEqual(getComputedStyle(document.getElementById('reply-button'), '::before').filter, ICON);
+  assertEqual(filter('details-arrow'), ICON);
 });
 
 test('the "Unsubscribe" link next to the sender is light blue', () => {
