@@ -110,7 +110,9 @@
     add('state', 'extension', 'message list reversed (.gmail-thread-reversed)', reversed, reversed ? '' : 'newest-first is off in the popup, or the list was not found');
     if (reversed) {
       const items = Array.from(reversed.children).filter((c) => c.style.order);
-      add('state', 'extension', 'newest message shown first', items.length > 1 && items[items.length - 1].getBoundingClientRect().top < items[0].getBoundingClientRect().top);
+      // A one-message conversation has nothing to reverse
+      if (items.length > 1) add('state', 'extension', 'newest message shown first', items[items.length - 1].getBoundingClientRect().top < items[0].getBoundingClientRect().top);
+      else add('info', 'extension', 'newest message shown first', false, 'only one message: open a conversation with two or more');
       const below = document.querySelector('.gtr-thread .gmail-reply-below');
       const footer = document.querySelector('.gtr-thread .gmail-reply-footer');
       add('state', 'extension', 'reply footer placed (below or above the newest)', below || footer, below ? 'below' : footer ? 'above' : 'not placed: Gmail may have changed the boxes around the list');
