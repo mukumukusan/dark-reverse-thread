@@ -16,9 +16,11 @@
  * and compares its average color with the background (WCAG asks 3 for icons). The text check alone
  * missed the dark arrows on the Reply buttons.
  *
+ * <svg> icons are checked by the color of their first painted shape.
+ *
  * Limits: text over a background image, inside an <iframe>, or drawn by <img>/<canvas> can't be judged
  * and is skipped. Under a CSS filter: invert(...) both colors are inverted before comparing. Icons as
- * <img> or <svg>, SVG backgrounds, and images that don't allow reading their pixels, are not checked. A sprite sheet is
+ * <img>, SVG backgrounds, and images that don't allow reading their pixels, are not checked. A sprite sheet is
  * judged by its average color.
  *
  * Pasting the file also keeps it as window.gtrSweep(options) for the next states, so it needs pasting
@@ -248,6 +250,55 @@ window.gtrSweep = async ({ minContrast = 3, scope = null } = {}) => {
     }
   });
   await Promise.all(iconJobs);
+
+  // Icons drawn as <svg>: the color of their shapes (fill, or stroke for outline icons), run through the
+  // same filters on a 1x1 canvas
+  const filterColor = (color, filters) => {
+    let source = null;
+    let canvas;
+    for (const filter of filters.length ? filters : ['none']) {
+      canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 1;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.filter = filter;
+      if (source) ctx.drawImage(source, 0, 0);
+      else { ctx.fillStyle = rgb(color); ctx.fillRect(0, 0, 1, 1); }
+      source = canvas;
+    }
+    const [r, g, b] = canvas.getContext('2d').getImageData(0, 0, 1, 1).data;
+    return { r, g, b, a: 1 };
+  };
+  root.querySelectorAll('svg').forEach((svg) => {
+    if (svg.closest('.a3s, .gtr-original, :disabled, [aria-disabled="true"]') || !visible(svg)) return;
+    const r = svg.getBoundingClientRect();
+    if (r.width < 4 || r.height < 4 || r.width > MAX_ICON_SIZE || r.height > MAX_ICON_SIZE || r.right <= 0 || r.bottom <= 0) return;
+    const shapes = Array.from(svg.querySelectorAll('path, circle, rect, polygon, ellipse, line, polyline, use'));
+    let paint = null;
+    for (const shape of shapes) {
+      const cs = getComputedStyle(shape);
+      if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0) continue;
+      const c = parse(cs.fill !== 'none' ? cs.fill : cs.stroke);
+      if (c && c.a > 0.2 && +(cs.fill !== 'none' ? cs.fillOpacity : cs.strokeOpacity) > 0.2) { paint = c; break; }
+    }
+    if (!paint) return;
+    const holder = svg.parentElement;
+    const drawn = resolve(holder);
+    if (!drawn) return;
+    const filters = [];
+    for (let e = svg; e; e = e.parentElement) {
+      const filter = getComputedStyle(e).filter;
+      if (filter !== 'none') filters.push(filter);
+    }
+    const color = over({ ...filterColor(paint, filters), a: paint.a }, drawn.bg);
+    checkedIcons++;
+    const ratio = contrast(color, drawn.bg);
+    if (ratio >= MIN_ICON_CONTRAST) return;
+    const where = describe(svg);
+    const key = where + ' | ' + rgb(color);
+    const entry = lowIcons.get(key) || { where, icon: 'svg', color: rgb(color), background: rgb(drawn.bg), contrast: +ratio.toFixed(2), count: 0 };
+    entry.count++;
+    lowIcons.set(key, entry);
+  });
 
   const result = {
     checkedText: checked,

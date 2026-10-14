@@ -36,13 +36,13 @@ a draft.
 hints in input fields) it works out the color drawn and the color behind it, including the
 extension's `filter: invert(...)` flips, and lists the places with contrast below 3. It also lists
 large light boxes inside the areas the extension darkens. It also checks icons drawn as background
-images (Gmail's arrows and buttons): it draws each through the page's CSS filters and lists those below
-3 against their background (the dark Reply / Forward arrows were missed by the text check alone). Like
+images (Gmail's arrows and buttons) and as `<svg>`: it draws each through the page's CSS filters and lists
+those below 3 against their background (the dark Reply / Forward arrows were missed by the text check alone). Like
 `gmail-check.js`, it only reads the page. It returns a promise, since the icons load first.
 
 A screen only shows what is open, so run it once per state. The states that hid problems before:
 
-- compose window: To field focused (chips) **and** after leaving it (the one-line summary), Cc/Bcc
+- compose window (formatting clicks in an empty window can save a draft; let the user delete it): To field focused (chips) **and** after leaving it (the one-line summary), Cc/Bcc
   open, the formatting bar and each of its menus (font, size, text color palette, alignment, more),
   the "⋮" and send "▾" menus, the link and emoji popups
 - reply box (ask the user to open one: opening it saves a draft): the box itself, the "↩▾" menu, the
@@ -72,7 +72,7 @@ open only read emails, so nothing is marked as read. Keep the tab in front: in a
 slows timers down to one run every few tens of seconds.
 
 Faint disabled buttons, images, text over background images and anything inside an `<iframe>`
-(side panels, emoji grid) are skipped; icons as `<img>` or `<svg>` and SVG backgrounds aren't checked, so
+(side panels, emoji grid) are skipped; icons as `<img>` and SVG backgrounds aren't checked, so
 still look at icon-only menus by eye.
 Gmail's menus fade in, and in a background tab a menu can stay at opacity 0 for scripts while it is
 already on screen, so opacity is not used to skip anything.
