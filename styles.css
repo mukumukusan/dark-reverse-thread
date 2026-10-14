@@ -376,6 +376,12 @@
   filter: brightness(0) invert(.89) !important;
 }
 
+/* 件名の右の「すべて折りたたむ」「すべて印刷」「新しいウィンドウで開く」（button.bHI の svg）。Gmail の濃い灰色の
+   ままで見えにくかったので、Gmail のダークテーマのアイコンと同じ灰色にする */
+.gmail-dark-active .gtr-thread button.bHI svg {
+  fill: var(--gtr-dark-text-muted) !important;
+}
+
 .gmail-dark-active .gtr-thread .amn [role="button"]:hover,
 .gmail-dark-active .gtr-thread .amn button:hover {
   background-color: var(--gtr-dark-surface-high) !important;
@@ -532,6 +538,11 @@
 .gmail-dark-active .Hd[role="dialog"] .aB,
 .gmail-dark-active .Hd[role="dialog"] .az2 span {
   color: var(--gtr-dark-text-muted) !important;
+}
+
+/* 差出人のアドレスの横の ▾（黒い画像）。横の文字と同じ灰色に（brightness(0) で黒に揃えてから invert(.77) で #c4c4c4） */
+.gmail-dark-active .Hd[role="dialog"] .az2 .J-JN-M-I-JG {
+  filter: brightness(0) invert(.77) !important;
 }
 
 .gmail-dark-active .Hd[role="dialog"] .aGb,

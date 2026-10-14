@@ -17,6 +17,7 @@ document.getElementById('body1').insertAdjacentHTML('afterend', `
   <h3 class="iw gFxsud"><div class="Xg2J0b"><span class="Ca" role="link" id="unsubscribe" style="color: #1a73e8">Unsubscribe</span></div></h3>
   <div class="amn"><span class="ams bkH" role="link" id="reply-button">Reply</span></div>
   <div class="ajy" role="button"><img class="ajz" id="details-arrow" src=""></div>
+  <button class="bHI"><svg id="print-all-icon" viewBox="0 0 20 20"><path d="M0 0h20v20H0z"></path></svg></button>
   <div class="brb"><button class="Rju2Ue-aoh"><span class="Rju2Ue-Rx-J9" id="smart-reply" style="color: #1a73e8">Sounds good</span></button></div>
   <div class="ajA SK" id="details"><span class="gI" id="details-label">From:</span><span id="details-name">Someone</span></div>
   <h2 class="hP" id="subject-hl">Order <span class="il" id="subject-highlight">Yodobashi</span></h2>
@@ -40,7 +41,7 @@ document.body.insertAdjacentHTML('beforeend', `
   <div class="brC-brG-Jz-bBA" id="side-keep"><iframe src="about:blank#https://keep.google.com/companion"></iframe></div>
   <div class="brC-brG-Jz-bBA" id="side-contacts"><iframe src="about:blank#https://contacts.google.com/widget"></iframe></div>
   <div class="brC-brG-Jz-bBA" id="side-tasks"><iframe src="about:blank#https://tasks.google.com/embed"></iframe></div>
-  <div class="Hd" role="dialog" id="compose"><div class="aoD hl" id="to-summary"><div class="oL aDm az9"><span id="to-summary-name" style="color: #222">someone@example.com</span></div></div><div class="Am Al editable" contenteditable="true"><div class="gmail_quote"><a id="quote-link" href="#">someone@example.com</a> <a href="#" style="color: #0563c1"><span id="quote-link-inner" style="color: #0563c1">link</span></a></div></div></div>
+  <div class="Hd" role="dialog" id="compose"><table><tr class="bzf"><td class="az3"><div class="J-JN-M-I az2" role="button"><div class="J-JN-M-I-JG" id="from-arrow"></div></div></td></tr></table><div class="aoD hl" id="to-summary"><div class="oL aDm az9"><span id="to-summary-name" style="color: #222">someone@example.com</span></div></div><div class="Am Al editable" contenteditable="true"><div class="gmail_quote"><a id="quote-link" href="#">someone@example.com</a> <a href="#" style="color: #0563c1"><span id="quote-link-inner" style="color: #0563c1">link</span></a></div></div></div>
   <div class="Tm aeJ" id="popout-scroller"></div>
   <div class="nH aBz" id="popout-frame"><div class="G-atb D E" gh="tm" id="popout-toolbar" style="background: #fff"></div></div>
   <div role="main" id="mail-list"><span id="mail-row">row</span></div>
@@ -224,6 +225,8 @@ test('icons Gmail draws dark: the Reply / Forward arrows and the ▾ after "To m
   const ICON = 'brightness(0) invert(0.89)';
   assertEqual(getComputedStyle(document.getElementById('reply-button'), '::before').filter, ICON);
   assertEqual(filter('details-arrow'), ICON);
+  assertEqual(filter('from-arrow'), 'brightness(0) invert(0.77)', 'compose: the ▾ after the sender address');
+  assertEqual(getComputedStyle(document.getElementById('print-all-icon')).fill, 'rgb(196, 199, 197)', 'collapse / print all / new window by the subject');
 });
 
 test('the "Unsubscribe" link next to the sender is light blue', () => {
