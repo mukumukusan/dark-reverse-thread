@@ -32,7 +32,7 @@ document.body.insertAdjacentHTML('beforeend', `
   <div class="uW2Fw-bHo" id="date-dialog"><div class="cER4xe" id="dialog-header" style="border-bottom: 1px solid #e1e1e1">Pick date</div><hr class="a81" id="dialog-rule"><div class="a8Y" id="dialog-footer">Cancel</div><span id="date-title">Pick date</span><div class="J-JB-KA" id="date-calendar"><table><tr><td class="J-JB-KA-a1R-JB" id="past-day">1</td><td class="J-JB-KA-JB" id="day">20</td></tr></table></div></div>
   <div class="SK ZF-zT" id="search-panel"><div class="btl acK" id="filter-back"></div><label class="aD" id="filter-checkbox">Skip</label><a class="btn" id="filter-help">Help</a></div>
   <div class="nH fY" role="tablist" id="settings-tabs"><div class="f1">General</div></div>
-  <div class="nH r4" id="settings"><img id="settings-image" src=""><span>Language</span></div>
+  <div class="nH r4" id="settings"><img id="settings-image" src=""><span>Language</span><div class="r2"><span class="T-KT N6cuDc" id="yellow-star"></span><span class="T-KT xh" id="yellow-mark"></span><span class="T-KT xj" id="blue-star"></span></div></div>
   <div class="IU" id="quick-settings"><img id="quick-image" src=""><div class="XO" id="quick-theme"></div></div>
   <div class="t9" role="menu" id="help-menu"><div class="ua bk5" id="help-active">Help</div><div class="ua" id="help-item">Training</div><div class="ub" id="help-rule"></div></div>
   <div class="d-Qs-Jh-JF" id="input-tools-scrim" style="opacity: 0.5"></div>
@@ -43,7 +43,7 @@ document.body.insertAdjacentHTML('beforeend', `
   <div class="brC-brG-Jz-bBA" id="side-tasks"><iframe src="about:blank#https://tasks.google.com/embed"></iframe></div>
   <div class="Hd" role="dialog" id="compose"><table><tr class="bzf"><td class="az3"><div class="J-JN-M-I az2" role="button"><div class="J-JN-M-I-JG" id="from-arrow"></div></div></td></tr></table><div class="aoD hl" id="to-summary"><div class="oL aDm az9"><span id="to-summary-name" style="color: #222">someone@example.com</span></div></div><div class="Am Al editable" contenteditable="true"><div class="gmail_quote"><a id="quote-link" href="#">someone@example.com</a> <a href="#" style="color: #0563c1"><span id="quote-link-inner" style="color: #0563c1">link</span></a></div></div></div>
   <div class="Tm aeJ" id="popout-scroller"></div>
-  <div class="nH aBz" id="popout-frame"><div class="G-atb D E" gh="tm" id="popout-toolbar" style="background: #fff"></div></div>
+  <div class="nH aBz" id="popout-frame"><div class="G-atb D E" gh="tm" id="popout-toolbar" style="background: #fff"><div class="asa"><div class="bq5" id="popout-move"></div></div></div></div>
   <div role="main" id="mail-list"><span id="mail-row">row</span></div>
   <div role="navigation" id="sidebar"><span id="sidebar-label">News</span></div>`);
 document.getElementById('date-dialog').append(
@@ -215,6 +215,9 @@ test('settings pages are inverted over a light grey base; images are inverted ba
   assertEqual(bg('settings'), 'rgb(224, 224, 224)');
   assertEqual(filter('settings-tabs'), INVERT);
   assertEqual(filter('settings-image'), INVERT);
+  assertEqual(filter('yellow-star'), INVERT, 'the yellow star keeps its color (inverted it turned brown)');
+  assertEqual(filter('yellow-mark'), INVERT);
+  assertEqual(filter('blue-star'), 'none', 'the dark blue star turns light blue like the mail list on the dark theme');
 });
 
 test('suggested replies under the message are light blue (Gmail\'s light theme leaves them dark blue)', () => {
@@ -239,6 +242,7 @@ test('"open in new window" page: the toolbar above the thread and its frame are 
   try {
     assertEqual(filter('popout-toolbar'), INVERT);
     assertEqual(bg('popout-toolbar'), 'rgb(224, 224, 224)');
+    assertEqual(filter('popout-move'), 'brightness(0) invert(0.27)', 'Gmail\'s white "move to" icon matches the others');
     assertEqual(bg('popout-frame'), 'rgb(31, 31, 31)');
     assertEqual(bg('popout-scroller'), 'rgb(31, 31, 31)', 'the scrollbar track shows this color');
     assertEqual(getComputedStyle(document.body).backgroundColor, 'rgb(31, 31, 31)');

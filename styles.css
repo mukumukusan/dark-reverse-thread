@@ -896,12 +896,25 @@
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
+/* 全般タブの「スター」の欄（span.T-KT、背景画像）。反転すると濃い青のスターが明るい青になり、メール一覧
+   （ダークテーマ）と同じ見え方になる。ただ黄色いスター（.N6cuDc）と黄色い !（.xh）は明るい色なので、反転で
+   茶色・暗い色に沈んだ。この2つだけ元の色に戻す */
+.gmail-dark-active.gtr-gmail-dark-theme .nH.r4 span.T-KT:is(.N6cuDc, .xh) {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
 /* 「新しいウィンドウで開く」の画面（/popout、content.js が html に gtr-popout を付ける）。Gmail はここでテーマを使わず、
    スレッドの上のツールバー（[gh="tm"]）とスレッドを包む枠（.nH.aBz）が白いまま。ツールバーはアイコンが画像なので
    設定の画面と同じく明るい灰色を敷いてから反転する。テーマに関係なく、この画面はスレッドだけなので暗くする */
 .gmail-dark-active.gtr-popout [gh="tm"].G-atb {
   background-color: rgb(224, 224, 224) !important;
   filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* その中の「移動」（.bq5）だけは Gmail が白いアイコンを使っていて（明るいツールバーでもほぼ見えない）、反転で黒く
+   沈む。ほかのアイコンと同じ濃い灰色（rgb(69, 69, 69)）にそろえ、反転後に同じ明るい灰色にする */
+.gmail-dark-active.gtr-popout [gh="tm"] .bq5 {
+  filter: brightness(0) invert(.27) !important;
 }
 
 .gmail-dark-active.gtr-popout .nH.aBz {
