@@ -289,6 +289,18 @@
       img.style.setProperty('--gtr-img-bg', softenWhite(findOriginalBackdrop(img, body)));
       img.setAttribute('data-gtr-img', '');
       if (width <= MAX_CARD_WIDTH && height <= MAX_CARD_HEIGHT) img.setAttribute('data-gtr-img-card', '');
+      // Padding on the image is the email's spacing (e.g. between two logos in a row). On white it doesn't
+      // show, but the backdrop and the card's ring would fill it and join the logos. For inline images,
+      // move it into the margin (same layout); a block image's margin may be auto (centered), so it only
+      // keeps its backdrop off the padding (background-clip in styles.css)
+      const cs = getComputedStyle(img);
+      const sides = ['top', 'right', 'bottom', 'left'];
+      const padding = sides.map((side) => parseFloat(cs[`padding-${side}`]) || 0);
+      if (padding.some((p) => p > 0) && cs.display.startsWith('inline')) {
+        const margin = sides.map((side, i) => `${(parseFloat(cs[`margin-${side}`]) || 0) + padding[i]}px`);
+        img.style.setProperty('--gtr-img-margin', margin.join(' '));
+        img.setAttribute('data-gtr-img-pad', '');
+      }
     };
     if (img.complete) apply();
     else img.addEventListener('load', apply, { once: true });

@@ -1309,8 +1309,20 @@ html.gmail-dark-active.gtr-popout,
 }
 
 /* 透過画像（白い背景前提の黒いロゴなど）の背後に、元のメールでの背景色を敷く（小さいスペーサー画像は対象外） */
+/* 画像の padding（メールが画像同士の間隔に使う）には敷かない。白い背景では見えなかった隙間が埋まり、
+   横に並んだロゴがつながって見えた */
 .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) img[data-gtr-img] {
   background-color: var(--gtr-img-bg) !important;
+  background-clip: content-box !important;
+}
+
+/* 行内の画像は padding を margin に移して、カードの縁（box-shadow）も隙間に出ないようにする（配置は同じ。
+   content.js が元の margin + padding を --gtr-img-margin に入れる）。印刷では元のまま */
+@media screen {
+  .gmail-dark-active .gtr-thread .a3s:not(.gtr-original .a3s) img[data-gtr-img-pad] {
+    padding: 0 !important;
+    margin: var(--gtr-img-margin) !important;
+  }
 }
 
 /* ロゴくらいの小さな画像は、角を丸めて同じ色の縁（場所を取らない影）を付け、カードのように見せる */

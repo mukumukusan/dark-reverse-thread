@@ -38,6 +38,8 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <div id="tinted-image" style="background: #ffff00 url(${png(4, 4)}); color: #000000">tinted</div>
   <img id="framed-cover" src="${png(40, 60)}" style="border: 2px solid #dddddd">
   <img id="logo" src="${png(40, 40)}">
+  <div><img id="logo-left" src="${png(40, 40)}"><img id="logo-right" src="${png(40, 40)}" style="padding-left: 10px"></div>
+  <img id="padded-block" src="${png(40, 40)}" style="display: block; padding: 8px; margin: 0 auto">
   <img id="big" src="${png(400, 200)}">
   <img id="spacer" src="${png(2, 2)}">`);
 window.__GTR_MOCK__ = {};
@@ -170,6 +172,23 @@ test('a transparent logo gets a softened white backdrop and a card frame', async
 test('a logo on a colored box gets that original color as its backdrop', async () => {
   await waitFor(() => $('logo-on-yellow').hasAttribute('data-gtr-img'), 2000);
   assertEqual($('logo-on-yellow').style.getPropertyValue('--gtr-img-bg').trim(), 'rgba(255, 255, 0, 1)');
+});
+
+test('two logos in a row stay apart: the padding between them gets no backdrop or card ring', async () => {
+  await waitFor(() => $('logo-right').hasAttribute('data-gtr-img'), 2000);
+  const right = getComputedStyle($('logo-right'));
+  assertEqual(right.paddingLeft, '0px', 'the padding moved out of the image');
+  assertEqual(right.marginLeft, '10px', 'into the margin');
+  assertEqual($('logo-right').getBoundingClientRect().left - $('logo-left').getBoundingClientRect().right, 10, 'same gap as in the email');
+  assertEqual(right.backgroundClip, 'content-box');
+});
+
+test('a centered block image keeps its padding and auto margin; only its backdrop stays off the padding', async () => {
+  await waitFor(() => $('padded-block').hasAttribute('data-gtr-img'), 2000);
+  assert(!$('padded-block').hasAttribute('data-gtr-img-pad'));
+  const cs = getComputedStyle($('padded-block'));
+  assertEqual(cs.paddingLeft, '8px');
+  assertEqual(cs.backgroundClip, 'content-box');
 });
 
 test('large images get a backdrop but no card frame', async () => {
