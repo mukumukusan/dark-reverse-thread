@@ -171,7 +171,9 @@ test('the page body is put back when the browser scrolls it (focus inside a filt
   body.appendChild(filler);
   body.scrollTop = 500;
   assert(body.scrollTop > 0, 'the browser can scroll the body (as it did in Gmail)');
-  await waitFor(() => body.scrollTop === 0, 1000);
+  // The browser fires scroll events when it draws a frame, so wait for frames, not time: under the test
+  // runner's virtual time a 1 s wait could end before any frame was drawn (failed about 1 run in 3)
+  for (let frame = 0; frame < 30 && body.scrollTop !== 0; frame++) await nextFrame();
   assertEqual(body.scrollTop, 0);
   filler.remove();
   [root.style.cssText, body.style.cssText] = old;
