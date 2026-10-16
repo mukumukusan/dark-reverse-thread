@@ -38,7 +38,7 @@ Dark Reverse Thread なら、この2つをまとめて解決できます。
 
 ■ Gmail のテーマと組み合わせて
 ・受信トレイなどの外枠には、Gmail 自身のテーマがそのまま使われます。Gmail のテーマを「ダーク」にすれば、画面全体が暗くなります。
-・設定画面の「Gmail のテーマを変える」から、テーマ選択の画面をすぐに開けます。テーマを選ぶのはご自身で、拡張機能が Gmail の設定を変えることはありません。
+・この拡張機能の設定画面（ツールバーのアイコンから開きます）にある「Gmail のテーマを変える」から、Gmail のテーマ選択画面をすぐに開けます。テーマを選ぶのはご自身です。この拡張機能は画面を開くだけで、設定には手を触れません。
 
 ■ ワンクリックで切り替え
 ・ツールバーの拡張機能アイコンから、ダーク・新しい順・返信欄の位置をいつでも切り替えられます。画面右下に切り替えボタン（クイックバー）を出すこともできます。
@@ -75,7 +75,7 @@ Dark Reverse Thread fixes both.
 
 ■ Made to pair with Gmail's theme
 • The inbox and the rest of Gmail's frame keep Gmail's own theme. Set it to Dark for a fully dark Gmail.
-• "Change Gmail's theme" in the settings popup opens Gmail's theme picker right away. You pick the theme; the extension never changes Gmail's settings itself.
+• "Change Gmail's theme" in the extension's popup (click its toolbar icon) opens Gmail's theme picker right away. You pick the theme; the extension never changes Gmail's settings itself.
 
 ■ One-click switching
 • Switch dark mode, newest-first order and the reply position anytime from the toolbar icon. You can also add a small quick bar in the bottom-right corner.
@@ -112,7 +112,7 @@ Dark Reverse Thread resuelve las dos cosas.
 
 ■ Pensado para combinar con el tema de Gmail
 • La bandeja de entrada y el resto del marco de Gmail mantienen el tema propio de Gmail. Elige el tema Oscuro para tener un Gmail totalmente oscuro.
-• «Cambiar el tema de Gmail», en la ventana de ajustes, abre al instante el selector de temas de Gmail. Tú eliges el tema; la extensión nunca cambia la configuración de Gmail por su cuenta.
+• «Cambiar el tema de Gmail», en la ventana de la extensión (desde su icono en la barra de herramientas), abre al instante el selector de temas de Gmail. Tú eliges el tema; la extensión nunca cambia la configuración de Gmail por su cuenta.
 
 ■ Cambios con un clic
 • Cambia el modo oscuro, el orden invertido y la posición de la respuesta en cualquier momento desde el icono de la barra de herramientas. También puedes añadir una pequeña barra rápida en la esquina inferior derecha.
@@ -149,7 +149,7 @@ O Dark Reverse Thread resolve as duas coisas.
 
 ■ Feito para combinar com o tema do Gmail
 • A caixa de entrada e o resto da moldura do Gmail mantêm o tema do próprio Gmail. Escolha o tema Escuro para um Gmail totalmente escuro.
-• "Mudar o tema do Gmail", na janela de configurações, abre na hora o seletor de temas do Gmail. Você escolhe o tema; a extensão nunca muda as configurações do Gmail por conta própria.
+• "Mudar o tema do Gmail", na janela da extensão (aberta pelo ícone na barra de ferramentas), abre na hora o seletor de temas do Gmail. Você escolhe o tema; a extensão nunca muda as configurações do Gmail por conta própria.
 
 ■ Tudo a um clique
 • Troque o modo escuro, a ordem invertida e a posição da resposta a qualquer momento pelo ícone na barra de ferramentas. Você também pode adicionar uma pequena barra rápida no canto inferior direito.
@@ -186,7 +186,7 @@ Dark Reverse Thread löst beides.
 
 ■ Passend zum Gmail-Design
 • Der Posteingang und der übrige Rahmen von Gmail behalten das eigene Gmail-Design. Wähle das Design „Dunkel“ für ein komplett dunkles Gmail.
-• „Gmail-Design ändern“ im Einstellungsfenster öffnet sofort die Designauswahl von Gmail. Du wählst das Design selbst; die Erweiterung ändert niemals eigenständig die Einstellungen von Gmail.
+• „Gmail-Design ändern“ im Fenster der Erweiterung (über ihr Symbol in der Symbolleiste) öffnet sofort die Designauswahl von Gmail. Du wählst das Design selbst; die Erweiterung ändert niemals eigenständig die Einstellungen von Gmail.
 
 ■ Umschalten mit einem Klick
 • Dunkelmodus, umgekehrte Reihenfolge und Position der Antwort lassen sich jederzeit über das Symbol in der Symbolleiste umschalten. Optional gibt es eine kleine Schnellleiste unten rechts.
