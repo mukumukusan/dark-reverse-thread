@@ -402,7 +402,7 @@
 
 /* スレッド内のインライン返信欄と、新規作成ウィンドウ（.Hd[role="dialog"]：右下・全画面とも）。どちらも同じ部品でできている */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .Am.Al.editable:not(.gtr-compose-original *),
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) div[role="textbox"]:not(.gtr-compose-original *) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) div[role="textbox"]:not(.gtr-compose-original *):not(.nHuJb *) {
   background-color: var(--gtr-dark-page) !important;
   color: var(--gtr-dark-text-strong) !important;
 }
@@ -425,6 +425,31 @@
 
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]):not(.gtr-compose-original *) .gmail_quote :is(img, video, canvas) {
   filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* 「文書作成サポート」（Gemini）の指示の入力欄（.nHuJb の丸い帯）。Gmail の明るい帯（#f0f4f9）のまま、中の入力欄だけに
+   本文用の暗い地が塗られ、白い帯に黒い箱が載っていた。帯をほかのチップと同じ暗い面にし、入力欄は透明にして帯と一体に。
+   案内の文字（::before）とペンのアイコンは Gmail の濃い灰色のままだと読めないので明るく */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.nHuJb, .nHuJb .YfAtle) {
+  background-color: var(--gtr-dark-surface-high) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb div[role="textbox"] {
+  background-color: transparent !important;
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb div[role="textbox"] * {
+  color: inherit !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb div[role="textbox"]::before {
+  color: var(--gtr-dark-text-subtle) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb :is(svg, svg *, i.google-symbols) {
+  color: var(--gtr-dark-text-muted) !important;
+  fill: var(--gtr-dark-text-muted) !important;
 }
 
 /* 自分で付けた色のうち、相手の白い画面で読みにくいもの（白・薄い黄色など）に引く点線（content.js が範囲を登録する。

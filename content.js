@@ -893,7 +893,8 @@
    * A toolbar button (before the trash can) shows the box as it will be sent: a white page with the
    * chosen colors (.gtr-compose-original on the box; no display colors, no underline, no flipped quote).
    */
-  const EDITOR_SELECTOR = ':is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"])';
+  // The email body editor; Gmail's "Help me write" prompt (.nHuJb pill) is a textbox too but is not sent
+  const EDITOR_SELECTOR = ':is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]):not(.nHuJb *)';
   const EDITOR_COLORS_STYLE_ID = 'gtr-editor-colors';
   const EDITOR_WARN_HIGHLIGHT = 'gtr-editor-warn';
   const EDITOR_UNREADABLE_CONTRAST = 3;
@@ -983,6 +984,7 @@
     if (typeof CSS === 'undefined' || !CSS.highlights) return;
 
     const painted = [];
+    const warnedButtons = new Map(); // toolbar button -> whether any editor in its box has a warning
     if (config.smartDark) {
       document.querySelectorAll(EDITOR_SELECTOR).forEach((editor) => {
         const box = composeBoxOf(editor);
@@ -1001,12 +1003,14 @@
             if (treatment === EDITOR_WARN_HIGHLIGHT) warned = true;
           }
         }
-        if (button && button.getAttribute('data-gtr-warn') !== String(warned)) {
-          button.setAttribute('data-gtr-warn', String(warned));
-          if (tooltipOwner === button) placeTooltip(button);
-        }
+        if (button) warnedButtons.set(button, warnedButtons.get(button) || warned);
       });
     }
+    warnedButtons.forEach((warned, button) => {
+      if (button.getAttribute('data-gtr-warn') === String(warned)) return;
+      button.setAttribute('data-gtr-warn', String(warned));
+      if (tooltipOwner === button) placeTooltip(button);
+    });
 
     // Gmail changes the page often while a box is open; re-register (and repaint) only on a real change.
     // The length counts too: a range doesn't grow with letters typed at the end of its text.
