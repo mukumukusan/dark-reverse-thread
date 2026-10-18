@@ -446,9 +446,11 @@
   display: none;
 }
 
+/* Gmail のアイコンと同じブロック要素にする。inline-flex だと文字の行のベースラインに乗り、下がりの分だけ浮いて
+   隣のアイコンより 4px ほど上に見えた。ブロックならセルの縦の中央（vertical-align: middle）にそろう */
 .gmail-dark-active .gtr-compose-toggle {
   position: relative;
-  display: inline-flex !important;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   width: 20px;
