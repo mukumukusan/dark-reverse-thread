@@ -510,6 +510,7 @@
 
   function applyDarkMode(scopes) {
     document.documentElement.classList.toggle('gmail-dark-active', !!config.smartDark);
+    scheduleEditorColors(); // also clears them when dark mode is turned off
     if (!config.smartDark) return;
 
     addOriginalButtons();
@@ -866,6 +867,105 @@
   }
 
   /**
+   * Text colors the user picks while writing (Gmail's text color, or pasted text) are kept as they
+   * are. Only those too dark to read on the dark reply / compose box (contrast below 3 against what is
+   * behind them) are shown lighter, same hue, through the CSS Custom Highlight API: text ranges get a
+   * display color and the editor's DOM is never touched, so the email that is sent keeps the chosen
+   * colors. The quoted history is skipped: styles.css flips it as a whole.
+   */
+  const EDITOR_SELECTOR = ':is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"])';
+  const EDITOR_COLORS_STYLE_ID = 'gtr-editor-colors';
+  const EDITOR_UNREADABLE_CONTRAST = 3;
+  const EDITOR_REFRESH_DELAY = 150;
+  const DARK_BACKDROP_LUMINANCE = 0.2; // a light marker behind the text: dark text is fine there
+  const editorHighlightNames = new Set();
+  let editorRefreshTimer = null;
+  let editorPainted = []; // [text node, length, color] registered last time
+
+  // The color behind an element's text: the nearest painted background inside the editor, else the page
+  function editorBackdrop(el, editor) {
+    for (let node = el; node && node !== editor; node = node.parentElement) {
+      const bg = parseRGB(getComputedStyle(node).backgroundColor);
+      if (bg && bg.a > 0) return blendOver(bg, DARK_PAGE);
+    }
+    return DARK_PAGE;
+  }
+
+  // The display color for an element's text, or null when its own color is readable as it is
+  function editorDisplayColor(el, editor) {
+    const rgb = parseRGB(getComputedStyle(el).color);
+    if (!rgb || rgb.a === 0) return null;
+    const backdrop = editorBackdrop(el, editor);
+    if (relativeLuminance(backdrop) > DARK_BACKDROP_LUMINANCE) return null;
+    if (contrastBetween(blendOver(rgb, backdrop), backdrop) >= EDITOR_UNREADABLE_CONTRAST) return null;
+    return toReadableText(rgb, backdrop);
+  }
+
+  function refreshEditorColors() {
+    editorRefreshTimer = null;
+    if (typeof CSS === 'undefined' || !CSS.highlights) return;
+
+    const painted = [];
+    if (config.smartDark) {
+      document.querySelectorAll(EDITOR_SELECTOR).forEach((editor) => {
+        const colorOf = new Map(); // element -> display color (or null), read once per refresh
+        const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+        for (let text = walker.nextNode(); text; text = walker.nextNode()) {
+          const el = text.parentElement;
+          if (!el || !text.nodeValue.trim() || el.closest('.gmail_quote')) continue;
+          if (!colorOf.has(el)) colorOf.set(el, editorDisplayColor(el, editor));
+          const color = colorOf.get(el);
+          if (color) painted.push([text, text.length, color]);
+        }
+      });
+    }
+
+    // Gmail changes the page often while a box is open; re-register (and repaint) only on a real change.
+    // The length counts too: a range doesn't grow with letters typed at the end of its text.
+    const unchanged = painted.length === editorPainted.length &&
+      painted.every((entry, i) => entry.every((value, j) => editorPainted[i][j] === value));
+    if (unchanged) return;
+    editorPainted = painted;
+
+    const rangesByColor = new Map();
+    painted.forEach(([text, , color]) => {
+      const range = new Range();
+      range.selectNodeContents(text);
+      if (!rangesByColor.has(color)) rangesByColor.set(color, []);
+      rangesByColor.get(color).push(range);
+    });
+
+    editorHighlightNames.forEach((name) => CSS.highlights.delete(name));
+    editorHighlightNames.clear();
+    const rules = [];
+    Array.from(rangesByColor).forEach(([color, ranges], index) => {
+      const name = `gtr-editor-${index}`;
+      CSS.highlights.set(name, new Highlight(...ranges));
+      editorHighlightNames.add(name);
+      rules.push(`::highlight(${name}) { color: ${color}; }`);
+    });
+
+    let style = document.getElementById(EDITOR_COLORS_STYLE_ID);
+    if (!style && rules.length === 0) return;
+    if (!style) {
+      style = document.createElement('style');
+      style.id = EDITOR_COLORS_STYLE_ID;
+      (document.head || document.documentElement).appendChild(style);
+    }
+    const css = rules.join('\n');
+    if (style.textContent !== css) style.textContent = css;
+  }
+
+  function scheduleEditorColors() {
+    if (!editorRefreshTimer) editorRefreshTimer = setTimeout(refreshEditorColors, EDITOR_REFRESH_DELAY);
+  }
+
+  // Typing, pasting and picking a color in the editor fire "input" (the mutation observer skips typing)
+  document.addEventListener('input', (event) => {
+    if (event.target instanceof Element && event.target.closest(EDITOR_SELECTOR)) scheduleEditorColors();
+  }, true);
+
+  /**
    * Menus opened from a button in the conversation (e.g. a message's "⋮" menu) or in the main toolbar
    * above it (the checkbox "▾", "⋮") are built outside the thread from shared menu components that
    * other parts of Gmail reuse. Gmail opens them on mouse/pointer down, so the source of the press is
@@ -1122,6 +1222,8 @@
 
     syncComposeOpen();
     noteGmailThemeThrottled();
+    // A reply box or compose window that opens (or a draft that loads into it) may hold dark colors
+    if (document.querySelector(EDITOR_SELECTOR)) scheduleEditorColors();
 
     let relevant = false;
     let threadAdded = false;

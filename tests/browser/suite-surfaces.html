@@ -42,7 +42,7 @@ document.body.insertAdjacentHTML('beforeend', `
   <div class="brC-brG-Jz-bBA" id="side-keep"><iframe src="about:blank#https://keep.google.com/companion"></iframe></div>
   <div class="brC-brG-Jz-bBA" id="side-contacts"><iframe src="about:blank#https://contacts.google.com/widget"></iframe></div>
   <div class="brC-brG-Jz-bBA" id="side-tasks"><iframe src="about:blank#https://tasks.google.com/embed"></iframe></div>
-  <div class="Hd" role="dialog" id="compose"><table><tr class="bzf"><td class="az3"><div class="J-JN-M-I az2" role="button"><div class="J-JN-M-I-JG" id="from-arrow"></div></div></td></tr></table><div class="aoD hl" id="to-summary"><div class="oL aDm az9"><span id="to-summary-name" style="color: #222">someone@example.com</span></div></div><div class="Am Al editable" contenteditable="true"><a id="body-link" href="#" style="color: #1155cc">typed link</a><div class="gmail_quote" id="quote"><a id="quote-link" href="#">someone@example.com</a> <a href="#" style="color: #0563c1"><span id="quote-link-inner" style="color: #0563c1">link</span></a><div class="gmail_signature"><p id="quote-signature" style="color: rgb(34, 34, 34)">Company</p></div><img id="quote-image" alt=""><div class="gmail_quote" id="nested-quote">older</div></div></div><div class="dL" id="attach-chip" style="background-color: #f5f5f5"><a class="dO" id="attach-link" href="#" style="color: #15c"><div class="vI" id="attach-name" style="color: #15c">report.pdf</div><div class="vJ" id="attach-size" style="color: #444746">(1 KB)</div></a><div class="vq" role="button" id="attach-remove"></div></div></div>
+  <div class="Hd" role="dialog" id="compose"><table><tr class="bzf"><td class="az3"><div class="J-JN-M-I az2" role="button"><div class="J-JN-M-I-JG" id="from-arrow"></div></div></td></tr></table><div class="aoD hl" id="to-summary"><div class="oL aDm az9"><span id="to-summary-name" style="color: #222">someone@example.com</span></div></div><div class="Am Al editable" contenteditable="true"><a id="body-link" href="#" style="color: #1155cc">typed link</a><font color="#000000" id="typed-black">black</font><font color="#073763" id="typed-navy">navy</font><font color="#ff0000" id="typed-red">red</font><span style="background-color: #ffff00"><font color="#000000" id="typed-on-yellow">marked</font></span><div class="gmail_quote" id="quote"><a id="quote-link" href="#">someone@example.com</a> <a href="#" style="color: #0563c1"><span id="quote-link-inner" style="color: #0563c1">link</span></a><div class="gmail_signature"><p id="quote-signature" style="color: rgb(34, 34, 34)"><font color="#000000" id="quote-black">Company</font></p></div><img id="quote-image" alt=""><div class="gmail_quote" id="nested-quote">older</div></div></div><div class="dL" id="attach-chip" style="background-color: #f5f5f5"><a class="dO" id="attach-link" href="#" style="color: #15c"><div class="vI" id="attach-name" style="color: #15c">report.pdf</div><div class="vJ" id="attach-size" style="color: #444746">(1 KB)</div></a><div class="vq" role="button" id="attach-remove"></div></div></div>
   <div class="Tm aeJ" id="popout-scroller"></div>
   <div class="nH aBz" id="popout-frame"><div class="G-atb D E" gh="tm" id="popout-toolbar" style="background: #fff"><div class="asa"><div class="bq5" id="popout-move"></div></div></div></div>
   <div role="main" id="mail-list"><span id="mail-row">row</span></div>
@@ -271,6 +271,49 @@ test('reply / compose: a file attached while writing shows on a dark chip, not G
 
 test('reply / compose body: links the user writes are light blue, not Gmail\'s dark blue', () => {
   assertEqual(color('body-link'), 'rgb(138, 180, 248)');
+});
+
+// The display color a ::highlight() gives the text of an element in the editor, or null if none
+function shownAs(id) {
+  const text = $(id).firstChild;
+  for (const [name, highlight] of CSS.highlights) {
+    for (const range of highlight) {
+      if (range.startContainer !== text) continue;
+      const sheet = document.getElementById('gtr-editor-colors').sheet;
+      const rule = Array.from(sheet.cssRules).find((r) => r.selectorText === `::highlight(${name})`);
+      return rule ? rule.style.color : null;
+    }
+  }
+  return null;
+}
+
+test('reply / compose: colors the user picks are shown lighter only when too dark to read, keeping the hue', async () => {
+  await waitFor(() => shownAs('typed-black') !== null, 2000);
+  assertEqual(shownAs('typed-black'), 'rgb(227, 227, 227)', 'black is shown light gray');
+  const navy = (shownAs('typed-navy') || '').match(/\d+/g);
+  assert(navy && +navy[2] > +navy[0] && +navy[2] > 150, `dark navy is shown as a light blue, got ${shownAs('typed-navy')}`);
+  assertEqual(shownAs('typed-red'), null, 'a readable red stays as chosen');
+  assertEqual(shownAs('typed-on-yellow'), null, 'black on a yellow marker is readable as it is');
+  assertEqual(shownAs('quote-black'), null, 'the quoted history is flipped as a whole instead');
+  assertEqual($('typed-black').getAttribute('color'), '#000000', 'the email itself is not changed');
+  assertEqual($('typed-black').getAttribute('style'), null);
+});
+
+test('reply / compose: letters typed at the end of dark text are shown light too', async () => {
+  const text = $('typed-black').firstChild;
+  text.appendData(' more');
+  $('typed-black').dispatchEvent(new InputEvent('input', { bubbles: true }));
+  await waitFor(() => {
+    for (const highlight of CSS.highlights.values()) {
+      for (const range of highlight) if (range.startContainer === text && range.endOffset === text.length) return true;
+    }
+    return false;
+  }, 2000);
+  let covered = false;
+  for (const highlight of CSS.highlights.values()) {
+    for (const range of highlight) if (range.startContainer === text && range.endOffset === text.length) covered = true;
+  }
+  assert(covered, 'the highlight covers the whole text, including the new letters');
 });
 
 test('reply / compose: the quoted history (opened with "…") is the original email with light and dark flipped', () => {
