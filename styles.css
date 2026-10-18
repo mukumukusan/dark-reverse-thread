@@ -400,11 +400,13 @@
   fill: var(--gtr-dark-text) !important;
 }
 
-/* スレッド内のインライン返信欄と、新規作成ウィンドウ（.Hd[role="dialog"]：右下・全画面とも）。どちらも同じ部品でできている */
+/* スレッド内のインライン返信欄と、新規作成ウィンドウ（.Hd[role="dialog"]：右下・全画面とも）。どちらも同じ部品でできている。
+   文字は Gmail の色の選択肢にない明るい灰色（#e3e3e3）にする。白（#ffffff）だと、書式ツールで「白」を選んだときに
+   ブラウザが「もう白い」と見なして色を付けず、選んだ白がメールに入らなかった */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .Am.Al.editable:not(.gtr-compose-original *),
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) div[role="textbox"]:not(.gtr-compose-original *):not(.nHuJb *) {
   background-color: var(--gtr-dark-page) !important;
-  color: var(--gtr-dark-text-strong) !important;
+  color: var(--gtr-dark-text) !important;
 }
 
 /* 返信欄の本文に書いたリンク。Gmail の濃い青のままで暗い背景では読みにくかった（履歴の中のリンクは下の反転で明るくなる） */
