@@ -103,5 +103,11 @@
   },
   "originalColorsHide": {
     "message": "ダークで表示"
+  },
+  "composeOriginalShow": {
+    "message": "送られる色で表示"
+  },
+  "composeOriginalShowWarning": {
+    "message": "下線の文字は相手の白い画面では読みにくい色です（送られる色で表示）"
   }
 }

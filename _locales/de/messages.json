@@ -103,5 +103,11 @@
   },
   "originalColorsHide": {
     "message": "Dunkel anzeigen"
+  },
+  "composeOriginalShow": {
+    "message": "Farben wie versendet anzeigen"
+  },
+  "composeOriginalShowWarning": {
+    "message": "Unterstrichener Text ist auf Weiß schwer lesbar: Farben wie versendet anzeigen"
   }
 }

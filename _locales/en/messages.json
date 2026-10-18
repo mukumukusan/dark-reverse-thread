@@ -138,5 +138,13 @@
   "originalColorsHide": {
     "message": "Show in dark",
     "description": "Tooltip of the same button while the email shows its own colors"
+  },
+  "composeOriginalShow": {
+    "message": "Show colors as sent",
+    "description": "Tooltip of the button in the reply box / compose toolbar that shows the white page and the colors exactly as the email will be sent"
+  },
+  "composeOriginalShowWarning": {
+    "message": "Underlined text is hard to read on white: show colors as sent",
+    "description": "Same tooltip while some text has a color that recipients on a white screen can hardly read (that text is underlined)"
   }
 }

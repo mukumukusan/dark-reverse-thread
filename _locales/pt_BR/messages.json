@@ -103,5 +103,11 @@
   },
   "originalColorsHide": {
     "message": "Mostrar no modo escuro"
+  },
+  "composeOriginalShow": {
+    "message": "Mostrar as cores como serão enviadas"
+  },
+  "composeOriginalShowWarning": {
+    "message": "O texto sublinhado fica difícil de ler no branco: mostrar as cores como serão enviadas"
   }
 }

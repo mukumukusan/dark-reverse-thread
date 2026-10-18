@@ -42,6 +42,11 @@
     show: chrome.i18n.getMessage('originalColorsShow'),
     hide: chrome.i18n.getMessage('originalColorsHide')
   };
+  // The reply / compose box's "show colors as sent" button (pressed: the same "Show in dark" as above)
+  const COMPOSE_LABELS = {
+    show: chrome.i18n.getMessage('composeOriginalShow'),
+    warn: chrome.i18n.getMessage('composeOriginalShowWarning')
+  };
 
   /**
    * Mark each conversation view (the main pane that holds a subject h2.hP) with .gtr-thread
@@ -439,7 +444,11 @@
   let tooltipOwner = null; // the button the tooltip is shown for
 
   // The tooltip says what a press will do; the button's aria-label stays the same (aria-pressed tells the state)
-  const tooltipText = (button) => (button.getAttribute('aria-pressed') === 'true' ? ORIGINAL_LABELS.hide : ORIGINAL_LABELS.show);
+  function tooltipText(button) {
+    if (button.getAttribute('aria-pressed') === 'true') return ORIGINAL_LABELS.hide;
+    if (!button.classList.contains(COMPOSE_BUTTON_CLASS)) return ORIGINAL_LABELS.show;
+    return button.getAttribute('data-gtr-warn') === 'true' ? COMPOSE_LABELS.warn : COMPOSE_LABELS.show;
+  }
 
   function placeTooltip(button) {
     let tip = document.getElementById(TOOLTIP_ID);
@@ -478,6 +487,16 @@
     button.setAttribute('aria-pressed', String(original));
   }
 
+  function attachTooltip(button) {
+    button.addEventListener('pointerenter', () => {
+      clearTimeout(tooltipTimer);
+      tooltipTimer = setTimeout(() => button.isConnected && placeTooltip(button), TOOLTIP_DELAY);
+    });
+    button.addEventListener('focus', () => placeTooltip(button));
+    button.addEventListener('pointerleave', hideTooltip);
+    button.addEventListener('blur', hideTooltip);
+  }
+
   function addOriginalButtons() {
     if (!isContextValid()) return;
     document.querySelectorAll('.gtr-thread .adn').forEach((message) => {
@@ -497,13 +516,7 @@
         setOriginalPressed(button, message.classList.toggle(ORIGINAL_CLASS));
         if (tooltipOwner === button) placeTooltip(button);
       });
-      button.addEventListener('pointerenter', () => {
-        clearTimeout(tooltipTimer);
-        tooltipTimer = setTimeout(() => button.isConnected && placeTooltip(button), TOOLTIP_DELAY);
-      });
-      button.addEventListener('focus', () => placeTooltip(button));
-      button.addEventListener('pointerleave', hideTooltip);
-      button.addEventListener('blur', hideTooltip);
+      attachTooltip(button);
       group.prepend(button);
     });
   }
@@ -868,54 +881,129 @@
 
   /**
    * Text colors the user picks while writing (Gmail's text color, or pasted text) are kept as they
-   * are. Only those too dark to read on the dark reply / compose box (contrast below 3 against what is
-   * behind them) are shown lighter, same hue, through the CSS Custom Highlight API: text ranges get a
-   * display color and the editor's DOM is never touched, so the email that is sent keeps the chosen
-   * colors. The quoted history is skipped: styles.css flips it as a whole.
+   * are, shown through the CSS Custom Highlight API so the editor's DOM is never touched and the email
+   * that is sent keeps the chosen colors:
+   * - a color too dark to read on the dark box (contrast below 3 against what is behind it) is shown
+   *   lighter, same hue, up to contrast 4.5;
+   * - a color recipients can hardly read on a white screen (contrast below 3 against white, or against
+   *   the marker behind it) is underlined (styles.css: ::highlight(gtr-editor-warn)).
+   * Only text with a color the user chose counts (inline color / <font color>): plain text has no color
+   * in the email and shows in each reader's default. Links and the quoted history (flipped as a whole by
+   * styles.css) are left out.
+   * A toolbar button (before the trash can) shows the box as it will be sent: a white page with the
+   * chosen colors (.gtr-compose-original on the box; no display colors, no underline, no flipped quote).
    */
   const EDITOR_SELECTOR = ':is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"])';
   const EDITOR_COLORS_STYLE_ID = 'gtr-editor-colors';
+  const EDITOR_WARN_HIGHLIGHT = 'gtr-editor-warn';
   const EDITOR_UNREADABLE_CONTRAST = 3;
   const EDITOR_REFRESH_DELAY = 150;
   const DARK_BACKDROP_LUMINANCE = 0.2; // a light marker behind the text: dark text is fine there
+  const WHITE_PAGE = { r: 255, g: 255, b: 255 };
+  const COMPOSE_ORIGINAL_CLASS = 'gtr-compose-original';
+  const COMPOSE_BUTTON_CLASS = 'gtr-compose-toggle';
+  const COMPOSE_CELL_CLASS = 'gtr-compose-toggle-cell';
   const editorHighlightNames = new Set();
   let editorRefreshTimer = null;
-  let editorPainted = []; // [text node, length, color] registered last time
+  let editorPainted = []; // [text node, length, display color or EDITOR_WARN_HIGHLIGHT] registered last time
 
-  // The color behind an element's text: the nearest painted background inside the editor, else the page
-  function editorBackdrop(el, editor) {
+  // Whether the user gave this text a color (else it has none in the email). Links are left out.
+  function hasChosenColor(el, editor) {
     for (let node = el; node && node !== editor; node = node.parentElement) {
-      const bg = parseRGB(getComputedStyle(node).backgroundColor);
-      if (bg && bg.a > 0) return blendOver(bg, DARK_PAGE);
+      if (node.tagName === 'A') return false;
+      if (node.style.color || (node.tagName === 'FONT' && node.hasAttribute('color'))) return true;
     }
-    return DARK_PAGE;
+    return false;
   }
 
-  // The display color for an element's text, or null when its own color is readable as it is
-  function editorDisplayColor(el, editor) {
+  // The marker behind an element's text inside the editor (blended over `page`), else `page` itself
+  function editorBackdrop(el, editor, page) {
+    for (let node = el; node && node !== editor; node = node.parentElement) {
+      const bg = parseRGB(getComputedStyle(node).backgroundColor);
+      if (bg && bg.a > 0) return blendOver(bg, page);
+    }
+    return page;
+  }
+
+  // The display color for an element's text, EDITOR_WARN_HIGHLIGHT, or null to leave it as it is
+  function editorTreatment(el, editor) {
+    if (!hasChosenColor(el, editor)) return null;
     const rgb = parseRGB(getComputedStyle(el).color);
     if (!rgb || rgb.a === 0) return null;
-    const backdrop = editorBackdrop(el, editor);
-    if (relativeLuminance(backdrop) > DARK_BACKDROP_LUMINANCE) return null;
-    if (contrastBetween(blendOver(rgb, backdrop), backdrop) >= EDITOR_UNREADABLE_CONTRAST) return null;
-    return toReadableText(rgb, backdrop);
+
+    const backdrop = editorBackdrop(el, editor, DARK_PAGE);
+    if (relativeLuminance(backdrop) <= DARK_BACKDROP_LUMINANCE &&
+        contrastBetween(blendOver(rgb, backdrop), backdrop) < EDITOR_UNREADABLE_CONTRAST) {
+      return toReadableText(rgb, backdrop);
+    }
+    const sent = editorBackdrop(el, editor, WHITE_PAGE);
+    if (contrastBetween(blendOver(rgb, sent), sent) < EDITOR_UNREADABLE_CONTRAST) return EDITOR_WARN_HIGHLIGHT;
+    return null;
+  }
+
+  // The reply box or compose window around an editor: the nearest ancestor that holds its toolbar row
+  function composeBoxOf(editor) {
+    for (let el = editor.parentElement; el; el = el.parentElement) {
+      if (el.querySelector('tr.btC')) return el;
+    }
+    return null;
+  }
+
+  function ensureComposeToggle(box) {
+    const bar = box.querySelector('tr.btC');
+    const existing = bar.querySelector('.' + COMPOSE_BUTTON_CLASS);
+    if (existing || !isContextValid()) return existing;
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = COMPOSE_BUTTON_CLASS;
+    button.appendChild(makeOriginalIcon());
+    button.setAttribute('aria-label', COMPOSE_LABELS.show);
+    setOriginalPressed(button, box.classList.contains(COMPOSE_ORIGINAL_CLASS));
+    button.addEventListener('mousedown', (event) => event.preventDefault()); // keep the caret in the editor
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setOriginalPressed(button, box.classList.toggle(COMPOSE_ORIGINAL_CLASS));
+      refreshEditorColors();
+      if (tooltipOwner === button) placeTooltip(button);
+    });
+    attachTooltip(button);
+
+    const cell = document.createElement('td');
+    cell.className = 'gU ' + COMPOSE_CELL_CLASS;
+    cell.appendChild(button);
+    bar.insertBefore(cell, bar.querySelector(':scope > td.a0z')); // before the trash can (or at the end)
+    return button;
   }
 
   function refreshEditorColors() {
+    clearTimeout(editorRefreshTimer);
     editorRefreshTimer = null;
     if (typeof CSS === 'undefined' || !CSS.highlights) return;
 
     const painted = [];
     if (config.smartDark) {
       document.querySelectorAll(EDITOR_SELECTOR).forEach((editor) => {
-        const colorOf = new Map(); // element -> display color (or null), read once per refresh
-        const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
-        for (let text = walker.nextNode(); text; text = walker.nextNode()) {
-          const el = text.parentElement;
-          if (!el || !text.nodeValue.trim() || el.closest('.gmail_quote')) continue;
-          if (!colorOf.has(el)) colorOf.set(el, editorDisplayColor(el, editor));
-          const color = colorOf.get(el);
-          if (color) painted.push([text, text.length, color]);
+        const box = composeBoxOf(editor);
+        const button = box && ensureComposeToggle(box);
+        let warned = false;
+        if (!box || !box.classList.contains(COMPOSE_ORIGINAL_CLASS)) {
+          const treatmentOf = new Map(); // element -> treatment, read once per refresh
+          const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+          for (let text = walker.nextNode(); text; text = walker.nextNode()) {
+            const el = text.parentElement;
+            if (!el || !text.nodeValue.trim() || el.closest('.gmail_quote')) continue;
+            if (!treatmentOf.has(el)) treatmentOf.set(el, editorTreatment(el, editor));
+            const treatment = treatmentOf.get(el);
+            if (!treatment) continue;
+            painted.push([text, text.length, treatment]);
+            if (treatment === EDITOR_WARN_HIGHLIGHT) warned = true;
+          }
+        }
+        if (button && button.getAttribute('data-gtr-warn') !== String(warned)) {
+          button.setAttribute('data-gtr-warn', String(warned));
+          if (tooltipOwner === button) placeTooltip(button);
         }
       });
     }
@@ -927,22 +1015,23 @@
     if (unchanged) return;
     editorPainted = painted;
 
-    const rangesByColor = new Map();
-    painted.forEach(([text, , color]) => {
+    const rangesByTreatment = new Map();
+    painted.forEach(([text, , treatment]) => {
       const range = new Range();
       range.selectNodeContents(text);
-      if (!rangesByColor.has(color)) rangesByColor.set(color, []);
-      rangesByColor.get(color).push(range);
+      if (!rangesByTreatment.has(treatment)) rangesByTreatment.set(treatment, []);
+      rangesByTreatment.get(treatment).push(range);
     });
 
     editorHighlightNames.forEach((name) => CSS.highlights.delete(name));
     editorHighlightNames.clear();
     const rules = [];
-    Array.from(rangesByColor).forEach(([color, ranges], index) => {
-      const name = `gtr-editor-${index}`;
+    let index = 0;
+    rangesByTreatment.forEach((ranges, treatment) => {
+      const name = treatment === EDITOR_WARN_HIGHLIGHT ? EDITOR_WARN_HIGHLIGHT : `gtr-editor-${index++}`;
       CSS.highlights.set(name, new Highlight(...ranges));
       editorHighlightNames.add(name);
-      rules.push(`::highlight(${name}) { color: ${color}; }`);
+      if (name !== EDITOR_WARN_HIGHLIGHT) rules.push(`::highlight(${name}) { color: ${treatment}; }`);
     });
 
     let style = document.getElementById(EDITOR_COLORS_STYLE_ID);
