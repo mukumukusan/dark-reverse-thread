@@ -41,7 +41,7 @@ document.body.insertAdjacentHTML('beforeend', `
   <div class="brC-brG-Jz-bBA" id="side-keep"><iframe src="about:blank#https://keep.google.com/companion"></iframe></div>
   <div class="brC-brG-Jz-bBA" id="side-contacts"><iframe src="about:blank#https://contacts.google.com/widget"></iframe></div>
   <div class="brC-brG-Jz-bBA" id="side-tasks"><iframe src="about:blank#https://tasks.google.com/embed"></iframe></div>
-  <div class="Hd" role="dialog" id="compose"><table><tr class="bzf"><td class="az3"><div class="J-JN-M-I az2" role="button"><div class="J-JN-M-I-JG" id="from-arrow"></div></div></td></tr></table><div class="aoD hl" id="to-summary"><div class="oL aDm az9"><span id="to-summary-name" style="color: #222">someone@example.com</span></div></div><div class="Am Al editable" contenteditable="true"><div class="gmail_quote"><a id="quote-link" href="#">someone@example.com</a> <a href="#" style="color: #0563c1"><span id="quote-link-inner" style="color: #0563c1">link</span></a></div></div></div>
+  <div class="Hd" role="dialog" id="compose"><table><tr class="bzf"><td class="az3"><div class="J-JN-M-I az2" role="button"><div class="J-JN-M-I-JG" id="from-arrow"></div></div></td></tr></table><div class="aoD hl" id="to-summary"><div class="oL aDm az9"><span id="to-summary-name" style="color: #222">someone@example.com</span></div></div><div class="Am Al editable" contenteditable="true"><div class="gmail_quote"><a id="quote-link" href="#">someone@example.com</a> <a href="#" style="color: #0563c1"><span id="quote-link-inner" style="color: #0563c1">link</span></a></div></div><div class="dL" id="attach-chip" style="background-color: #f5f5f5"><a class="dO" id="attach-link" href="#" style="color: #15c"><div class="vI" id="attach-name" style="color: #15c">report.pdf</div><div class="vJ" id="attach-size" style="color: #444746">(1 KB)</div></a><div class="vq" role="button" id="attach-remove"></div></div></div>
   <div class="Tm aeJ" id="popout-scroller"></div>
   <div class="nH aBz" id="popout-frame"><div class="G-atb D E" gh="tm" id="popout-toolbar" style="background: #fff"><div class="asa"><div class="bq5" id="popout-move"></div></div></div></div>
   <div role="main" id="mail-list"><span id="mail-row">row</span></div>
@@ -254,6 +254,13 @@ test('"open in new window" page: the toolbar above the thread and its frame are 
 test('compose: the recipients line shown after leaving the To field is light (was dark text on dark)', () => {
   assertEqual(color('to-summary'), 'rgb(227, 227, 227)');
   assertEqual(color('to-summary-name'), 'rgb(227, 227, 227)');
+});
+
+test('reply / compose: a file attached while writing shows on a dark chip, not Gmail\'s light grey bar', () => {
+  assertEqual(bg('attach-chip'), 'rgb(53, 54, 58)');
+  assertEqual(color('attach-name'), 'rgb(138, 180, 248)', 'the file name is a link: light blue, not Gmail\'s dark blue');
+  assertEqual(color('attach-size'), 'rgb(196, 199, 197)');
+  assertEqual(filter('attach-remove'), 'brightness(0) invert(0.89)', 'the × to remove it is a black image');
 });
 
 test('reply / compose body: links (e.g. in the quoted text opened with "…") are light blue, not Gmail\'s dark blue', () => {

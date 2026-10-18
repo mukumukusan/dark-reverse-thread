@@ -407,6 +407,24 @@
   color: var(--gtr-dark-link) !important;
 }
 
+/* 書いている途中で添付したファイルの欄（.dL：ファイル名 .vI・サイズ .vJ・外す × .vq）。
+   Gmail の明るい灰色（#f5f5f5）の帯に濃い青の文字のままだったので、チップと同じ暗い面にする。× は黒い画像 */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .dL {
+  background-color: var(--gtr-dark-surface-high) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .dL :is(.dO, .vI) {
+  color: var(--gtr-dark-link) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .dL .vJ {
+  color: var(--gtr-dark-text-muted) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .dL .vq {
+  filter: brightness(0) invert(.89) !important;
+}
+
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .gU.Up,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aDh,
