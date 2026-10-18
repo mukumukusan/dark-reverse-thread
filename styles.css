@@ -401,10 +401,24 @@
   color: var(--gtr-dark-text-strong) !important;
 }
 
-/* 返信欄の本文に入るリンク（「…」で開く引用の中のメールアドレスなど）。Gmail の濃い青のままで暗い背景では読みにくかった */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]) a,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]) a * {
+/* 返信欄の本文に書いたリンク。Gmail の濃い青のままで暗い背景では読みにくかった（履歴の中のリンクは下の反転で明るくなる） */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]) a:not(.gmail_quote a),
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]) a:not(.gmail_quote a) * {
   color: var(--gtr-dark-link) !important;
+}
+
+/* 「…」で開く返信の履歴（引用）。署名などに style="color: #222" と直接書かれた文字が、暗い地の上で読めなかった。
+   返信欄の中身は送るメールそのものなので要素には何も書き込まず、CSS だけで扱う：履歴を元のメールの見た目
+   （明るい灰色 #e0e0e0 の地に Gmail の文字色 #222）で描いてから明暗だけ反転する。地は #1f1f1f、文字は #ddd になり、
+   赤や青の文字は色合いを残す。中の古い履歴は外側と一緒に反転されるので二重に反転しない。画像は反転し直して元の色に */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]) .gmail_quote:not(.gmail_quote .gmail_quote) {
+  background-color: #e0e0e0 !important;
+  color: #222 !important;
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]) .gmail_quote :is(img, video, canvas) {
+  filter: invert(1) hue-rotate(180deg) !important;
 }
 
 /* 書いている途中で添付したファイルの欄（.dL：ファイル名 .vI・サイズ .vJ・外す × .vq）。
