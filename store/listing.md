@@ -36,6 +36,12 @@ Dark Reverse Thread は、そんな2つの悩みをまとめて解決する拡�
 
 スレッド画面だけでなく、返信欄、新規作成ウィンドウ、宛先候補、メニューもダークに。Gmail がダークテーマのときは、検索欄や検索候補も対象になります。
 
+■ 書いているメールも、送る色はそのままに
+
+返信欄や新規作成ウィンドウで付けた文字色は、選んだ色のまま送られます。暗い背景では読めない黒や紺などは、あなたの画面でだけ明るく表示します。
+
+白や薄い黄色など、相手の白い画面では読みにくい色には、黄色の点線で注意を表示。ツールバーの ◐ ボタンを押せば、送られるとおりの色で確認できます。
+
 ■ 最新のメールを一番上に
 
 スレッドを新しい順に並べ替え、開いた瞬間に最新の返信を読めます。
@@ -80,6 +86,10 @@ Dark Reverse Thread fixes both.
 • If an email ever looks off, the ◐ button next to its Reply button shows just that email in its original colors.
 • Beyond the thread view, the reply box, compose window, recipient suggestions and menus go dark too. On Gmail's Dark theme, so do the search box and its suggestions.
 
+■ Write in the dark, send the colors you chose
+• Colors you pick in the reply box or compose window are sent exactly as chosen. Dark ones that would be hard to read here, like black or navy, are only shown lighter on your screen.
+• Colors recipients can hardly read on a white screen, such as white or pale yellow, get a dotted yellow underline. Press the ◐ button in the toolbar to see your email exactly as it will be sent.
+
 ■ The newest email on top
 • Threads are shown newest-first, so the latest reply is the first thing you see.
 • Put the Reply / Forward buttons and the reply box right below (default) or right above the newest email.
@@ -115,6 +125,10 @@ Dark Reverse Thread resuelve las dos cosas.
 • Las imágenes que desaparecerían en modo oscuro, como los logotipos transparentes, recuperan su fondo original.
 • Si algún correo no se lee bien, el botón ◐ junto a su botón Responder muestra solo ese correo con sus colores originales.
 • Además de la vista del hilo, también se oscurecen el cuadro de respuesta, la ventana de redacción, las sugerencias de destinatarios y los menús. Con el tema Oscuro de Gmail, también el cuadro de búsqueda y sus sugerencias.
+
+■ Escribe a oscuras, envía los colores que elegiste
+• Los colores que eliges en el cuadro de respuesta o en la ventana de redacción se envían tal cual. Los oscuros que aquí costaría leer, como el negro o el azul marino, solo se muestran más claros en tu pantalla.
+• Los colores que los destinatarios apenas podrían leer en una pantalla blanca, como el blanco o el amarillo pálido, se marcan con un subrayado punteado amarillo. Pulsa el botón ◐ de la barra de herramientas para ver el correo tal como se enviará.
 
 ■ El correo más reciente, arriba
 • Los hilos se muestran con lo más reciente primero, así que la última respuesta es lo primero que ves.
@@ -152,6 +166,10 @@ O Dark Reverse Thread resolve as duas coisas.
 • Se algum e-mail não ficar legível, o botão ◐ ao lado do botão Responder mostra só esse e-mail com as cores originais.
 • Além da conversa, a caixa de resposta, a janela de nova mensagem, as sugestões de destinatários e os menus também ficam escuros. Com o tema Escuro do Gmail, a caixa de pesquisa e as sugestões também.
 
+■ Escreva no escuro, envie as cores que você escolheu
+• As cores que você escolhe na caixa de resposta ou na janela de nova mensagem são enviadas exatamente como escolhidas. As escuras, difíceis de ler aqui, como preto ou azul-marinho, só aparecem mais claras na sua tela.
+• Cores que os destinatários mal conseguiriam ler numa tela branca, como branco ou amarelo-claro, ganham um sublinhado pontilhado amarelo. Clique no botão ◐ da barra de ferramentas para ver o e-mail exatamente como será enviado.
+
 ■ O e-mail mais recente no topo
 • As conversas aparecem com o mais recente primeiro, então a última resposta é a primeira coisa que você vê.
 • Coloque os botões Responder / Encaminhar e a caixa de resposta logo abaixo (padrão) ou logo acima do e-mail mais recente.
@@ -187,6 +205,10 @@ Dark Reverse Thread löst beides.
 • Bilder, die im Dunkelmodus verschwinden würden, etwa transparente Logos, erhalten ihren ursprünglichen Hintergrund zurück.
 • Ist eine E-Mail einmal schlecht lesbar, zeigt die ◐-Schaltfläche neben ihrer Antworten-Schaltfläche nur diese E-Mail in den Originalfarben.
 • Neben der Unterhaltung werden auch das Antwortfeld, das Fenster für neue Nachrichten, die Empfängervorschläge und die Menüs dunkel. Mit dem Gmail-Design „Dunkel“ auch das Suchfeld und seine Vorschläge.
+
+■ Im Dunkeln schreiben, die gewählten Farben versenden
+• Farben, die du im Antwortfeld oder im Fenster für neue Nachrichten wählst, werden genau so versendet. Dunkle Farben, die hier schwer lesbar wären, etwa Schwarz oder Marineblau, werden nur auf deinem Bildschirm heller angezeigt.
+• Farben, die Empfänger auf einem weißen Bildschirm kaum lesen könnten, etwa Weiß oder Blassgelb, erhalten eine gepunktete gelbe Unterstreichung. Mit der ◐-Schaltfläche in der Symbolleiste siehst du die E-Mail genau so, wie sie versendet wird.
 
 ■ Die neueste E-Mail oben
 • Unterhaltungen werden mit der neuesten Nachricht zuerst angezeigt – die neueste Antwort ist das Erste, was du siehst.
