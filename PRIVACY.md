@@ -1,7 +1,7 @@
 # プライバシーポリシー / Privacy Policy
 
 **Dark Reverse Thread**
-最終更新日 / Last updated: 2026-10-07
+最終更新日 / Last updated: 2026-10-17
 
 ---
 
@@ -21,7 +21,7 @@
 - 返信欄の位置（上 / 下）
 - クイックバーの表示（ON / OFF）
 
-これらは Chrome の `chrome.storage.sync` に保存されます。Chrome の同期を有効にしている場合は、Chrome の仕組みによって、同じ Google アカウントでログインしている他の端末にも同期されます。開発者がこれらの設定を見ることはできません。
+これらはブラウザの `chrome.storage.sync` に保存されます。ブラウザの同期を有効にしている場合は、ブラウザの仕組みによって、同じアカウント（Chrome では Google アカウント、Microsoft Edge では Microsoft アカウント）でログインしている他の端末にも同期されます。開発者がこれらの設定を見ることはできません。
 
 このほか、Gmail が明るいテーマかどうか（はい／いいえ）だけを、設定画面に案内を表示するために、お使いの端末の中（`chrome.storage.local`）に保存します。案内の「テーマを選ぶ」ボタンで新しい Gmail のタブを開くときは、そのタブでテーマの選択画面を開くための目印（押した時刻）も一時的に保存し、Gmail が開いたらすぐに消します。どちらも同期や送信はされません。本拡張機能が Gmail の設定（テーマなど）を変更することはありません。
 
@@ -33,13 +33,13 @@
 - `https://mail.google.com/*` へのアクセス：Gmail の画面の表示を変更するため
 
 ### データの削除
-本拡張機能を削除すると、Chrome によって保存された設定も削除されます。
+本拡張機能を削除すると、ブラウザによって保存された設定も削除されます。
 
 ### 本ポリシーの変更
 内容を変更する場合は、このページを更新し、最終更新日を改めます。
 
 ### お問い合わせ
-Chrome ウェブストアの本拡張機能のページにある「サポート」欄からご連絡ください。
+Chrome ウェブストアの本拡張機能のページにある「サポート」欄、または GitHub の Issues（https://github.com/mukumukusan/dark-reverse-thread/issues）からご連絡ください。
 
 ---
 
@@ -59,7 +59,7 @@ The extension stores only these display settings:
 - Reply area position (top / bottom)
 - Show the quick bar (on / off)
 
-They are stored in Chrome's `chrome.storage.sync`. If Chrome sync is turned on, Chrome syncs them to your other devices signed in to the same Google account. The developer cannot see these settings.
+They are stored in the browser's `chrome.storage.sync`. If browser sync is turned on, the browser syncs them to your other devices signed in to the same account (a Google account in Chrome, a Microsoft account in Microsoft Edge). The developer cannot see these settings.
 
 In addition, only whether Gmail uses a light theme (yes / no) is kept on your device (`chrome.storage.local`) to show a tip in the settings popup. When the tip's "Choose a theme" button opens a new Gmail tab, a temporary marker (the time of the click) is also kept so that tab can open the theme picker; it is deleted as soon as Gmail opens. Neither is synced or sent anywhere. The extension never changes Gmail's settings (such as the theme) itself.
 
@@ -71,10 +71,10 @@ The extension does not communicate with any external server. It uses no analytic
 - Access to `https://mail.google.com/*`: to change how the Gmail page is displayed
 
 ### Deleting your data
-When you remove the extension, Chrome also removes its saved settings.
+When you remove the extension, the browser also removes its saved settings.
 
 ### Changes to this policy
 If this policy changes, this page will be updated along with the "Last updated" date.
 
 ### Contact
-Please use the "Support" section on the extension's Chrome Web Store page.
+Please use the "Support" section on the extension's Chrome Web Store page, or GitHub Issues (https://github.com/mukumukusan/dark-reverse-thread/issues).

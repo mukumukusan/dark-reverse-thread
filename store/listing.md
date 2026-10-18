@@ -22,35 +22,47 @@ Text to paste into the matching fields of the Chrome Web Store Developer Dashboa
 ## 2. 詳しい説明（日本語） / Detailed description (Japanese)
 
 ```
-Gmail をダークテーマにしても、開いたメールは真っ白でまぶしい。長いスレッドでは、最新の返信を読むたびに一番下までスクロール――。
-Dark Reverse Thread なら、この2つをまとめて解決できます。
+Gmail をダークテーマにしても、メール本文は真っ白でまぶしい。長いスレッドでは、最新の返信を読むたびに一番下までスクロールしなければならない……。
 
-■ メール本文まで、色合いを残したままダークに
-・背景を暗く、文字を明るくしながら、赤字は赤、青いリンクは青のまま、明るさだけを調整します。単純な白黒反転ではないので、メールのデザインを崩しにくいのが特長です。
-・背景が透明なロゴなど、暗くすると見えなくなる画像には、元の背景色を敷いて表示します。
-・読みにくいメールがあっても大丈夫。メールの ◐ ボタンを押せば、そのメールだけ元の色で表示できます。
-・スレッド画面のほか、返信欄、新規作成ウィンドウ、宛先の候補、メニューまで暗くなります。Gmail がダークテーマのときは、検索欄と検索候補も対象です。
-・ダークを ON / OFF しても、メールの位置や大きさは変わりません。
+Dark Reverse Thread は、そんな2つの悩みをまとめて解決する拡張機能です。
 
-■ 最新のメールが一番上に
-・スレッドを新しい順に並べるので、開いた瞬間に最新の返信が目に入ります。
-・返信・転送ボタンと返信欄は、最新のメールのすぐ下（標準）か、すぐ上に置けます。
+■ メール本文も、色を活かしてダークに
+
+メールの背景を暗く、文字を明るく調整。赤字は赤、リンクは青のまま、色合いをできるだけ保って暗くします。単純な白黒反転ではないため、メール本来のデザインを損ないにくいのが特長です。
+
+透明背景のロゴなど、暗い背景では見えにくくなる画像には、元の背景色を補って表示します。
+
+読みにくいメールは、返信ボタンの横にある ◐ ボタンを押すだけ。そのメールだけ元の色で表示できます。
+
+スレッド画面だけでなく、返信欄、新規作成ウィンドウ、宛先候補、メニューもダークに。Gmail がダークテーマのときは、検索欄や検索候補も対象になります。
+
+■ 最新のメールを一番上に
+
+スレッドを新しい順に並べ替え、開いた瞬間に最新の返信を読めます。
+
+返信・転送ボタンと返信欄は、最新のメールのすぐ下（標準）またはすぐ上に配置できます。
 
 ■ Gmail のテーマと組み合わせて
-・受信トレイなどの外枠には、Gmail 自身のテーマがそのまま使われます。Gmail のテーマを「ダーク」にすれば、画面全体が暗くなります。
-・この拡張機能の設定画面（ツールバーのアイコンから開きます）にある「Gmail のテーマを変える」から、Gmail のテーマ選択画面をすぐに開けます。テーマを選ぶのはご自身です。この拡張機能は画面を開くだけで、設定には手を触れません。
+
+受信トレイなどの外枠には、Gmail 本来のテーマが適用されます。Gmail のテーマを「ダーク」にすれば、画面全体を暗くできます。
+
+この拡張機能の設定画面（ツールバーのアイコンから開きます）にある「Gmail のテーマを変える」から、Gmail のテーマ選択画面をすぐに開けます。テーマを選ぶのはご自身です。この拡張機能は画面を開くだけで、設定には手を触れません。
 
 ■ ワンクリックで切り替え
-・ツールバーの拡張機能アイコンから、ダーク・新しい順・返信欄の位置をいつでも切り替えられます。画面右下に切り替えボタン（クイックバー）を出すこともできます。
-・印刷時は、元の色と古い順に戻ります。
+
+拡張機能のツールバーアイコンから、ダーク表示・スレッドの並び順・返信欄の位置をいつでも切り替えられます。画面右下にクイックバーを表示して、そこから操作することもできます。
+
+印刷時は、自動的に元の色・古い順に戻ります。
 
 ■ プライバシー
-・データの収集や外部への送信は一切ありません。表示の変更は、すべてお使いのブラウザの中で行います。
-・保存するのは、表示設定（ON / OFF など）と、Gmail が明るいテーマかどうかだけです。
 
-※ 本拡張機能は個人が開発したもので、Google とは関係ありません。Gmail は Google LLC の商標です。
+データの収集や外部への送信は行いません。表示の変更はすべて、お使いのブラウザ内で処理します。
 
-気に入っていただけたら、コーヒー1杯分の応援をいただけると励みになります。
+保存するのは、表示設定（ON / OFF など）と、Gmail が明るいテーマかどうかの情報だけです。
+
+※ 本拡張機能は個人開発のもので、Google とは関係ありません。Gmail は Google LLC の商標です。
+
+気に入っていただけたら、コーヒー1杯分の応援をいただけるとうれしいです。
 https://buymeacoffee.com/mukumukusan
 ```
 
@@ -65,9 +77,8 @@ Dark Reverse Thread fixes both.
 ■ Dark emails that keep their hues
 • Backgrounds turn dark and text turns light, but red stays red and blue links stay blue, just adjusted in brightness. It is not a simple color inversion, so emails keep their design.
 • Images that would disappear in dark mode, such as transparent logos, get their original backdrop back.
-• If an email ever looks off, the ◐ button in its header shows just that email in its original colors.
+• If an email ever looks off, the ◐ button next to its Reply button shows just that email in its original colors.
 • Beyond the thread view, the reply box, compose window, recipient suggestions and menus go dark too. On Gmail's Dark theme, so do the search box and its suggestions.
-• Turning dark mode on or off never moves or resizes anything.
 
 ■ The newest email on top
 • Threads are shown newest-first, so the latest reply is the first thing you see.
@@ -102,9 +113,8 @@ Dark Reverse Thread resuelve las dos cosas.
 ■ Modo oscuro hasta en tus correos, conservando sus tonos
 • Los fondos se oscurecen y el texto se aclara, pero el rojo sigue siendo rojo y los enlaces azules siguen siendo azules; solo se ajusta el brillo. No es una simple inversión de colores, así que los correos mantienen su diseño.
 • Las imágenes que desaparecerían en modo oscuro, como los logotipos transparentes, recuperan su fondo original.
-• Si algún correo no se lee bien, el botón ◐ de su encabezado muestra solo ese correo con sus colores originales.
+• Si algún correo no se lee bien, el botón ◐ junto a su botón Responder muestra solo ese correo con sus colores originales.
 • Además de la vista del hilo, también se oscurecen el cuadro de respuesta, la ventana de redacción, las sugerencias de destinatarios y los menús. Con el tema Oscuro de Gmail, también el cuadro de búsqueda y sus sugerencias.
-• Activar o desactivar el modo oscuro nunca mueve ni cambia el tamaño de nada.
 
 ■ El correo más reciente, arriba
 • Los hilos se muestran con lo más reciente primero, así que la última respuesta es lo primero que ves.
@@ -139,9 +149,8 @@ O Dark Reverse Thread resolve as duas coisas.
 ■ Modo escuro até nos seus e-mails, mantendo os tons
 • Os fundos escurecem e o texto clareia, mas o vermelho continua vermelho e os links azuis continuam azuis; só o brilho é ajustado. Não é uma simples inversão de cores, então os e-mails mantêm o design.
 • Imagens que sumiriam no modo escuro, como logotipos transparentes, recebem de volta o fundo original.
-• Se algum e-mail não ficar legível, o botão ◐ no cabeçalho mostra só esse e-mail com as cores originais.
+• Se algum e-mail não ficar legível, o botão ◐ ao lado do botão Responder mostra só esse e-mail com as cores originais.
 • Além da conversa, a caixa de resposta, a janela de nova mensagem, as sugestões de destinatários e os menus também ficam escuros. Com o tema Escuro do Gmail, a caixa de pesquisa e as sugestões também.
-• Ligar ou desligar o modo escuro nunca move nem redimensiona nada.
 
 ■ O e-mail mais recente no topo
 • As conversas aparecem com o mais recente primeiro, então a última resposta é a primeira coisa que você vê.
@@ -176,9 +185,8 @@ Dark Reverse Thread löst beides.
 ■ Dunkelmodus bis in die E-Mails – mit erhaltenen Farbtönen
 • Hintergründe werden dunkel und Text hell, aber Rot bleibt Rot und blaue Links bleiben blau; nur die Helligkeit wird angepasst. Es ist keine einfache Farbumkehr, daher behalten E-Mails ihr Design.
 • Bilder, die im Dunkelmodus verschwinden würden, etwa transparente Logos, erhalten ihren ursprünglichen Hintergrund zurück.
-• Ist eine E-Mail einmal schlecht lesbar, zeigt die ◐-Schaltfläche in ihrer Kopfzeile nur diese E-Mail in den Originalfarben.
+• Ist eine E-Mail einmal schlecht lesbar, zeigt die ◐-Schaltfläche neben ihrer Antworten-Schaltfläche nur diese E-Mail in den Originalfarben.
 • Neben der Unterhaltung werden auch das Antwortfeld, das Fenster für neue Nachrichten, die Empfängervorschläge und die Menüs dunkel. Mit dem Gmail-Design „Dunkel“ auch das Suchfeld und seine Vorschläge.
-• Das Ein- und Ausschalten des Dunkelmodus verändert weder Position noch Größe von Elementen.
 
 ■ Die neueste E-Mail oben
 • Unterhaltungen werden mit der neuesten Nachricht zuerst angezeigt – die neueste Antwort ist das Erste, was du siehst.
