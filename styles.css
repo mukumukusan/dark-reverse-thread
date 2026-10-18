@@ -438,10 +438,12 @@
   box-shadow: inset 0 0 0 1px var(--gtr-dark-raised) !important;
 }
 
-/* 宛先行の「他 N 人」のチップ。Gmail の明るい背景の上に上の明るい文字色が乗って読めなくなるので、背景を暗くする */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG .aDp {
-  background-color: var(--gtr-dark-raised) !important;
-  color: var(--gtr-dark-text) !important;
+/* 宛先行（返信欄の .IG、作成ウィンドウで宛先をまとめた1行の .aoD.hl）の「他 N 人」のチップ。
+   Gmail の明るい背景の上に明るい文字色が乗って読めなくなるので、背景を暗くする。
+   隠れた宛先があると分かるように、まわりより一段明るい背景と白い文字でチップとして目立たせる */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.IG, .aoD.hl) .aDp {
+  background-color: var(--gtr-dark-outline) !important;
+  color: var(--gtr-dark-text-strong) !important;
 }
 
 /* 宛先の欄を押して開いたときの入力行（.aGb・input.agP）と、宛先のチップ（.afV）。Gmail の白い背景のままだと
@@ -464,6 +466,25 @@
 
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .afV[role="option"] * {
   color: var(--gtr-dark-text) !important;
+}
+
+/* 宛先の欄を押したときに下に出る「追加: 名前」の候補の行（.bFF）。Gmail の白い背景のままでまぶしかった。
+   選ばれている候補の青い枠（.arb.bjE）は、暗い背景で見えるように明るい青にする */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .bFF {
+  background-color: transparent !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .bFF .ara {
+  color: var(--gtr-dark-text-subtle) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .bFF .arb,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .bFF .arb * {
+  color: var(--gtr-dark-text) !important;
+}
+
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .bFF .arb.bjE {
+  box-shadow: inset 0 0 0 2px var(--gtr-dark-link) !important;
 }
 
 /* 宛先の欄から離れたときに出る、宛先をまとめた1行（.aoD.hl）。Gmail の濃い文字のままで背景に溶けて見えなかった */
