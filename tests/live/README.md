@@ -76,3 +76,55 @@ Faint disabled buttons, images, text over background images and anything inside 
 still look at icon-only menus by eye.
 Gmail's menus fade in, and in a background tab a menu can stay at opacity 0 for scripts while it is
 already on screen, so opacity is not used to skip anything.
+
+# Hands-on run through Claude in Chrome
+
+The full manual pass, as run on 2026-10-18. Everything is read-only except the steps marked
+**draft**: they type into one compose window, which Gmail saves as a draft that the user deletes.
+
+## Before starting
+
+1. **Check that the latest extension is loaded.** Chrome keeps running the old content script until
+   the extension is reloaded at `chrome://extensions` and the Gmail tabs are reloaded, and Claude
+   can't do either. Read something only the latest version does (for example the compose editor's
+   plain text color, `getComputedStyle(editor).color`) and ask the user to reload if it is old.
+2. Work in a new tab of Claude's own tab group. Open only already-read mail
+   (`#search/has:attachment is:read` gives threads with attachments to look at), so nothing is
+   marked as read.
+
+## Checklist
+
+| State | How | Expect |
+|---|---|---|
+| Conversation | open a read thread with 2+ messages, run `gmail-check.js` | every check passes |
+| Conversation | `gtrSweep()` | no low-contrast text, no light boxes, no dark icons (📎 by the date, ⓘ in "N attachments", the hover buttons on an attachment card) |
+| Message "⋮" menu | click it, `gtrSweep({ scope })` on the open `[role="menu"]`, Escape | dark, nothing listed |
+| Toolbar "⋮" menu | same | dark, nothing listed |
+| Compose window | open it (empty: no draft yet) | dark; ◐ "show colors as sent" sits before the trash can, lined up with the other icons |
+| "Help me write" | press the pen button in the compose toolbar (nothing is generated) | a dark pill, no white band or black box |
+| **draft** Colors while writing | subject `gtr test - 削除してください`, then text in black, dark navy, red, white, yellow (see below) | black shown light gray, navy light blue, red as chosen, white and yellow underlined with yellow dots, ◐ shows a yellow dot |
+| **draft** Picking white | color a plain word white | the email gets `<font color="#ffffff">` (the editor's plain text is #e3e3e3, never a palette color) |
+| **draft** ◐ toggle | press ◐, then again | a white page with the colors as sent (plain text #222, no highlights, the caret stays), then back to dark |
+| **draft** Compose sweep | `gtrSweep({ scope })` on the open `.Hd[role="dialog"]` | nothing listed |
+
+Reuse the `gtr test` draft for later runs (open it from `#drafts`) instead of making new ones, and
+remind the user to delete it at the end. Never open a reply box.
+
+## How to drive Gmail from Claude in Chrome
+
+- **Pasting the scripts:** run `gmail-check.js` and `contrast-sweep.js` through the
+  `javascript_tool` (Gmail's CSP blocks loading them from elsewhere). `gtrSweep` stays defined until
+  the page reloads. Use top-level `await` for its result: wrapped in an async function the tool
+  returns `{}`.
+- **Finding things:** the `find` tool runs into rate limits; locate elements with
+  `querySelector` and `getBoundingClientRect()` and click the coordinates instead (for example the
+  `gtr test` row is the `tr.zA` whose text contains it).
+- **Colored text:** Gmail enforces Trusted Types, so `execCommand('insertHTML')` fails. Insert plain
+  text with `execCommand('insertText')`, select each word with a `Range`, then
+  `execCommand('foreColor', false, '#000000')`: Gmail's own color menu produces the same
+  `<font color>`.
+- **Display colors:** dark colors picked in the editor are shown lighter through `::highlight()`;
+  read them from `CSS.highlights` and the `#gtr-editor-colors` style element (the sweep does this).
+- **Menus:** close them with Escape. A compose window closes with its `[aria-label="保存して閉じる"]`
+  button (the draft stays).
+- Close the tabs Claude opened at the end.
