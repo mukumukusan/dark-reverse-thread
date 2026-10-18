@@ -24,7 +24,7 @@ document.getElementById('body1').insertAdjacentHTML('afterend', `
   <h2 class="hP" id="subject-hl">Order <span class="il" id="subject-highlight">Yodobashi</span></h2>
   <div class="bzp" id="invite-banner"><p id="invite-banner-text">Not in your calendar</p><button id="invite-banner-button">Add</button><div class="a2k" id="invite-info"></div></div>
   <div class="aRb" id="invite-card"><table class="aU9"><tr><td class="aRi" id="invite-tile"><span class="aRh" id="invite-month">Apr</span></td><td><div class="aRo" id="invite-title">Interview</div><div class="aRn" id="invite-label">When</div><a id="invite-link">View</a></td></tr></table></div>
-  <div class="hq gt"><span class="aVW a5T">1 attachment<div class="a2b"><div class="a2a" role="img" id="attachments-info"></div></div></span><div class="aXK"><span class="aXL" id="file-name">invite.ics</span><a class="e" id="file-download">Download</a></div></div>`);
+  <div class="hq gt"><span class="aVW a5T">1 attachment<div class="a2b"><div class="a2a" role="img" id="attachments-info"></div></div></span><span class="aZo"><div class="aQw"><span><button class="VYBDae-JX-I CgzRE" id="card-download" style="background-color: #80868b"><span><svg class="aoH" id="card-download-icon" viewBox="0 0 20 20"><path d="M0 0h20v20H0z"></path></svg></span></button></span></div></span><div class="aXK"><span class="aXL" id="file-name">invite.ics</span><a class="e" id="file-download">Download</a></div></div>`);
 document.getElementById('m3').querySelector('.inner').insertAdjacentHTML('beforeend', '<div class="Bswxkd" id="undo"></div>');
 document.body.insertAdjacentHTML('beforeend', `
   <div class="J-M" role="menu" id="label-menu"><input class="bqf" id="label-search"><div class="J-N-Jo" id="menu-icon"></div><div class="J-LC-Jo" id="menu-checkbox"></div></div>
@@ -236,6 +236,11 @@ test('icons Gmail draws dark: the Reply / Forward arrows and the ▾ after "To m
 test('attachment icons Gmail draws dark: the 📎 by the date and the ⓘ in "N attachments" match the gray text next to them', () => {
   assertEqual(filter('header-clip'), 'brightness(0) invert(0.6)', 'the date next to it is #9aa0a6');
   assertEqual(filter('attachments-info'), 'brightness(0) invert(0.77)', 'the heading next to it is #c4c7c5');
+});
+
+test('attachment card: the Download / Add to Drive buttons shown on hover have light icons on a dark button', () => {
+  assertEqual(bg('card-download'), 'rgb(60, 64, 67)', 'Gmail\'s #80868b square washed the icon out');
+  assertEqual(color('card-download-icon'), 'rgb(227, 227, 227)', 'not the heading\'s muted gray (contrast 2.2 on #80868b)');
 });
 
 test('the "Unsubscribe" link next to the sender is light blue', () => {

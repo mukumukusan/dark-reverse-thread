@@ -1207,6 +1207,20 @@ html.gmail-dark-active.gtr-popout,
   color: var(--gtr-dark-text-muted) !important;
 }
 
+/* 添付ファイルのカードにマウスを乗せると出るボタン（ダウンロード・ドライブに追加・編集：.aQw 内の button.CgzRE）。
+   Gmail の灰色（#80868b）の四角に、上の見出し用の控えめな灰色のアイコンが重なり、コントラスト 2.2 で見えにくかった */
+.gmail-dark-active .gtr-thread .hq.gt .aQw button.CgzRE {
+  background-color: var(--gtr-dark-raised) !important;
+}
+
+.gmail-dark-active .gtr-thread .hq.gt .aQw button.CgzRE:hover {
+  background-color: var(--gtr-dark-raised-hover) !important;
+}
+
+.gmail-dark-active .gtr-thread .hq.gt .aQw button.CgzRE * {
+  color: var(--gtr-dark-text) !important;
+}
+
 /* 見出しの「スキャン済み」の横の ⓘ（濃い灰色の画像 info_outline_grey700）。横の文字と同じ灰色に（invert(.77) で #c4c4c4） */
 .gmail-dark-active .gtr-thread .aVW .a2a {
   filter: brightness(0) invert(.77) !important;
