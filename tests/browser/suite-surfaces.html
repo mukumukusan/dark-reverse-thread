@@ -17,13 +17,14 @@ document.getElementById('body1').insertAdjacentHTML('afterend', `
   <h3 class="iw gFxsud"><div class="Xg2J0b"><span class="Ca" role="link" id="unsubscribe" style="color: #1a73e8">Unsubscribe</span></div></h3>
   <div class="amn"><span class="ams bkH" role="link" id="reply-button">Reply</span></div>
   <div class="ajy" role="button"><img class="ajz" id="details-arrow" src=""></div>
+  <div class="gH"><div class="gK"><span><img class="f gW" id="header-clip" alt=""></span><span class="g3">18:22</span></div></div>
   <button class="bHI"><svg id="print-all-icon" viewBox="0 0 20 20"><path d="M0 0h20v20H0z"></path></svg></button>
   <div class="brb"><button class="Rju2Ue-aoh"><span class="Rju2Ue-Rx-J9" id="smart-reply" style="color: #1a73e8">Sounds good</span></button></div>
   <div class="ajA SK" id="details"><span class="gI" id="details-label">From:</span><span id="details-name">Someone</span></div>
   <h2 class="hP" id="subject-hl">Order <span class="il" id="subject-highlight">Yodobashi</span></h2>
   <div class="bzp" id="invite-banner"><p id="invite-banner-text">Not in your calendar</p><button id="invite-banner-button">Add</button><div class="a2k" id="invite-info"></div></div>
   <div class="aRb" id="invite-card"><table class="aU9"><tr><td class="aRi" id="invite-tile"><span class="aRh" id="invite-month">Apr</span></td><td><div class="aRo" id="invite-title">Interview</div><div class="aRn" id="invite-label">When</div><a id="invite-link">View</a></td></tr></table></div>
-  <div class="hq gt"><div class="aXK"><span class="aXL" id="file-name">invite.ics</span><a class="e" id="file-download">Download</a></div></div>`);
+  <div class="hq gt"><span class="aVW a5T">1 attachment<div class="a2b"><div class="a2a" role="img" id="attachments-info"></div></div></span><div class="aXK"><span class="aXL" id="file-name">invite.ics</span><a class="e" id="file-download">Download</a></div></div>`);
 document.getElementById('m3').querySelector('.inner').insertAdjacentHTML('beforeend', '<div class="Bswxkd" id="undo"></div>');
 document.body.insertAdjacentHTML('beforeend', `
   <div class="J-M" role="menu" id="label-menu"><input class="bqf" id="label-search"><div class="J-N-Jo" id="menu-icon"></div><div class="J-LC-Jo" id="menu-checkbox"></div></div>
@@ -230,6 +231,11 @@ test('icons Gmail draws dark: the Reply / Forward arrows and the ▾ after "To m
   assertEqual(filter('details-arrow'), ICON);
   assertEqual(filter('from-arrow'), 'brightness(0) invert(0.77)', 'compose: the ▾ after the sender address');
   assertEqual(getComputedStyle(document.getElementById('print-all-icon')).fill, 'rgb(196, 199, 197)', 'collapse / print all / new window by the subject');
+});
+
+test('attachment icons Gmail draws dark: the 📎 by the date and the ⓘ in "N attachments" match the gray text next to them', () => {
+  assertEqual(filter('header-clip'), 'brightness(0) invert(0.6)', 'the date next to it is #9aa0a6');
+  assertEqual(filter('attachments-info'), 'brightness(0) invert(0.77)', 'the heading next to it is #c4c7c5');
 });
 
 test('the "Unsubscribe" link next to the sender is light blue', () => {

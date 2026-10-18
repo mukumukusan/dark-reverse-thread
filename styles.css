@@ -163,6 +163,12 @@
   color: var(--gtr-dark-text-subtle) !important;
 }
 
+/* 日付の横の 📎（添付ファイルあり。黒い画像 attachment_black_20dp）。暗い背景に沈むので、横の日付と同じ灰色に
+   （brightness(0) で黒に揃えてから invert(.6) で #999） */
+.gmail-dark-active .gtr-thread .gK img.f.gW {
+  filter: brightness(0) invert(.6) !important;
+}
+
 /* 宣伝メールの差出人の横の「登録解除」（.iw の中の .Ca）。Gmail の濃い青のままで暗い背景では薄かった */
 .gmail-dark-active .gtr-thread .iw .Ca[role="link"] {
   color: var(--gtr-dark-link) !important;
@@ -1199,6 +1205,11 @@ html.gmail-dark-active.gtr-popout,
 .gmail-dark-active .gtr-thread .hq.gt button,
 .gmail-dark-active .gtr-thread .hq.gt button * {
   color: var(--gtr-dark-text-muted) !important;
+}
+
+/* 見出しの「スキャン済み」の横の ⓘ（濃い灰色の画像 info_outline_grey700）。横の文字と同じ灰色に（invert(.77) で #c4c4c4） */
+.gmail-dark-active .gtr-thread .aVW .a2a {
+  filter: brightness(0) invert(.77) !important;
 }
 
 /* --------------------------------------------------------------------------
