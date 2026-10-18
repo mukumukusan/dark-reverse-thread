@@ -18,6 +18,9 @@
  *
  * <svg> icons are checked by the color of their first painted shape.
  *
+ * Text the extension shows in another color through the CSS Custom Highlight API (dark colors picked in
+ * the reply box / compose window) is judged by that display color, not by its own color.
+ *
  * Limits: text over a background image, inside an <iframe>, or drawn by <img>/<canvas> can't be judged
  * and is skipped. Under a CSS filter: invert(...) both colors are inverted before comparing. Icons as
  * <img>, SVG backgrounds, and images that don't allow reading their pixels, are not checked. A sprite sheet is
@@ -104,6 +107,28 @@ window.gtrSweep = async ({ minContrast = 3, scope = null } = {}) => {
   // scripts while the menu is already on screen
   const visible = (el) => el.checkVisibility ? el.checkVisibility({ checkVisibilityCSS: true }) : el.offsetParent !== null;
 
+  // Display colors given to text ranges by ::highlight(name) rules (the editor's dark colors shown lighter)
+  const highlightColor = new Map();
+  if (typeof CSS !== 'undefined' && CSS.highlights) {
+    const ruleColors = new Map();
+    for (const sheet of document.styleSheets) {
+      let rules;
+      try { rules = sheet.cssRules; } catch (e) { continue; }
+      for (const rule of rules) {
+        const m = rule.selectorText && rule.selectorText.match(/^::highlight\(([\w-]+)\)$/);
+        if (m && rule.style.color) ruleColors.set(m[1], rule.style.color);
+      }
+    }
+    for (const [name, highlight] of CSS.highlights) {
+      if (!ruleColors.has(name)) continue;
+      for (const range of highlight) {
+        if (range.startContainer === range.endContainer && range.startContainer.nodeType === Node.TEXT_NODE) {
+          highlightColor.set(range.startContainer, ruleColors.get(name));
+        }
+      }
+    }
+  }
+
   const lowContrast = new Map();
   const root = scope ? document.querySelector(scope) : document.body;
   if (!root) return { error: `nothing matches ${scope}` };
@@ -123,7 +148,7 @@ window.gtrSweep = async ({ minContrast = 3, scope = null } = {}) => {
     // The original-colors card (◐) shows the email as sent: not ours to judge
     if (el.closest('.gtr-original .a3s')) continue;
     const cs = getComputedStyle(el);
-    const own = parse(cs.webkitTextFillColor && cs.webkitTextFillColor !== cs.color ? cs.webkitTextFillColor : cs.color);
+    const own = parse(highlightColor.get(node) || (cs.webkitTextFillColor && cs.webkitTextFillColor !== cs.color ? cs.webkitTextFillColor : cs.color));
     if (!own || own.a === 0) continue;
     const drawn = resolve(el, own);
     if (!drawn) continue;
