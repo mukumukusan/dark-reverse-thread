@@ -6,6 +6,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('version').textContent = 'v' + chrome.runtime.getManifest().version;
 
+  // On Microsoft Edge, ratings belong on the Edge Add-ons listing, not the Chrome Web Store. Until
+  // that listing's address is known (EDGE_STORE_URL is empty), the rate link is hidden on Edge.
+  const EDGE_STORE_URL = '';
+  if (/\bEdg\//.test(navigator.userAgent)) {
+    const rateLink = document.getElementById('rateLink');
+    if (EDGE_STORE_URL) {
+      rateLink.href = EDGE_STORE_URL;
+    } else {
+      rateLink.hidden = true;
+      document.getElementById('rateSeparator').hidden = true;
+    }
+  }
+
   const reverseOrder = document.getElementById('reverseOrder');
   const smartDark = document.getElementById('smartDark');
   const replyPosition = document.getElementById('replyPosition');

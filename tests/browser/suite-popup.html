@@ -51,6 +51,19 @@
       assert(rate.relList.contains('noopener') && report.relList.contains('noopener'), 'noopener');
     });
 
+    test('on Microsoft Edge the Chrome Web Store rate link is hidden; the report link stays', async () => {
+      const win = await openPopup({ userAgent: 'Mozilla/5.0 (Macintosh) AppleWebKit/537.36 Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0' });
+      const shown = (id) => win.getComputedStyle(win.document.getElementById(id)).display !== 'none';
+      assert(!shown('rateLink'), 'rate link hidden on Edge');
+      assert(!shown('rateSeparator'), 'separator hidden with it');
+      assert(visible(win, 'reportLink'), 'report link still shown');
+    });
+
+    test('on Chrome the rate link and its separator are shown', async () => {
+      const win = await openPopup({});
+      assert(visible(win, 'rateLink') && visible(win, 'rateSeparator'), 'rate link shown');
+    });
+
     test('defaults are shown when nothing is saved', async () => {
       const win = await openPopup({});
       const d = win.document;

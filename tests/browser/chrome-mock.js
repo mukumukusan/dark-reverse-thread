@@ -1,10 +1,12 @@
 /**
  * A fake of the chrome.* APIs the extension uses. Configure it before this file loads with
- * window.__GTR_MOCK__ = { sync, local, messages, lang, version, sendMessageThrows, sendMessageResponse }.
+ * window.__GTR_MOCK__ = { sync, local, messages, lang, version, sendMessageThrows, sendMessageResponse,
+ * userAgent }. userAgent stands in for navigator.userAgent (e.g. to look like Microsoft Edge).
  * Like the real API, storage callbacks and change events arrive asynchronously.
  */
 (() => {
   const config = window.__GTR_MOCK__ || {};
+  if (config.userAgent) Object.defineProperty(navigator, 'userAgent', { value: config.userAgent });
   const stores = { sync: { ...(config.sync || {}) }, local: { ...(config.local || {}) } };
   const changeListeners = [];
   const messageListeners = [];
