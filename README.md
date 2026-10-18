@@ -36,6 +36,29 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
 8. **多言語対応 / Internationalization**
    - 日本語: 拡張機能名・説明・ポップアップ・クイックバーはブラウザの言語に合わせて表示（現在は英語・日本語・スペイン語・ポルトガル語（ブラジル）・ドイツ語。その他の言語は英語）。Gmail の画面は文言ではなく構造で判定しているので、Gmail をどの言語で表示していても動作します。
    - English: Extension name, description, popup and quick bar follow the browser language (English, Japanese, Spanish, Brazilian Portuguese and German included; other languages fall back to English). Gmail is recognized by its structure, not its on-screen text, so it works with any Gmail display language.
+9. **書くときの色 / Colors While Writing**
+   - 日本語: 返信欄・作成ウィンドウで自分で付けた文字色は、そのまま表示します。暗い背景で読めない色（黒・濃い紺など）だけを、色合いを残して明るく表示します。白や薄い黄色など、相手の白い画面では読みにくい色には黄色の点線を引き、ツールバーの ◐ ボタンに印を付けます。◐ ボタンを押すと入力欄が白い紙になり、送られるとおりの色で確認できます。返信の履歴（「…」で開く引用）は、元のメールの明暗だけを反転して表示します。どれも表示だけの変更で、送られるメールの色は変わりません。
+   - English: Text colors you pick in the reply box or compose window are shown as chosen; only those too dark to read on the dark box (black, dark navy, …) are shown lighter, keeping their hue. Colors recipients can hardly read on a white screen (white, pale yellow, …) get a dotted yellow underline and a dot on the ◐ button in the toolbar; pressing ◐ turns the editor into a white page that shows the colors exactly as sent. The quoted history (opened with "…") is shown with light and dark flipped. All of this is display only: the email you send keeps the colors you chose.
+
+---
+
+## 色の扱いの原則 / How Colors Are Handled
+
+同じメールを、ダークモードのあなた、白い画面で読む相手、ダークモードのアプリで読む相手が、それぞれ違う背景で見ます。どれか1つに合わせるとほかでずれるため、色を扱うときは次の4つを判断基準にしています。
+The same email is seen on different backgrounds: by you in dark mode, by recipients on a white screen, and by recipients in dark-mode apps. Matching one breaks another, so every color change follows these four rules.
+
+1. **送る中身には触らない / Never change what is sent**
+   - 日本語: 変えるのは表示だけ。返信欄・作成ウィンドウの中には要素も属性も書き込まず（CSS と CSS Custom Highlight API だけを使う）、相手に届く色はいつも書いた人が選んだ色のまま。
+   - English: Only the display changes. Nothing is written into the reply box or compose window (CSS and the CSS Custom Highlight API only), so recipients always get the colors the writer chose.
+2. **読めないものだけ直す / Fix only what can't be read**
+   - 日本語: 読める色は元の色のまま残す。直すときも色合い（色相・彩度）は残し、明るさだけを読める段階まで変える。
+   - English: Readable colors stay as they are. When a color must change, its hue and saturation stay and only its lightness moves until it reads.
+3. **本当の色をいつでも確かめられる / The real colors are always one click away**
+   - 日本語: 受信したメールはヘッダーの ◐「元の色で表示」、書いているメールはツールバーの ◐「送られる色で表示」で、加工のない色を確認できる。
+   - English: The ◐ "show original colors" button in a message header and the ◐ "show colors as sent" button in the compose toolbar show the colors untouched.
+4. **相手側の落とし穴は直さずに知らせる / Point out problems on the recipient's side, don't hide them**
+   - 日本語: 相手の白い画面で読めない色（白・薄い黄色など）は、こちらの表示では読めてしまうので、勝手に直さず点線で知らせる。
+   - English: A color recipients can't read on white (white, pale yellow, …) still reads fine here, so it is not changed but marked with a dotted underline.
 
 ---
 
