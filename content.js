@@ -268,6 +268,8 @@
   const SOFT_WHITE_BACKDROP = 'rgb(232, 234, 237)';
   const MAX_CARD_WIDTH = 320;
   const MAX_CARD_HEIGHT = 160;
+  const CARD_RADIUS = 6; // the card's corners and ring in styles.css (img[data-gtr-img-card])
+  const CARD_RING = 4;
 
   function softenWhite(color) {
     const rgb = parseRGB(color);
@@ -305,6 +307,14 @@
         const margin = sides.map((side, i) => `${(parseFloat(cs[`margin-${side}`]) || 0) + padding[i]}px`);
         img.style.setProperty('--gtr-img-margin', margin.join(' '));
         img.setAttribute('data-gtr-img-pad', '');
+      } else if (padding.some((p) => p > 0) && img.hasAttribute('data-gtr-img-card')) {
+        // A block card keeps its padding (its layout must not change), but the card's corners and ring
+        // went around the padding too: e.g. a logo with 20px below it showed a dark band inside its card.
+        // Cut the drawing down to the picture plus the ring (negative where there is no padding, so the
+        // ring outside the box stays); styles.css fills the backdrop under the ring and applies the cut
+        const inset = padding.map((p) => `${p - CARD_RING}px`).join(' ');
+        img.style.setProperty('--gtr-img-clip', `inset(${inset} round ${CARD_RADIUS + CARD_RING}px)`);
+        img.setAttribute('data-gtr-img-clip', '');
       }
     };
     if (img.complete) apply();

@@ -40,6 +40,7 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <img id="logo" src="${png(40, 40)}">
   <div><img id="logo-left" src="${png(40, 40)}"><img id="logo-right" src="${png(40, 40)}" style="padding-left: 10px"></div>
   <img id="padded-block" src="${png(40, 40)}" style="display: block; padding: 8px; margin: 0 auto">
+  <div style="background-color: #2975f2; padding: 50px 20px 0"><img id="padded-logo" src="${png(219, 32)}" style="display: block; padding: 0 0 20px"></div>
   <img id="big" src="${png(400, 200)}">
   <img id="spacer" src="${png(2, 2)}">`);
 window.__GTR_MOCK__ = {};
@@ -183,12 +184,22 @@ test('two logos in a row stay apart: the padding between them gets no backdrop o
   assertEqual(right.backgroundClip, 'content-box');
 });
 
-test('a centered block image keeps its padding and auto margin; only its backdrop stays off the padding', async () => {
+test('a centered block image keeps its padding and auto margin; its card is cut to the picture plus the ring', async () => {
   await waitFor(() => $('padded-block').hasAttribute('data-gtr-img'), 2000);
   assert(!$('padded-block').hasAttribute('data-gtr-img-pad'));
   const cs = getComputedStyle($('padded-block'));
   assertEqual(cs.paddingLeft, '8px');
-  assertEqual(cs.backgroundClip, 'content-box');
+  assertEqual($('padded-block').style.getPropertyValue('--gtr-img-clip').trim(), 'inset(4px 4px 4px 4px round 10px)');
+  assert(cs.clipPath.startsWith('inset('), `clipped: ${cs.clipPath}`);
+});
+
+test('a block logo with padding only below (Chrome Web Store mail): no dark band inside its card, same layout', async () => {
+  await waitFor(() => $('padded-logo').hasAttribute('data-gtr-img-card'), 2000);
+  const logo = $('padded-logo');
+  assertEqual(logo.getBoundingClientRect().height, 52, 'the 20px padding below stays (the header keeps its height)');
+  assertEqual(logo.style.getPropertyValue('--gtr-img-clip').trim(), 'inset(-4px -4px 16px -4px round 10px)',
+    'the ring reaches outside where there is no padding; below, the padding past the ring is cut away');
+  assertEqual(getComputedStyle(logo).backgroundClip, 'border-box', 'the backdrop fills the ring inside the padding');
 });
 
 test('large images get a backdrop but no card frame', async () => {
@@ -220,6 +231,7 @@ test('printing uses the email\'s original colors (the print rules beat the dark 
     assertEqual(background('white-bg'), 'rgb(255, 255, 255)', 'background');
     assertEqual(background('yellow-bg'), 'rgb(255, 255, 0)', 'highlight');
     assertEqual(getComputedStyle($('card-image')).backgroundBlendMode, 'normal', 'no multiply on paper');
+    assertEqual(getComputedStyle($('padded-logo')).clipPath, 'none', 'images are not cut on paper');
     assertEqual(color('important-text'), 'rgb(65, 69, 82)', 'inline !important text');
     assertEqual(background('important-bg'), 'rgb(255, 255, 255)', 'inline !important background');
     assertEqual(color('id-rule-text'), 'rgb(14, 61, 173)', 'ID rule text');
