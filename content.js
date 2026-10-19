@@ -307,11 +307,13 @@
         const margin = sides.map((side, i) => `${(parseFloat(cs[`margin-${side}`]) || 0) + padding[i]}px`);
         img.style.setProperty('--gtr-img-margin', margin.join(' '));
         img.setAttribute('data-gtr-img-pad', '');
-      } else if (padding.some((p) => p > 0) && img.hasAttribute('data-gtr-img-card')) {
+      } else if (padding.some((p) => p > 0) && img.hasAttribute('data-gtr-img-card') &&
+          sides.every((side) => !parseFloat(cs[`border-${side}-width`]))) {
         // A block card keeps its padding (its layout must not change), but the card's corners and ring
         // went around the padding too: e.g. a logo with 20px below it showed a dark band inside its card.
         // Cut the drawing down to the picture plus the ring (negative where there is no padding, so the
-        // ring outside the box stays); styles.css fills the backdrop under the ring and applies the cut
+        // ring outside the box stays); styles.css fills the backdrop under the ring and applies the cut.
+        // Not with a border: it lies outside the padding and would be cut away (the card stays as before)
         const inset = padding.map((p) => `${p - CARD_RING}px`).join(' ');
         img.style.setProperty('--gtr-img-clip', `inset(${inset} round ${CARD_RADIUS + CARD_RING}px)`);
         img.setAttribute('data-gtr-img-clip', '');

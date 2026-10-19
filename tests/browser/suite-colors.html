@@ -41,6 +41,7 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <div><img id="logo-left" src="${png(40, 40)}"><img id="logo-right" src="${png(40, 40)}" style="padding-left: 10px"></div>
   <img id="padded-block" src="${png(40, 40)}" style="display: block; padding: 8px; margin: 0 auto">
   <div style="background-color: #2975f2; padding: 50px 20px 0"><img id="padded-logo" src="${png(219, 32)}" style="display: block; padding: 0 0 20px"></div>
+  <img id="bordered-logo" src="${png(60, 40)}" style="display: block; padding: 6px; border: 1px solid #cccccc">
   <img id="big" src="${png(400, 200)}">
   <img id="spacer" src="${png(2, 2)}">`);
 window.__GTR_MOCK__ = {};
@@ -200,6 +201,13 @@ test('a block logo with padding only below (Chrome Web Store mail): no dark band
   assertEqual(logo.style.getPropertyValue('--gtr-img-clip').trim(), 'inset(-4px -4px 16px -4px round 10px)',
     'the ring reaches outside where there is no padding; below, the padding past the ring is cut away');
   assertEqual(getComputedStyle(logo).backgroundClip, 'border-box', 'the backdrop fills the ring inside the padding');
+});
+
+test('a block logo with padding and a border is not cut: its border stays', async () => {
+  await waitFor(() => $('bordered-logo').hasAttribute('data-gtr-img-card'), 2000);
+  assert(!$('bordered-logo').hasAttribute('data-gtr-img-clip'), 'cutting to the picture would remove the border outside the padding');
+  assertEqual(getComputedStyle($('bordered-logo')).clipPath, 'none');
+  assertEqual(getComputedStyle($('bordered-logo')).borderTopWidth, '1px');
 });
 
 test('large images get a backdrop but no card frame', async () => {
