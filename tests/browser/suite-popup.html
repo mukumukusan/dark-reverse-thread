@@ -139,6 +139,31 @@
       assert(!win.__closed && !win.__gtrCreated);
     });
 
+    test('when Dark Reader also darkens this Gmail tab, a tip suggests turning it off there', async () => {
+      const win = await openPopup({ sendMessageResponse: { darkReader: true } });
+      await sleep(50);
+      assert(visible(win, 'darkReaderTip'), 'tip shown');
+      assertEqual(win.document.getElementById('darkReaderTip').textContent.trim(), messagesEn.tipDarkReader);
+    });
+
+    test('the Dark Reader tip comes first, above the settings, in the warning color', async () => {
+      const win = await openPopup({ sendMessageResponse: { darkReader: true } });
+      await sleep(50);
+      const tip = win.document.getElementById('darkReaderTip');
+      const settings = win.document.querySelector('.content');
+      assert(tip.getBoundingClientRect().bottom <= settings.getBoundingClientRect().top, 'above the settings');
+      assertEqual(win.getComputedStyle(tip).borderTopColor, 'rgb(253, 214, 99)');
+    });
+
+    test('without Dark Reader, or outside Gmail, there is no Dark Reader tip', async () => {
+      const without = await openPopup({ sendMessageResponse: { darkReader: false } });
+      await sleep(50);
+      assert(!visible(without, 'darkReaderTip'), 'no Dark Reader');
+      const elsewhere = await openPopup({ sendMessageThrows: true });
+      await sleep(50);
+      assert(!visible(elsewhere, 'darkReaderTip'), 'not a Gmail tab');
+    });
+
     runTests();
   </script>
 </body>

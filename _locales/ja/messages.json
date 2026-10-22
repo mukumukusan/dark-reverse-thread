@@ -109,5 +109,11 @@
   },
   "composeOriginalShowWarning": {
     "message": "下線の文字は相手の白い画面では読みにくい色です（送られる色で表示）"
+  },
+  "tipDarkReader": {
+    "message": "⚠️ Dark Reader も Gmail を暗くしているため、表示がぶつかることがあります（アイコンが見えない、色がおかしい など）。きれいに表示するには、Dark Reader で mail.google.com をオフにしてください。"
+  },
+  "darkReaderNoticeOk": {
+    "message": "わかりました"
   }
 }

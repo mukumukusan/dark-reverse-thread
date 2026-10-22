@@ -1227,8 +1227,61 @@
     return true;
   }
 
+  /**
+   * Dark Reader (a general dark mode extension) recolors the whole page too, on top of this extension's
+   * colors, which can hide icons and shift colors. It marks the pages it darkens (attributes on <html>
+   * in dynamic mode, its own <meta> / <style class="darkreader">). While both darken Gmail, a notice
+   * by the quick bar suggests turning Dark Reader off for Gmail, until "Got it" closes it for good
+   * (one yes/no flag in storage.local); the popup shows the same tip on top whenever it opens.
+   * Dark Reader itself is left alone.
+   */
+  const DARK_READER_MARKS = 'html[data-darkreader-mode], html[data-darkreader-scheme], meta[name="darkreader"], style.darkreader';
+  const DARK_READER_NOTICE_ID = 'gtr-dark-reader-notice';
+  const DARK_READER_DISMISSED_KEY = 'darkReaderNoticeDismissed';
+  const darkReaderClashes = () => config.smartDark && document.querySelector(DARK_READER_MARKS) !== null;
+  let darkReaderNoticeDismissed = null; // unknown until storage answers
+
+  function syncDarkReaderNotice() {
+    const existing = document.getElementById(DARK_READER_NOTICE_ID);
+    if (darkReaderNoticeDismissed !== false || !document.body || !darkReaderClashes()) {
+      if (existing) existing.remove();
+      return;
+    }
+    if (existing) return;
+
+    const notice = document.createElement('div');
+    notice.id = DARK_READER_NOTICE_ID;
+    notice.setAttribute('role', 'status');
+    const title = document.createElement('div');
+    title.className = 'gtr-title';
+    title.textContent = 'Dark Reverse Thread';
+    const text = document.createElement('p');
+    text.textContent = chrome.i18n.getMessage('tipDarkReader');
+    const ok = document.createElement('button');
+    ok.className = 'gtr-btn active';
+    ok.textContent = chrome.i18n.getMessage('darkReaderNoticeOk');
+    ok.onclick = () => {
+      darkReaderNoticeDismissed = true;
+      notice.remove();
+      if (!isContextValid()) return;
+      try {
+        chrome.storage.local.set({ [DARK_READER_DISMISSED_KEY]: true }).catch(() => {});
+      } catch {
+        // invalidated between the check and the call
+      }
+    };
+    notice.append(title, text, ok);
+    document.body.appendChild(notice);
+  }
+
+  chrome.storage.local.get({ [DARK_READER_DISMISSED_KEY]: false }, (items) => {
+    darkReaderNoticeDismissed = items[DARK_READER_DISMISSED_KEY];
+    syncDarkReaderNotice();
+  });
+
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message && message.type === 'gtr-open-theme-settings') sendResponse({ opened: openThemeSettings() });
+    if (message && message.type === 'gtr-status') sendResponse({ darkReader: darkReaderClashes() });
   });
 
   // A Gmail tab opened from that button: open the panel once Gmail's header is ready
@@ -1256,6 +1309,7 @@
     applyThreadReversal();
     scrollToNewestOnOpen();
     renderQuickBar();
+    syncDarkReaderNotice();
   }
 
   /**
@@ -1326,6 +1380,7 @@
     }
 
     syncComposeOpen();
+    syncDarkReaderNotice(); // Dark Reader marks the page a moment after it loads, and can be turned off later
     noteGmailThemeThrottled();
     // A reply box or compose window that opens (or a draft that loads into it) may hold dark colors
     if (document.querySelector(EDITOR_SELECTOR)) scheduleEditorColors();

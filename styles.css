@@ -1531,7 +1531,8 @@ html.gmail-dark-active.gtr-popout,
    -------------------------------------------------------------------------- */
 /* 作成ウィンドウ（右下・全画面）が開いている間は隠す。右下に畳んだ作成ウィンドウや送信欄に重なるため
    （content.js が .gtr-compose-open を付ける。body:has() はページの書き換えのたびに全体を調べ直して重い） */
-.gtr-compose-open #gmail-reverser-quick-toggle {
+.gtr-compose-open #gmail-reverser-quick-toggle,
+.gtr-compose-open #gtr-dark-reader-notice {
   display: none !important;
 }
 
@@ -1606,12 +1607,41 @@ html.gmail-dark-active.gtr-popout,
   border-color: var(--gtr-dark-accent-hover);
 }
 
+/* Dark Reader も Gmail を暗くしているときの知らせ（クイックバーの上。「わかった」で閉じると二度と出ない） */
+#gtr-dark-reader-notice {
+  position: fixed;
+  bottom: 68px;
+  right: 24px;
+  z-index: 999999;
+  box-sizing: border-box;
+  max-width: 340px;
+  padding: 12px 14px;
+  background: var(--gtr-dark-page);
+  border: 1px solid #fdd663;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--gtr-dark-text);
+}
+
+#gtr-dark-reader-notice .gtr-title {
+  font-weight: 600;
+  color: var(--gtr-dark-text-strong);
+}
+
+#gtr-dark-reader-notice p {
+  margin: 4px 0 10px;
+}
+
 /* --------------------------------------------------------------------------
    10. PRINT OPTIMIZATION (印刷・PDF出力時の白背景＆正順表示への自動復帰)
    -------------------------------------------------------------------------- */
 @media print {
-  /* クイック操作バーの非表示 */
-  #gmail-reverser-quick-toggle {
+  /* クイック操作バーと Dark Reader の知らせの非表示 */
+  #gmail-reverser-quick-toggle,
+  #gtr-dark-reader-notice {
     display: none !important;
   }
 

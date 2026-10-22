@@ -42,6 +42,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('themeLink').hidden = gmailLightTheme;
   });
 
+  // In a Gmail tab, ask whether Dark Reader is darkening it too (the two can clash); other tabs don't answer
+  (async () => {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      const status = await chrome.tabs.sendMessage(tab.id, { type: 'gtr-status' });
+      document.getElementById('darkReaderTip').hidden = !(status && status.darkReader);
+    } catch {
+      // not a Gmail tab (no content script there)
+    }
+  })();
+
   // Open Gmail's theme picker in the current Gmail tab, or in a new Gmail tab
   async function openThemePicker() {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

@@ -107,6 +107,14 @@ label {
   line-height: 1.5;
 }
 
+/* Dark Reader の案内：設定より上に、注意の黄色の枠で */
+.tip-warning {
+  margin-top: 12px;
+  margin-bottom: 0;
+  border: 1px solid #fdd663;
+  background-color: #2f2b1f;
+}
+
 .tip-button {
   display: block;
   margin-top: 6px;

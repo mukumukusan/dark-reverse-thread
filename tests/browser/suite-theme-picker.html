@@ -59,6 +59,33 @@ test('other messages are ignored', async () => {
   assert(!answered);
 });
 
+test('the popup can ask whether Dark Reader is darkening Gmail too', async () => {
+  assertEqual((await gtrSendMessage({ type: 'gtr-status' })).darkReader, false, 'no Dark Reader marks');
+  const html = document.documentElement;
+  html.setAttribute('data-darkreader-mode', 'dynamic');
+  try {
+    assertEqual((await gtrSendMessage({ type: 'gtr-status' })).darkReader, true, 'dynamic mode attribute on <html>');
+  } finally {
+    html.removeAttribute('data-darkreader-mode');
+  }
+  const meta = document.createElement('meta');
+  meta.name = 'darkreader';
+  document.head.appendChild(meta);
+  try {
+    assertEqual((await gtrSendMessage({ type: 'gtr-status' })).darkReader, true, '<meta name="darkreader">');
+  } finally {
+    meta.remove();
+  }
+  const style = document.createElement('style');
+  style.className = 'darkreader darkreader--filter';
+  document.head.appendChild(style);
+  try {
+    assertEqual((await gtrSendMessage({ type: 'gtr-status' })).darkReader, true, 'filter / static mode style');
+  } finally {
+    style.remove();
+  }
+});
+
 runTests();
 
   </script>

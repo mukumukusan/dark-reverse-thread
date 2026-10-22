@@ -109,5 +109,11 @@
   },
   "composeOriginalShowWarning": {
     "message": "El texto subrayado se lee mal sobre blanco: mostrar los colores como se envían"
+  },
+  "tipDarkReader": {
+    "message": "⚠️ Dark Reader también está oscureciendo Gmail y ambos pueden chocar (iconos invisibles, colores raros). Para que se vea mejor, desactiva Dark Reader en mail.google.com."
+  },
+  "darkReaderNoticeOk": {
+    "message": "Entendido"
   }
 }

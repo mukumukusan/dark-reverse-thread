@@ -146,5 +146,13 @@
   "composeOriginalShowWarning": {
     "message": "Underlined text is hard to read on white: show colors as sent",
     "description": "Same tooltip while some text has a color that recipients on a white screen can hardly read (that text is underlined)"
+  },
+  "tipDarkReader": {
+    "message": "⚠️ Dark Reader is darkening Gmail too, and the two can clash (hidden icons, odd colors). For the best look, turn Dark Reader off for mail.google.com.",
+    "description": "Popup tip, shown only when the open Gmail tab is also darkened by the Dark Reader extension."
+  },
+  "darkReaderNoticeOk": {
+    "message": "Got it",
+    "description": "Button that closes the Dark Reader notice on the Gmail page for good."
   }
 }

@@ -1,0 +1,38 @@
+<!doctype html>
+<html data-darkreader-mode="dynamic">
+<head>
+  <meta charset="utf-8">
+  <title>Dark Reader notice already closed</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+window.__GTR_MOCK__ = { local: { darkReaderNoticeDismissed: true } };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('a notice closed once with "Got it" never comes back', async () => {
+  await sleep(500);
+  document.body.appendChild(document.createElement('div'));
+  await sleep(300);
+  assert(!document.getElementById('gtr-dark-reader-notice'));
+});
+
+test('with dark mode off, the popup is not told about a clash either', async () => {
+  chrome.storage.sync.set({ smartDark: false });
+  await sleep(100);
+  assertEqual((await gtrSendMessage({ type: 'gtr-status' })).darkReader, false);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

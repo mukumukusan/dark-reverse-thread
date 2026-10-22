@@ -1,0 +1,87 @@
+<!doctype html>
+<html data-darkreader-mode="dynamic" data-darkreader-scheme="dark">
+<head>
+  <meta charset="utf-8">
+  <title>Dark Reader notice on the Gmail page</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+document.getElementById('compose-window').remove(); // no compose window open: the notice shows
+// Dark Reader marked this page (attributes on <html> above), as it does in its dynamic mode
+window.__GTR_MOCK__ = { messages: { tipDarkReader: 'Dark Reader tip', darkReaderNoticeOk: 'Got it' } };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const notice = () => document.getElementById('gtr-dark-reader-notice');
+const poke = () => document.body.appendChild(document.createElement('div')); // any DOM change Gmail makes
+
+test('when Dark Reader also darkens Gmail, a notice says so on the page itself', async () => {
+  await waitFor(notice, 2000);
+  assert(notice(), 'notice shown');
+  assert(notice().textContent.includes('Dark Reader tip'), 'the tip text');
+  assertEqual(notice().querySelector('button').textContent, 'Got it');
+  const box = notice().getBoundingClientRect();
+  assertEqual(getComputedStyle(notice()).position, 'fixed');
+  assert(box.right > innerWidth - 60 && box.bottom > innerHeight - 160, 'bottom right, near the quick bar');
+});
+
+test('the notice stays out of the way while a compose window is open', () => {
+  document.documentElement.classList.add('gtr-compose-open');
+  try {
+    assertEqual(getComputedStyle(notice()).display, 'none');
+  } finally {
+    document.documentElement.classList.remove('gtr-compose-open');
+  }
+});
+
+test('with dark mode off there is nothing to clash, so no notice', async () => {
+  chrome.storage.sync.set({ smartDark: false });
+  await waitFor(() => !notice(), 2000);
+  assert(!notice(), 'gone with dark mode off');
+  chrome.storage.sync.set({ smartDark: true });
+  await waitFor(notice, 2000);
+  assert(notice(), 'back with dark mode on');
+});
+
+test('once Dark Reader is turned off for Gmail, the notice goes away', async () => {
+  const html = document.documentElement;
+  html.removeAttribute('data-darkreader-mode');
+  html.removeAttribute('data-darkreader-scheme');
+  poke();
+  await waitFor(() => !notice(), 2000);
+  assert(!notice(), 'gone');
+  html.setAttribute('data-darkreader-mode', 'dynamic');
+  poke();
+  await waitFor(notice, 2000);
+  assert(notice(), 'back when Dark Reader returns');
+});
+
+test('"Got it" closes the notice for good (one yes/no flag on this device)', async () => {
+  notice().querySelector('button').click();
+  assert(!notice(), 'closed');
+  await sleep(50);
+  assertEqual(gtrStores.local.darkReaderNoticeDismissed, true);
+  assert(!('darkReaderNoticeDismissed' in gtrStores.sync), 'not synced');
+  poke();
+  chrome.storage.sync.set({ reverseOrder: true });
+  await sleep(500);
+  assert(!notice(), 'not shown again');
+});
+
+test('the popup still learns about Dark Reader after the notice is closed', async () => {
+  assertEqual((await gtrSendMessage({ type: 'gtr-status' })).darkReader, true);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>
