@@ -76,6 +76,7 @@ Dark Reverse Thread fixes both.
 
 ■ The newest email on top
 • Threads are shown newest-first, so the latest reply is the first thing you see.
+• Reverses Gmail's oldest-first conversation order, so long threads read from the top.
 • Put the Reply / Forward buttons and the reply box right below (default) or right above the newest email.
 
 ■ Made to pair with Gmail's theme
@@ -88,7 +89,7 @@ Dark Reverse Thread fixes both.
 
 ■ Privacy
 • Nothing is collected or sent anywhere. All changes happen inside your browser.
-• Only your display settings (on / off and so on) and whether Gmail uses a light theme are saved.
+• Only your display settings (on / off and so on), whether Gmail uses a light theme and whether you closed the Dark Reader notice are saved.
 
 Dark Reverse Thread is an independent project, not affiliated with or endorsed by Google. Gmail is a trademark of Google LLC.
 
@@ -229,7 +230,7 @@ https://buymeacoffee.com/mukumukusan
 
 | 権限 / Permission | 理由（日本語） | Justification (English) |
 |---|---|---|
-| `storage` | ダークモード・新しい順・返信欄の位置・クイックバー表示の設定と、Gmail が明るいテーマかどうか（設定画面の案内用）を保存するため。 | To save the display settings (dark mode, newest-first order, reply position, quick bar visibility) and whether Gmail uses a light theme (for a tip in the popup). |
+| `storage` | ダークモード・新しい順・返信欄の位置・クイックバー表示の設定と、Gmail が明るいテーマかどうか（設定画面の案内用）を保存するため。 | To save the display settings (dark mode, newest-first order, reply position, quick bar visibility), whether Gmail uses a light theme (for a tip in the popup) and whether the Dark Reader notice was closed. |
 | ホスト権限 `https://mail.google.com/*`（コンテンツスクリプト） | Gmail の画面に CSS とスクリプトを適用し、表示の色と並び順を変えるため。Gmail 以外のサイトでは動作しません。 | To apply the stylesheet and script that change colors and message order on the Gmail page. It does not run on any other site. |
 
 ### リモートコード / Remote code
