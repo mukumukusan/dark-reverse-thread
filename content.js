@@ -1167,6 +1167,8 @@
   function noteGmailTheme() {
     const loading = !document.querySelector('header[role="banner"]') && Date.now() - scriptStart < THEME_HEADER_WAIT;
     if (loading) return;
+    // Dark Reader paints Gmail's background dark whatever Gmail's theme is: keep the last answer
+    if (document.querySelector(DARK_READER_MARKS)) return;
     const bg = document.body && parseRGB(getComputedStyle(document.body).backgroundColor);
     if (!bg || bg.a < 0.5 || !isContextValid()) return; // a picture theme or no context: unknown
     const light = rgbToHsl(bg).l > 0.5;

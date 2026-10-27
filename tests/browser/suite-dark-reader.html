@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Dark Reader notice on the Gmail page</title>
   <link rel="stylesheet" href="../../styles.css">
-  <style>body { margin: 0; }</style>
+  <style>body { margin: 0; background: #181a1b; } /* Dark Reader's paint over a light Gmail theme */</style>
 </head>
 <body>
   <script src="harness.js"></script>
@@ -13,7 +13,7 @@
 buildGmail();
 document.getElementById('compose-window').remove(); // no compose window open: the notice shows
 // Dark Reader marked this page (attributes on <html> above), as it does in its dynamic mode
-window.__GTR_MOCK__ = { messages: { tipDarkReader: 'Dark Reader tip', darkReaderNoticeOk: 'Got it' } };
+window.__GTR_MOCK__ = { local: { gmailLightTheme: true }, messages: { tipDarkReader: 'Dark Reader tip', darkReaderNoticeOk: 'Got it' } };
 </script>
   <script src="chrome-mock.js"></script>
   <script src="../../settings.js"></script>
@@ -40,6 +40,14 @@ test('the notice stays out of the way while a compose window is open', () => {
   } finally {
     document.documentElement.classList.remove('gtr-compose-open');
   }
+});
+
+test("Dark Reader's paint does not count as Gmail's theme (a light theme stays light for the popup)", async () => {
+  await sleep(1500);
+  poke();
+  await sleep(1500);
+  assertEqual(gtrStores.local.gmailLightTheme, true, 'not overwritten with dark');
+  assert(!document.documentElement.classList.contains('gtr-gmail-dark-theme'), 'still judged light');
 });
 
 test('with dark mode off there is nothing to clash, so no notice', async () => {

@@ -111,7 +111,7 @@
     "message": "Unterstrichener Text ist auf Weiß schwer lesbar: Farben wie versendet anzeigen"
   },
   "tipDarkReader": {
-    "message": "⚠️ Dark Reader dunkelt Gmail ebenfalls ab, und beides kann sich in die Quere kommen (unsichtbare Symbole, seltsame Farben). Für die beste Darstellung schalte Dark Reader für mail.google.com aus."
+    "message": "⚠️ Dark Reader dunkelt Gmail ebenfalls ab, und beides kann sich in die Quere kommen (unsichtbare Symbole, seltsame Farben). Für die beste Darstellung schalte Dark Reader für mail.google.com aus. Damit auch der Posteingang dunkel bleibt, stelle das Gmail-Design auf „Dunkel“."
   },
   "darkReaderNoticeOk": {
     "message": "Verstanden"

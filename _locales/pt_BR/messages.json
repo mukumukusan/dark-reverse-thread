@@ -111,7 +111,7 @@
     "message": "O texto sublinhado fica difícil de ler no branco: mostrar as cores como serão enviadas"
   },
   "tipDarkReader": {
-    "message": "⚠️ O Dark Reader também está escurecendo o Gmail, e os dois podem entrar em conflito (ícones invisíveis, cores estranhas). Para a melhor aparência, desative o Dark Reader em mail.google.com."
+    "message": "⚠️ O Dark Reader também está escurecendo o Gmail, e os dois podem entrar em conflito (ícones invisíveis, cores estranhas). Para a melhor aparência, desative o Dark Reader em mail.google.com. Para manter a caixa de entrada escura também, escolha o tema Escuro do Gmail."
   },
   "darkReaderNoticeOk": {
     "message": "Entendi"
