@@ -111,7 +111,7 @@
     "message": "Unterstrichener Text ist auf Weiß schwer lesbar: Farben wie versendet anzeigen"
   },
   "themeNotice": {
-    "message": "Diese Erweiterung dunkelt E-Mails und Konversationen ab; der Posteingang folgt dem Gmail-Design. Wähle das Design „Dunkel“, damit ganz Gmail dunkel wird.",
+    "message": "Diese Erweiterung dunkelt nur E-Mails und Konversationen ab; der Posteingang folgt dem Gmail-Design. Wähle das Design „Dunkel“, damit ganz Gmail dunkel wird.",
     "description": "Notice on the Gmail page (once, until closed) when Gmail uses a light theme"
   },
   "tipDarkReader": {

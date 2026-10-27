@@ -111,7 +111,7 @@
     "message": "El texto subrayado se lee mal sobre blanco: mostrar los colores como se envían"
   },
   "themeNotice": {
-    "message": "Esta extensión oscurece los correos y las conversaciones; la bandeja de entrada sigue el tema de Gmail. Elige el tema Oscuro de Gmail para oscurecer todo Gmail.",
+    "message": "Esta extensión oscurece solo los correos y las conversaciones; la bandeja de entrada sigue el tema de Gmail. Elige el tema Oscuro de Gmail para oscurecer todo Gmail.",
     "description": "Notice on the Gmail page (once, until closed) when Gmail uses a light theme"
   },
   "tipDarkReader": {

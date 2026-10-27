@@ -148,7 +148,7 @@
     "description": "Same tooltip while some text has a color that recipients on a white screen can hardly read (that text is underlined)"
   },
   "themeNotice": {
-    "message": "This extension darkens emails and conversations; the inbox follows Gmail's own theme. Set Gmail's theme to Dark to darken all of Gmail.",
+    "message": "This extension darkens only emails and conversations; the inbox follows Gmail's own theme. Set Gmail's theme to Dark to darken all of Gmail.",
     "description": "Notice on the Gmail page (once, until closed) when Gmail uses a light theme"
   },
   "tipDarkReader": {
