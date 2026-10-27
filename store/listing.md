@@ -89,7 +89,7 @@ Dark Reverse Thread fixes both.
 
 ■ Privacy
 • Nothing is collected or sent anywhere. All changes happen inside your browser.
-• Only your display settings (on / off and so on), whether Gmail uses a light theme and whether you closed the Dark Reader notice are saved.
+• Only your display settings (on / off and so on), whether Gmail uses a light theme and whether you closed the extension's notices are saved.
 
 Dark Reverse Thread is an independent project, not affiliated with or endorsed by Google. Gmail is a trademark of Google LLC.
 
@@ -230,7 +230,7 @@ https://buymeacoffee.com/mukumukusan
 
 | 権限 / Permission | 理由（日本語） | Justification (English) |
 |---|---|---|
-| `storage` | ダークモード・新しい順・返信欄の位置・クイックバー表示の設定と、Gmail が明るいテーマかどうか（設定画面の案内用）を保存するため。 | To save the display settings (dark mode, newest-first order, reply position, quick bar visibility), whether Gmail uses a light theme (for a tip in the popup) and whether the Dark Reader notice was closed. |
+| `storage` | ダークモード・新しい順・返信欄の位置・クイックバー表示の設定と、Gmail が明るいテーマかどうか（設定画面と Gmail の画面の案内用）と、知らせを閉じたかどうかを保存するため。 | To save the display settings (dark mode, newest-first order, reply position, quick bar visibility), whether Gmail uses a light theme (for a tip in the popup and on the page) and whether the extension's notices were closed. |
 | ホスト権限 `https://mail.google.com/*`（コンテンツスクリプト） | Gmail の画面に CSS とスクリプトを適用し、表示の色と並び順を変えるため。Gmail 以外のサイトでは動作しません。 | To apply the stylesheet and script that change colors and message order on the Gmail page. It does not run on any other site. |
 
 ### リモートコード / Remote code

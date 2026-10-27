@@ -110,6 +110,10 @@
   "composeOriginalShowWarning": {
     "message": "Unterstrichener Text ist auf Weiß schwer lesbar: Farben wie versendet anzeigen"
   },
+  "themeNotice": {
+    "message": "Diese Erweiterung dunkelt E-Mails und Konversationen ab; der Posteingang folgt dem Gmail-Design. Wähle das Design „Dunkel“, damit ganz Gmail dunkel wird.",
+    "description": "Notice on the Gmail page (once, until closed) when Gmail uses a light theme"
+  },
   "tipDarkReader": {
     "message": "⚠️ Dark Reader dunkelt Gmail ebenfalls ab, und beides kann sich in die Quere kommen (unsichtbare Symbole, seltsame Farben). Für die beste Darstellung schalte Dark Reader für mail.google.com aus. Damit auch der Posteingang dunkel bleibt, stelle das Gmail-Design auf „Dunkel“."
   },

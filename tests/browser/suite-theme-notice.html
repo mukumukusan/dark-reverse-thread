@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gmail light theme notice</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #ffffff; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+document.getElementById('compose-window').remove(); // no compose window open: the notice shows
+// Gmail's gear in miniature (as in suite-theme-picker): it opens quick settings with "View all"
+const gear = document.getElementById('gear');
+gear.addEventListener('click', () => {
+  window.gearClicks = (window.gearClicks || 0) + 1;
+  gear.setAttribute('aria-expanded', 'true');
+});
+window.__GTR_MOCK__ = { messages: { themeNotice: 'Theme notice', tipOpenTheme: 'Choose a theme', darkReaderNoticeOk: 'Got it' } };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const notice = () => document.getElementById('gtr-theme-notice');
+const poke = () => document.body.appendChild(document.createElement('div')); // any DOM change Gmail makes
+const buttons = () => Array.from(notice().querySelectorAll('button'));
+
+test('on a light Gmail theme, a notice on the page suggests Gmail\'s Dark theme', async () => {
+  await waitFor(notice, 3000);
+  assert(notice(), 'notice shown');
+  assert(notice().textContent.includes('Theme notice'), 'the notice text');
+  assertEqual(buttons().map((b) => b.textContent).join(' | '), 'Choose a theme | Got it');
+  assertEqual(getComputedStyle(notice()).position, 'fixed');
+  const box = notice().getBoundingClientRect();
+  assert(box.right > innerWidth - 60 && box.bottom > innerHeight - 160, 'bottom right, near the quick bar');
+});
+
+test('the notice stays out of the way while a compose window is open', () => {
+  document.documentElement.classList.add('gtr-compose-open');
+  try {
+    assertEqual(getComputedStyle(notice()).display, 'none');
+  } finally {
+    document.documentElement.classList.remove('gtr-compose-open');
+  }
+});
+
+test('once Gmail is on a dark theme, the notice goes away (and comes back on a light one)', async () => {
+  await sleep(1200); // leave the throttle window of the theme check
+  document.body.style.background = '#111111';
+  poke();
+  await waitFor(() => !notice(), 2000);
+  assert(!notice(), 'gone on a dark theme');
+  await sleep(1200);
+  document.body.style.background = '#ffffff';
+  poke();
+  await waitFor(notice, 2000);
+  assert(notice(), 'back on a light theme');
+});
+
+test('with dark mode off, no notice', async () => {
+  chrome.storage.sync.set({ smartDark: false });
+  await waitFor(() => !notice(), 2000);
+  assert(!notice(), 'gone with dark mode off');
+  chrome.storage.sync.set({ smartDark: true });
+  await waitFor(notice, 2000);
+  assert(notice(), 'back with dark mode on');
+});
+
+test('"Choose a theme" opens Gmail\'s theme settings and closes the notice for good', async () => {
+  buttons()[0].click();
+  assert(!notice(), 'closed');
+  assertEqual(window.gearClicks, 1, 'the gear was pressed');
+  await sleep(50);
+  assertEqual(gtrStores.local.themeNoticeDismissed, true);
+  assert(!('themeNoticeDismissed' in gtrStores.sync), 'not synced');
+  poke();
+  await sleep(500);
+  assert(!notice(), 'not shown again');
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

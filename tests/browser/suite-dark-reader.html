@@ -48,6 +48,7 @@ test("Dark Reader's paint does not count as Gmail's theme (a light theme stays l
   await sleep(1500);
   assertEqual(gtrStores.local.gmailLightTheme, true, 'not overwritten with dark');
   assert(!document.documentElement.classList.contains('gtr-gmail-dark-theme'), 'still judged light');
+  assert(!document.getElementById('gtr-theme-notice'), 'only the Dark Reader notice, not the theme one too');
 });
 
 test('with dark mode off there is nothing to clash, so no notice', async () => {

@@ -110,6 +110,10 @@
   "composeOriginalShowWarning": {
     "message": "下線の文字は相手の白い画面では読みにくい色です（送られる色で表示）"
   },
+  "themeNotice": {
+    "message": "この拡張機能はメールとスレッドを暗くします。受信トレイは Gmail のテーマのとおりに表示されます。Gmail 全体を暗くするには、Gmail のテーマを「ダーク」にしてください。",
+    "description": "Notice on the Gmail page (once, until closed) when Gmail uses a light theme"
+  },
   "tipDarkReader": {
     "message": "⚠️ Dark Reader も Gmail を暗くしているため、表示がぶつかることがあります（アイコンが見えない、色がおかしい など）。きれいに表示するには、Dark Reader で mail.google.com をオフにしてください。受信トレイも暗くするには、Gmail のテーマを「ダーク」にしてください。"
   },

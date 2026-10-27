@@ -1532,7 +1532,7 @@ html.gmail-dark-active.gtr-popout,
 /* 作成ウィンドウ（右下・全画面）が開いている間は隠す。右下に畳んだ作成ウィンドウや送信欄に重なるため
    （content.js が .gtr-compose-open を付ける。body:has() はページの書き換えのたびに全体を調べ直して重い） */
 .gtr-compose-open #gmail-reverser-quick-toggle,
-.gtr-compose-open #gtr-dark-reader-notice {
+.gtr-compose-open .gtr-notice {
   display: none !important;
 }
 
@@ -1607,8 +1607,8 @@ html.gmail-dark-active.gtr-popout,
   border-color: var(--gtr-dark-accent-hover);
 }
 
-/* Dark Reader も Gmail を暗くしているときの知らせ（クイックバーの上。「わかった」で閉じると二度と出ない） */
-#gtr-dark-reader-notice {
+/* クイックバーの上に出す知らせ（Dark Reader と重なっているとき・Gmail が明るいテーマのとき。閉じると二度と出ない） */
+.gtr-notice {
   position: fixed;
   bottom: 68px;
   right: 24px;
@@ -1617,7 +1617,7 @@ html.gmail-dark-active.gtr-popout,
   max-width: 340px;
   padding: 12px 14px;
   background: var(--gtr-dark-page);
-  border: 1px solid #fdd663;
+  border: 1px solid var(--gtr-dark-accent);
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
   font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -1626,13 +1626,22 @@ html.gmail-dark-active.gtr-popout,
   color: var(--gtr-dark-text);
 }
 
-#gtr-dark-reader-notice .gtr-title {
+.gtr-notice .gtr-title {
   font-weight: 600;
   color: var(--gtr-dark-text-strong);
 }
 
-#gtr-dark-reader-notice p {
+.gtr-notice p {
   margin: 4px 0 10px;
+}
+
+.gtr-notice .gtr-btn + .gtr-btn {
+  margin-left: 6px;
+}
+
+/* Dark Reader との重なりは注意なので黄色の枠 */
+#gtr-dark-reader-notice {
+  border-color: #fdd663;
 }
 
 /* --------------------------------------------------------------------------
@@ -1641,7 +1650,7 @@ html.gmail-dark-active.gtr-popout,
 @media print {
   /* クイック操作バーと Dark Reader の知らせの非表示 */
   #gmail-reverser-quick-toggle,
-  #gtr-dark-reader-notice {
+  .gtr-notice {
     display: none !important;
   }
 
