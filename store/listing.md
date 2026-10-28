@@ -75,8 +75,7 @@ Dark Reverse Thread fixes both.
 • Colors recipients can hardly read on a white screen, such as white or pale yellow, get a dotted yellow underline. Press the ◐ button in the toolbar to see your email exactly as it will be sent.
 
 ■ The newest email on top
-• Threads are shown newest-first, so the latest reply is the first thing you see.
-• Reverses Gmail's oldest-first conversation order, so long threads read from the top.
+• Reverses Gmail's oldest-first thread order: threads are shown newest-first, so the latest reply is the first thing you see.
 • Put the Reply / Forward buttons and the reply box right below (default) or right above the newest email.
 
 ■ Made to pair with Gmail's theme
