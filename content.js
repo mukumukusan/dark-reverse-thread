@@ -1150,6 +1150,9 @@
   let trailingThemeCheck = null;
   let lastGmailLightTheme; // true / false, null for a picture theme (unknown), undefined until seen
   let themeJudged = false; // judged on this page (a picture theme counts, as "unknown")
+  // Pages without Gmail's frame (a conversation in its own window, the print view) are white whatever
+  // the theme, so they are never judged
+  const THEMELESS_PAGE = /\/popout$/.test(location.pathname) || new URLSearchParams(location.search).has('view');
 
   try {
     chrome.storage.local.get({ gmailLightTheme: null }, ({ gmailLightTheme }) => {
@@ -1179,17 +1182,29 @@
   }
 
   function noteGmailTheme() {
+    if (THEMELESS_PAGE) return;
     const loading = !document.querySelector('header[role="banner"]') && Date.now() - scriptStart < THEME_HEADER_WAIT;
     if (loading) return;
     // Dark Reader paints Gmail's background dark whatever Gmail's theme is: keep the last answer
     if (darkReaderPresent()) return;
     const bg = document.body && parseRGB(getComputedStyle(document.body).backgroundColor);
     if (!bg || !isContextValid()) return;
+    const firstJudgement = !themeJudged; // the notice waits for it, even if the stored answer agrees
     themeJudged = true;
-    // A picture theme (transparent background): unknown, so an older "light" answer is dropped
-    const light = bg.a < 0.5 ? null : rgbToHsl(bg).l > 0.5;
-    if (light !== null) document.documentElement.classList.toggle(GMAIL_DARK_THEME_CLASS, !light);
-    if (light === lastGmailLightTheme) return;
+    if (bg.a < 0.5) {
+      // A picture theme (transparent background): unknown here; the last solid answer stays stored
+      if (lastGmailLightTheme !== null || firstJudgement) {
+        lastGmailLightTheme = null;
+        syncThemeNotice();
+      }
+      return;
+    }
+    const light = rgbToHsl(bg).l > 0.5;
+    document.documentElement.classList.toggle(GMAIL_DARK_THEME_CLASS, !light);
+    if (light === lastGmailLightTheme) {
+      if (firstJudgement) syncThemeNotice();
+      return;
+    }
     lastGmailLightTheme = light;
     syncThemeNotice();
     try {
@@ -1224,16 +1239,21 @@
 
   let themeDialogPending = false; // one "View all" click per request, even if the gear is pressed again
 
-  /** `onDarkTile` runs once the Dark theme tile is on screen. */
-  function openThemeSettings(onDarkTile) {
+  /**
+   * From the page notice or the popup alike, the light theme notice is not left over Gmail's panel, and
+   * it ends for good once the Dark tile is on screen, or when Gmail offers no theme choice at all.
+   */
+  function openThemeSettings() {
     const gear = document.querySelector(GEAR_SELECTOR);
     if (!gear) return false;
+    hideThemeNoticeHere();
     if (gear.getAttribute('aria-expanded') !== 'true') gear.click();
     if (themeDialogPending) return true;
     themeDialogPending = true;
     whenVisible(THEME_VIEW_ALL_SELECTOR, (viewAll) => {
       if (!viewAll) {
         themeDialogPending = false;
+        endThemeNotice(); // no theme choice (e.g. locked by an admin): nothing to suggest
         return;
       }
       viewAll.click();
@@ -1242,7 +1262,7 @@
         if (!tile) return;
         tile.scrollIntoView({ block: 'center' });
         tile.setAttribute('data-gtr-suggest', '');
-        if (onDarkTile) onDarkTile();
+        endThemeNotice();
       });
     });
     return true;
@@ -1277,9 +1297,10 @@
   const THEME_NOTICE_ID = 'gtr-theme-notice';
   const THEME_CLOSES_KEY = 'themeNoticeCloses';
   const THEME_NOTICE_MAX_CLOSES = 3;
-  // Only where Gmail has its gear ("Choose a theme" needs it; not in a conversation's own window)
+  // Only from this page's own judgement (the stored flag is shared by every Gmail account), and only
+  // where Gmail has its gear ("Choose a theme" needs it; not in a conversation's own window)
   const themeNoticeWanted = () =>
-    config.smartDark && lastGmailLightTheme === true && !darkReaderPresent() &&
+    config.smartDark && themeJudged && lastGmailLightTheme === true && !darkReaderPresent() &&
     document.querySelector(GEAR_SELECTOR) !== null;
   let themeNoticeCloses = null; // unknown until storage answers
   const noticeCount = (value) => (Number.isInteger(value) && value > 0 ? value : 0);
@@ -1349,15 +1370,22 @@
       !themeNoticeClosedHere && themeNoticeWanted();
     syncNotice(THEME_NOTICE_ID, wanted, 'themeNotice', [
       ['tipOpenTheme', (notice) => {
-        // Ended for good once the Dark theme is on screen; until then it counts as one close
-        const opened = openThemeSettings(() => {
-          themeNoticeCloses = THEME_NOTICE_MAX_CLOSES;
-          rememberNotice(THEME_CLOSES_KEY, THEME_NOTICE_MAX_CLOSES);
-        });
-        if (opened) close(notice, themeNoticeCloses + 1); // no gear yet: leave the notice for another try
+        // Counts as one close until openThemeSettings ends it; no gear yet: leave it for another try
+        if (openThemeSettings()) close(notice, themeNoticeCloses + 1);
       }],
       ['noticeClose', (notice) => close(notice, themeNoticeCloses + 1)]
     ]);
+  }
+
+  function hideThemeNoticeHere() {
+    themeNoticeClosedHere = true;
+    syncThemeNotice();
+  }
+
+  function endThemeNotice() {
+    if (themeNoticeCloses === THEME_NOTICE_MAX_CLOSES) return;
+    themeNoticeCloses = THEME_NOTICE_MAX_CLOSES;
+    rememberNotice(THEME_CLOSES_KEY, THEME_NOTICE_MAX_CLOSES);
   }
 
   function syncNotices() {
@@ -1373,7 +1401,10 @@
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message && message.type === 'gtr-open-theme-settings') sendResponse({ opened: openThemeSettings() });
-    if (message && message.type === 'gtr-status') sendResponse({ darkReader: darkReaderClashes() });
+    if (message && message.type === 'gtr-status') {
+      // This tab's own theme: accounts can differ from the stored flag (unknown until judged)
+      sendResponse({ darkReader: darkReaderClashes(), lightTheme: themeJudged ? lastGmailLightTheme : undefined });
+    }
   });
 
   // A Gmail tab opened from that button: open the panel once Gmail's header is ready

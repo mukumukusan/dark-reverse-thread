@@ -20,12 +20,16 @@ window.__GTR_MOCK__ = { local: { gmailLightTheme: true } };
   <script src="../../content.js"></script>
   <script>
 
-test('a picture theme forgets the old "light" answer, so no theme notice', async () => {
+test('a picture theme does not count as light, so no theme notice', async () => {
   await sleep(1500);
   document.body.appendChild(document.createElement('div'));
   await sleep(500);
-  assertEqual(gtrStores.local.gmailLightTheme, null, 'unknown');
   assert(!document.getElementById('gtr-theme-notice'));
+  assertEqual(gtrStores.local.gmailLightTheme, true, 'the last solid answer is kept (not rewritten each visit)');
+});
+
+test('the popup is told the theme is unknown here', async () => {
+  assertEqual((await gtrSendMessage({ type: 'gtr-status' })).lightTheme, null);
 });
 
 runTests();

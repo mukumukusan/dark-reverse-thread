@@ -1,7 +1,7 @@
 /**
  * A fake of the chrome.* APIs the extension uses. Configure it before this file loads with
  * window.__GTR_MOCK__ = { sync, local, messages, lang, version, sendMessageThrows, sendMessageResponse,
- * userAgent }. userAgent stands in for navigator.userAgent (e.g. to look like Microsoft Edge).
+ * userAgent, storageDelay }. storageDelay (ms) holds back storage.get callbacks, like a slow first read. userAgent stands in for navigator.userAgent (e.g. to look like Microsoft Edge).
  * Like the real API, storage callbacks and change events arrive asynchronously.
  */
 (() => {
@@ -23,7 +23,7 @@
   const makeArea = (area) => ({
     get(defaults, callback) {
       const result = read(area, defaults);
-      if (callback) setTimeout(() => callback(result), 0);
+      if (callback) setTimeout(() => callback(result), config.storageDelay || 0);
       return Promise.resolve(result);
     },
     set(items, callback) {

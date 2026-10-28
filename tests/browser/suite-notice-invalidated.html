@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Notices after the extension was updated</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #ffffff; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+document.getElementById('compose-window').remove();
+window.__GTR_MOCK__ = {};
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('once the extension is updated, the old page script takes its notice down', async () => {
+  await waitFor(() => document.getElementById('gtr-theme-notice'), 3000);
+  delete chrome.runtime.id; // what an extension update does to the old content script
+  document.body.appendChild(document.createElement('div'));
+  await sleep(300);
+  assert(!document.getElementById('gtr-theme-notice'));
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

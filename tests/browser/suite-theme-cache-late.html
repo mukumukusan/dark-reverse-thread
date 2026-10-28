@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>A stored theme arriving after the page was judged</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #111111; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+document.getElementById('compose-window').remove();
+// Another account (or an older visit) saved "light"; this page is on Gmail's dark theme
+window.__GTR_MOCK__ = { local: { gmailLightTheme: true }, storageDelay: 300 };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('the page\'s own judgement wins over a stored answer that arrives later', async () => {
+  await sleep(600);
+  assert(document.documentElement.classList.contains('gtr-gmail-dark-theme'), 'still dark');
+  assert(!document.getElementById('gtr-theme-notice'), 'no theme notice');
+});
+
+test('the popup is told this tab\'s own theme', async () => {
+  assertEqual((await gtrSendMessage({ type: 'gtr-status' })).lightTheme, false);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

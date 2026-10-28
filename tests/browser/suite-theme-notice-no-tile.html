@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>"Choose a theme" when the Dark tile is not found</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #ffffff; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+document.getElementById('compose-window').remove();
+// Gmail's gear opens quick settings with "View all", which opens the theme dialog
+const gear = document.getElementById('gear');
+gear.addEventListener('click', () => {
+  gear.setAttribute('aria-expanded', 'true');
+  if (document.querySelector('[jsname="JFZqac"]')) return;
+  const viewAll = document.createElement('button');
+  viewAll.setAttribute('jsname', 'JFZqac');
+  viewAll.addEventListener('click', () => {
+    document.body.insertAdjacentHTML('beforeend', '<div role="dialog"><div role="option" bgid="basicwhite">Default</div></div>');
+  });
+  document.body.appendChild(viewAll);
+});
+window.__GTR_MOCK__ = {};
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('if the Dark tile never shows, "Choose a theme" counts as one close only', async () => {
+  await waitFor(() => document.getElementById('gtr-theme-notice'), 3000);
+  document.getElementById('gtr-theme-notice').querySelectorAll('button')[0].click();
+  await sleep(4000);
+  assertEqual(gtrStores.local.themeNoticeCloses, 1);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

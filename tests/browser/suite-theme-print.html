@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gmail's print view is not judged</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #ffffff; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+history.replaceState(null, '', location.pathname + '?view=pt'); // Gmail's print view
+document.body.insertAdjacentHTML('beforeend', '<div>Printable conversation</div>');
+window.__GTR_MOCK__ = {};
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('the white print view is never saved as a light Gmail theme', async () => {
+  await sleep(11000); // past the wait for Gmail's header
+  document.body.appendChild(document.createElement('div'));
+  await sleep(1500);
+  assert(!('gmailLightTheme' in gtrStores.local), 'nothing saved');
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

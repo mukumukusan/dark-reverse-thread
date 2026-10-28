@@ -1,0 +1,34 @@
+<!doctype html>
+<html data-darkreader-mode="dynamic">
+<head>
+  <meta charset="utf-8">
+  <title>Dark Reader notice waits for storage</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #181a1b; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+document.getElementById('compose-window').remove();
+window.__GTR_MOCK__ = { local: { darkReaderNoticeDismissed: true }, storageDelay: 500 };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('a closed Dark Reader notice does not flash up before storage answers', async () => {
+  for (let i = 0; i < 8; i++) {
+    document.body.appendChild(document.createElement('div'));
+    await sleep(100);
+    assert(!document.getElementById('gtr-dark-reader-notice'), `not shown at ${(i + 1) * 100} ms`);
+  }
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

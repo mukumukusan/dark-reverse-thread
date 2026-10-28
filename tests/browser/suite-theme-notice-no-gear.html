@@ -26,7 +26,7 @@ test('without Gmail\'s gear, "Choose a theme" could not work, so no notice', asy
   assert(!document.getElementById('gtr-theme-notice'));
 });
 
-test('once the gear is there, the notice shows (the stored light theme is used)', async () => {
+test('once the gear is there, the page is judged light and the notice shows', async () => {
   document.body.insertAdjacentHTML('afterbegin',
     '<header role="banner" id="header"><a class="FH" role="button" aria-expanded="false" id="gear">⚙</a></header>');
   await waitFor(() => document.getElementById('gtr-theme-notice'), 2000);

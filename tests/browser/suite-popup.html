@@ -115,6 +115,19 @@
       assertEqual(win.getComputedStyle(win.document.getElementById('themeLink')).display, 'none');
     });
 
+    test('in a Gmail tab, the tab\'s own theme wins over the stored one (another account may differ)', async () => {
+      const dark = await openPopup({ local: { gmailLightTheme: true }, sendMessageResponse: { lightTheme: false } });
+      assert(!visible(dark, 'themeTip') && visible(dark, 'themeLink'), 'this tab is dark: link only');
+      const light = await openPopup({ local: { gmailLightTheme: false }, sendMessageResponse: { lightTheme: true } });
+      assert(visible(light, 'themeTip') && !visible(light, 'themeLink'), 'this tab is light: tip');
+    });
+
+    test('while Dark Reader darkens the tab, only its tip shows (as on the page)', async () => {
+      const win = await openPopup({ local: { gmailLightTheme: true }, sendMessageResponse: { darkReader: true } });
+      assert(visible(win, 'darkReaderTip'), 'Dark Reader tip');
+      assert(!visible(win, 'themeTip') && visible(win, 'themeLink'), 'no light theme tip');
+    });
+
     test('in a Gmail tab, the link asks the page to open the theme picker and closes the popup', async () => {
       const win = await openPopup({ sendMessageResponse: { opened: true } });
       win.document.getElementById('openThemeLink').click();
