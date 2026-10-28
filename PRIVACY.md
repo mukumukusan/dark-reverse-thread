@@ -23,7 +23,7 @@
 
 これらはブラウザの `chrome.storage.sync` に保存されます。ブラウザの同期を有効にしている場合は、ブラウザの仕組みによって、同じアカウント（Chrome では Google アカウント、Microsoft Edge では Microsoft アカウント）でログインしている他の端末にも同期されます。開発者がこれらの設定を見ることはできません。
 
-このほか、Gmail が明るいテーマかどうか（はい／いいえ）だけを、設定画面に案内を表示するために、お使いの端末の中（`chrome.storage.local`）に保存します。案内の「テーマを選ぶ」ボタンで新しい Gmail のタブを開くときは、そのタブでテーマの選択画面を開くための目印（押した時刻）も一時的に保存し、Gmail が開いたらすぐに消します。また、Gmail の画面に出す知らせ（Dark Reader（別の拡張機能）も Gmail を暗くしているとき、Gmail が明るいテーマのとき）を閉じたかどうか（それぞれ はい／いいえ）も保存します。どれも同期や送信はされません。本拡張機能が Gmail の設定（テーマなど）を変更することはありません。
+このほか、Gmail が明るいテーマかどうか（はい／いいえ）だけを、設定画面に案内を表示するために、お使いの端末の中（`chrome.storage.local`）に保存します。案内の「テーマを選ぶ」ボタンで新しい Gmail のタブを開くときは、そのタブでテーマの選択画面を開くための目印（押した時刻）も一時的に保存し、Gmail が開いたらすぐに消します。また、Gmail の画面に出す知らせ（Dark Reader（別の拡張機能）も Gmail を暗くしているとき、Gmail が明るいテーマのとき）を閉じたかどうか（Dark Reader の知らせは はい／いいえ、明るいテーマの知らせは閉じた回数）も保存します。どれも同期や送信はされません。本拡張機能が Gmail の設定（テーマなど）を変更することはありません。
 
 ### 通信
 本拡張機能は外部のサーバーと通信しません。アクセス解析、広告、トラッキングも使用していません。
@@ -61,7 +61,7 @@ The extension stores only these display settings:
 
 They are stored in the browser's `chrome.storage.sync`. If browser sync is turned on, the browser syncs them to your other devices signed in to the same account (a Google account in Chrome, a Microsoft account in Microsoft Edge). The developer cannot see these settings.
 
-In addition, only whether Gmail uses a light theme (yes / no) is kept on your device (`chrome.storage.local`) to show a tip in the settings popup. When the tip's "Choose a theme" button opens a new Gmail tab, a temporary marker (the time of the click) is also kept so that tab can open the theme picker; it is deleted as soon as Gmail opens. Whether you closed each notice shown on the Gmail page (when Dark Reader, another extension, darkens Gmail too, and when Gmail uses a light theme) (yes / no each) is kept there as well. None of these is synced or sent anywhere. The extension never changes Gmail's settings (such as the theme) itself.
+In addition, only whether Gmail uses a light theme (yes / no) is kept on your device (`chrome.storage.local`) to show a tip in the settings popup. When the tip's "Choose a theme" button opens a new Gmail tab, a temporary marker (the time of the click) is also kept so that tab can open the theme picker; it is deleted as soon as Gmail opens. Whether you closed each notice shown on the Gmail page (when Dark Reader, another extension, darkens Gmail too, and when Gmail uses a light theme) (yes / no for the Dark Reader notice, the number of times closed for the light theme notice) is kept there as well. None of these is synced or sent anywhere. The extension never changes Gmail's settings (such as the theme) itself.
 
 ### Network
 The extension does not communicate with any external server. It uses no analytics, advertising or tracking.

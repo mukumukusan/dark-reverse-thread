@@ -114,6 +114,10 @@
     "message": "Esta extensão escurece apenas os e-mails e as conversas; a caixa de entrada segue o tema do Gmail. Escolha o tema Escuro do Gmail para escurecer todo o Gmail.",
     "description": "Notice on the Gmail page (once, until closed) when Gmail uses a light theme"
   },
+  "noticeClose": {
+    "message": "Fechar",
+    "description": "Button that hides the Gmail theme notice until Gmail is opened again (after three closes it no longer shows)"
+  },
   "tipDarkReader": {
     "message": "⚠️ O Dark Reader também está escurecendo o Gmail, e os dois podem entrar em conflito (ícones invisíveis, cores estranhas). Para a melhor aparência, desative o Dark Reader em mail.google.com. Para manter a caixa de entrada escura também, escolha o tema Escuro do Gmail."
   },

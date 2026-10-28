@@ -1241,8 +1241,9 @@
    *
    * On a light Gmail theme the inbox stays light (only conversations and compose windows are darkened
    * here), which looks as if the extension did nothing right after installing it. A notice in the same
-   * place suggests Gmail's own Dark theme, until "Choose a theme" or "Got it" closes it for good
-   * (another yes/no flag). Never both notices at once: the theme is not judged under Dark Reader.
+   * place suggests Gmail's own Dark theme each time Gmail is opened. "Close" hides it until the next
+   * visit, and after three closes it stays away for good; "Choose a theme" ends it at once (a close
+   * count in storage.local). Never both notices at once: the theme is not judged under Dark Reader.
    */
   const DARK_READER_MARKS = 'html[data-darkreader-mode], html[data-darkreader-scheme], meta[name="darkreader"], style.darkreader';
   const DARK_READER_NOTICE_ID = 'gtr-dark-reader-notice';
@@ -1251,16 +1252,18 @@
   let darkReaderNoticeDismissed = null; // unknown until storage answers
 
   const THEME_NOTICE_ID = 'gtr-theme-notice';
-  const THEME_DISMISSED_KEY = 'themeNoticeDismissed';
+  const THEME_CLOSES_KEY = 'themeNoticeCloses';
+  const THEME_NOTICE_MAX_CLOSES = 3;
   const themeNoticeWanted = () =>
     config.smartDark && lastGmailLightTheme === true && document.querySelector(DARK_READER_MARKS) === null;
-  let themeNoticeDismissed = null; // unknown until storage answers
+  let themeNoticeCloses = null; // unknown until storage answers
+  let themeNoticeClosedHere = false; // closed on this visit to Gmail
 
-  /** Saves "closed for good" for a notice (one yes/no flag in storage.local). */
-  function rememberDismissed(key) {
+  /** Saves a notice's flag or count in storage.local. */
+  function rememberNotice(key, value) {
     if (!isContextValid()) return;
     try {
-      chrome.storage.local.set({ [key]: true }).catch(() => {});
+      chrome.storage.local.set({ [key]: value }).catch(() => {});
     } catch {
       // invalidated between the check and the call
     }
@@ -1303,22 +1306,26 @@
       ['darkReaderNoticeOk', (notice) => {
         darkReaderNoticeDismissed = true;
         notice.remove();
-        rememberDismissed(DARK_READER_DISMISSED_KEY);
+        rememberNotice(DARK_READER_DISMISSED_KEY, true);
       }]
     ]);
   }
 
   function syncThemeNotice() {
-    const close = (notice) => {
-      themeNoticeDismissed = true;
+    const close = (notice, closes) => {
+      themeNoticeClosedHere = true;
+      themeNoticeCloses = closes;
       notice.remove();
-      rememberDismissed(THEME_DISMISSED_KEY);
+      rememberNotice(THEME_CLOSES_KEY, closes);
     };
-    syncNotice(THEME_NOTICE_ID, themeNoticeDismissed === false && themeNoticeWanted(), 'themeNotice', [
+    const wanted = themeNoticeCloses !== null && themeNoticeCloses < THEME_NOTICE_MAX_CLOSES &&
+      !themeNoticeClosedHere && themeNoticeWanted();
+    syncNotice(THEME_NOTICE_ID, wanted, 'themeNotice', [
       ['tipOpenTheme', (notice) => {
-        if (openThemeSettings()) close(notice); // no gear yet: leave the notice for another try
+        // no gear yet: leave the notice for another try
+        if (openThemeSettings()) close(notice, THEME_NOTICE_MAX_CLOSES);
       }],
-      ['darkReaderNoticeOk', close]
+      ['noticeClose', (notice) => close(notice, themeNoticeCloses + 1)]
     ]);
   }
 
@@ -1327,9 +1334,9 @@
     syncThemeNotice();
   }
 
-  chrome.storage.local.get({ [DARK_READER_DISMISSED_KEY]: false, [THEME_DISMISSED_KEY]: false }, (items) => {
+  chrome.storage.local.get({ [DARK_READER_DISMISSED_KEY]: false, [THEME_CLOSES_KEY]: 0 }, (items) => {
     darkReaderNoticeDismissed = items[DARK_READER_DISMISSED_KEY];
-    themeNoticeDismissed = items[THEME_DISMISSED_KEY];
+    themeNoticeCloses = items[THEME_CLOSES_KEY];
     syncNotices();
   });
 

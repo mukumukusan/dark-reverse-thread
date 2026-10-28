@@ -12,14 +12,14 @@
   <script>
 buildGmail();
 document.getElementById('compose-window').remove();
-window.__GTR_MOCK__ = { local: { themeNoticeDismissed: true } };
+window.__GTR_MOCK__ = { local: { themeNoticeCloses: 3 } };
 </script>
   <script src="chrome-mock.js"></script>
   <script src="../../settings.js"></script>
   <script src="../../content.js"></script>
   <script>
 
-test('a notice closed once never comes back', async () => {
+test('a notice closed three times never comes back', async () => {
   await sleep(1500);
   document.body.appendChild(document.createElement('div'));
   await sleep(300);

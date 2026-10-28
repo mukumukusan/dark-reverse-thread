@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Gmail light theme notice closed with "Got it"</title>
+  <title>Gmail light theme notice closed with "Close"</title>
   <link rel="stylesheet" href="../../styles.css">
   <style>body { margin: 0; background: #ffffff; }</style>
 </head>
@@ -12,7 +12,8 @@
   <script>
 buildGmail();
 document.getElementById('compose-window').remove();
-window.__GTR_MOCK__ = { messages: { themeNotice: 'Theme notice', tipOpenTheme: 'Choose a theme', darkReaderNoticeOk: 'Got it' } };
+// Closed once before, on an earlier visit to Gmail
+window.__GTR_MOCK__ = { local: { themeNoticeCloses: 1 }, messages: { themeNotice: 'Theme notice', tipOpenTheme: 'Choose a theme', noticeClose: 'Close' } };
 </script>
   <script src="chrome-mock.js"></script>
   <script src="../../settings.js"></script>
@@ -21,16 +22,21 @@ window.__GTR_MOCK__ = { messages: { themeNotice: 'Theme notice', tipOpenTheme: '
 
 const notice = () => document.getElementById('gtr-theme-notice');
 
-test('"Got it" closes the notice for good, without opening anything', async () => {
+test('a notice closed on an earlier visit shows again (until it has been closed three times)', async () => {
   await waitFor(notice, 3000);
+  assert(notice(), 'shown again');
+});
+
+test('"Close" closes it until Gmail is opened again, and counts the close', async () => {
   notice().querySelectorAll('button')[1].click();
   assert(!notice(), 'closed');
   assertEqual(document.getElementById('gear').getAttribute('aria-expanded'), 'false', 'the gear was not pressed');
   await sleep(50);
-  assertEqual(gtrStores.local.themeNoticeDismissed, true);
+  assertEqual(gtrStores.local.themeNoticeCloses, 2);
   document.body.appendChild(document.createElement('div'));
+  chrome.storage.sync.set({ reverseOrder: true });
   await sleep(500);
-  assert(!notice(), 'not shown again');
+  assert(!notice(), 'not back on this visit');
 });
 
 runTests();

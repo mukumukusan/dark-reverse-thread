@@ -18,7 +18,7 @@ gear.addEventListener('click', () => {
   window.gearClicks = (window.gearClicks || 0) + 1;
   gear.setAttribute('aria-expanded', 'true');
 });
-window.__GTR_MOCK__ = { messages: { themeNotice: 'Theme notice', tipOpenTheme: 'Choose a theme', darkReaderNoticeOk: 'Got it' } };
+window.__GTR_MOCK__ = { messages: { themeNotice: 'Theme notice', tipOpenTheme: 'Choose a theme', noticeClose: 'Close' } };
 </script>
   <script src="chrome-mock.js"></script>
   <script src="../../settings.js"></script>
@@ -33,7 +33,7 @@ test('on a light Gmail theme, a notice on the page suggests Gmail\'s Dark theme'
   await waitFor(notice, 3000);
   assert(notice(), 'notice shown');
   assert(notice().textContent.includes('Theme notice'), 'the notice text');
-  assertEqual(buttons().map((b) => b.textContent).join(' | '), 'Choose a theme | Got it');
+  assertEqual(buttons().map((b) => b.textContent).join(' | '), 'Choose a theme | Close');
   assertEqual(getComputedStyle(notice()).position, 'fixed');
   const box = notice().getBoundingClientRect();
   assert(box.right > innerWidth - 60 && box.bottom > innerHeight - 160, 'bottom right, near the quick bar');
@@ -75,8 +75,8 @@ test('"Choose a theme" opens Gmail\'s theme settings and closes the notice for g
   assert(!notice(), 'closed');
   assertEqual(window.gearClicks, 1, 'the gear was pressed');
   await sleep(50);
-  assertEqual(gtrStores.local.themeNoticeDismissed, true);
-  assert(!('themeNoticeDismissed' in gtrStores.sync), 'not synced');
+  assertEqual(gtrStores.local.themeNoticeCloses, 3, 'counted as all three closes');
+  assert(!('themeNoticeCloses' in gtrStores.sync), 'not synced');
   poke();
   await sleep(500);
   assert(!notice(), 'not shown again');
