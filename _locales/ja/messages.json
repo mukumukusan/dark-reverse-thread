@@ -112,7 +112,7 @@
   },
   "themeNotice": {
     "message": "この拡張機能はメールとスレッドだけを暗くします。受信トレイは Gmail のテーマのとおりに表示されます。Gmail 全体を暗くするには、Gmail のテーマを「ダーク」にしてください。",
-    "description": "Notice on the Gmail page (once, until closed) when Gmail uses a light theme"
+    "description": "Notice on the Gmail page when Gmail uses a light theme, shown on each visit until closed three times"
   },
   "noticeClose": {
     "message": "閉じる",

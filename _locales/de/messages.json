@@ -112,7 +112,7 @@
   },
   "themeNotice": {
     "message": "Diese Erweiterung dunkelt nur E-Mails und Konversationen ab; der Posteingang folgt dem Gmail-Design. Wähle das Design „Dunkel“, damit ganz Gmail dunkel wird.",
-    "description": "Notice on the Gmail page (once, until closed) when Gmail uses a light theme"
+    "description": "Notice on the Gmail page when Gmail uses a light theme, shown on each visit until closed three times"
   },
   "noticeClose": {
     "message": "Schließen",

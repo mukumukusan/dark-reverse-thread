@@ -112,7 +112,7 @@
   },
   "themeNotice": {
     "message": "Esta extensão escurece apenas os e-mails e as conversas; a caixa de entrada segue o tema do Gmail. Escolha o tema Escuro do Gmail para escurecer todo o Gmail.",
-    "description": "Notice on the Gmail page (once, until closed) when Gmail uses a light theme"
+    "description": "Notice on the Gmail page when Gmail uses a light theme, shown on each visit until closed three times"
   },
   "noticeClose": {
     "message": "Fechar",
