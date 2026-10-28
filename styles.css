@@ -1607,7 +1607,7 @@ html.gmail-dark-active.gtr-popout,
   border-color: var(--gtr-dark-accent-hover);
 }
 
-/* クイックバーの上に出す知らせ（Dark Reader と重なっているとき・Gmail が明るいテーマのとき。閉じると二度と出ない） */
+/* クイックバーの上に出す知らせ（Dark Reader と重なっているとき・Gmail が明るいテーマのとき。content.js が出し入れする） */
 .gtr-notice {
   position: fixed;
   bottom: 68px;
@@ -1648,7 +1648,7 @@ html.gmail-dark-active.gtr-popout,
    10. PRINT OPTIMIZATION (印刷・PDF出力時の白背景＆正順表示への自動復帰)
    -------------------------------------------------------------------------- */
 @media print {
-  /* クイック操作バーと Dark Reader の知らせの非表示 */
+  /* クイック操作バーと知らせの非表示 */
   #gmail-reverser-quick-toggle,
   .gtr-notice {
     display: none !important;

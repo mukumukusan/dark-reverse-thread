@@ -552,6 +552,15 @@
   });
 
   chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local') {
+      // A notice closed in another Gmail tab counts here too
+      const dismissed = changes[DARK_READER_DISMISSED_KEY];
+      const closes = changes[THEME_CLOSES_KEY];
+      if (dismissed) darkReaderNoticeDismissed = dismissed.newValue === true;
+      if (closes) themeNoticeCloses = closes.newValue || 0;
+      if (dismissed || closes) syncNotices();
+      return;
+    }
     if (area !== 'sync') return;
     Object.entries(changes).forEach(([key, { newValue }]) => {
       config[key] = newValue === undefined ? GTR_DEFAULT_SETTINGS[key] : newValue; // undefined = key removed
@@ -1254,8 +1263,10 @@
   const THEME_NOTICE_ID = 'gtr-theme-notice';
   const THEME_CLOSES_KEY = 'themeNoticeCloses';
   const THEME_NOTICE_MAX_CLOSES = 3;
+  // Only where Gmail has its gear ("Choose a theme" needs it; not in a conversation's own window)
   const themeNoticeWanted = () =>
-    config.smartDark && lastGmailLightTheme === true && document.querySelector(DARK_READER_MARKS) === null;
+    config.smartDark && lastGmailLightTheme === true && document.querySelector(DARK_READER_MARKS) === null &&
+    document.querySelector(GEAR_SELECTOR) !== null;
   let themeNoticeCloses = null; // unknown until storage answers
   let themeNoticeClosedHere = false; // closed on this visit to Gmail
 
