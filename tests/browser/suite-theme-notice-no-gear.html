@@ -26,6 +26,21 @@ test('without Gmail\'s gear, "Choose a theme" could not work, so no notice', asy
   assert(!document.getElementById('gtr-theme-notice'));
 });
 
+test('once the gear is there, the notice shows (the stored light theme is used)', async () => {
+  document.body.insertAdjacentHTML('afterbegin',
+    '<header role="banner" id="header"><a class="FH" role="button" aria-expanded="false" id="gear">⚙</a></header>');
+  await waitFor(() => document.getElementById('gtr-theme-notice'), 2000);
+  assert(document.getElementById('gtr-theme-notice'));
+});
+
+test('"Choose a theme" with the gear gone leaves the notice and the count alone', async () => {
+  document.getElementById('header').remove();
+  document.getElementById('gtr-theme-notice').querySelectorAll('button')[0].click(); // before Gmail's change is seen
+  assert(document.getElementById('gtr-theme-notice'), 'still there');
+  await sleep(50);
+  assert(!('themeNoticeCloses' in gtrStores.local), 'nothing counted');
+});
+
 runTests();
 
   </script>

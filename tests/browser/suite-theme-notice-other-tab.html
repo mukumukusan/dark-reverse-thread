@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Light theme notice ended from another Gmail tab</title>
+  <title>Light theme notice closed from another Gmail tab</title>
   <link rel="stylesheet" href="../../styles.css">
   <style>body { margin: 0; background: #ffffff; }</style>
 </head>
@@ -19,13 +19,22 @@ window.__GTR_MOCK__ = { local: { gmailLightTheme: true } };
   <script src="../../content.js"></script>
   <script>
 
-test('"Choose a theme" pressed in another Gmail tab ends the notice here too', async () => {
+test('a notice closed in another Gmail tab closes here too', async () => {
   const notice = () => document.getElementById('gtr-theme-notice');
   await waitFor(notice, 3000);
   assert(notice(), 'shown');
-  chrome.storage.local.set({ themeNoticeCloses: 3 }); // what the other tab saves
+  chrome.storage.local.set({ themeNoticeCloses: 1 }); // what the other tab saves on "Close"
   await waitFor(() => !notice(), 1000);
   assert(!notice(), 'gone here too');
+  document.body.appendChild(document.createElement('div'));
+  await sleep(300);
+  assert(!notice(), 'not back on this visit');
+});
+
+test('a stored count that is not a number is read as none', async () => {
+  chrome.storage.local.set({ themeNoticeCloses: 'x' });
+  await sleep(50);
+  assert(!document.getElementById('gtr-theme-notice'), 'still closed on this visit');
 });
 
 runTests();

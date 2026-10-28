@@ -1614,7 +1614,7 @@ html.gmail-dark-active.gtr-popout,
   right: 24px;
   z-index: 999999;
   box-sizing: border-box;
-  max-width: 340px;
+  max-width: min(340px, calc(100vw - 48px));
   padding: 12px 14px;
   background: var(--gtr-dark-page);
   border: 1px solid var(--gtr-dark-accent);

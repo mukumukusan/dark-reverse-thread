@@ -1,0 +1,65 @@
+<!doctype html>
+<html data-darkreader-mode="dynamic" data-darkreader-scheme="dark">
+<head>
+  <meta charset="utf-8">
+  <title>From Dark Reader to the light theme notice</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #181a1b; } /* Dark Reader's paint over a light Gmail theme */</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+document.getElementById('compose-window').remove();
+// The Dark Reader notice was closed earlier; Gmail was last seen on a light theme
+window.__GTR_MOCK__ = { local: { darkReaderNoticeDismissed: true, gmailLightTheme: true } };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const themeNotice = () => document.getElementById('gtr-theme-notice');
+const poke = () => document.body.appendChild(document.createElement('div'));
+
+test('while Dark Reader darkens Gmail, no theme notice even with its own notice closed', async () => {
+  await sleep(1500);
+  poke();
+  await sleep(300);
+  assert(!themeNotice(), 'no theme notice');
+  assert(!document.getElementById('gtr-dark-reader-notice'), 'no Dark Reader notice (closed earlier)');
+});
+
+test('once Dark Reader is off for Gmail, the light theme shows through and the theme notice appears', async () => {
+  const html = document.documentElement;
+  html.removeAttribute('data-darkreader-mode');
+  html.removeAttribute('data-darkreader-scheme');
+  document.body.style.background = '#ffffff';
+  poke();
+  await waitFor(themeNotice, 2000);
+  assert(themeNotice(), 'theme notice shown');
+  html.setAttribute('data-darkreader-mode', 'dynamic');
+  poke();
+  await waitFor(() => !themeNotice(), 2000);
+  assert(!themeNotice(), 'hidden again when Dark Reader returns');
+});
+
+test("Dark Reader's static / filter modes (a style in <head>) count too", async () => {
+  document.documentElement.removeAttribute('data-darkreader-mode');
+  poke();
+  await waitFor(themeNotice, 2000);
+  const style = document.createElement('style');
+  style.className = 'darkreader';
+  document.head.appendChild(style);
+  poke();
+  await waitFor(() => !themeNotice(), 2000);
+  assert(!themeNotice(), 'hidden under the <style class="darkreader">');
+  style.remove();
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

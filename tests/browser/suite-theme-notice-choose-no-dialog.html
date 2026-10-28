@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>"Choose a theme" when Gmail's theme dialog never shows</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #ffffff; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+document.getElementById('compose-window').remove();
+// The gear opens nothing (e.g. Gmail changed its quick settings): no "View all", no Dark tile
+window.__GTR_MOCK__ = {};
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const notice = () => document.getElementById('gtr-theme-notice');
+
+test('if the Dark theme never comes on screen, "Choose a theme" counts as one close only', async () => {
+  await waitFor(notice, 3000);
+  notice().querySelectorAll('button')[0].click();
+  assert(!notice(), 'closed for this visit');
+  await sleep(4000); // longer than the wait for "View all"
+  assertEqual(gtrStores.local.themeNoticeCloses, 1);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

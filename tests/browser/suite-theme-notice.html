@@ -17,6 +17,15 @@ const gear = document.getElementById('gear');
 gear.addEventListener('click', () => {
   window.gearClicks = (window.gearClicks || 0) + 1;
   gear.setAttribute('aria-expanded', 'true');
+  if (document.querySelector('[jsname="JFZqac"]')) return;
+  const viewAll = document.createElement('button');
+  viewAll.setAttribute('jsname', 'JFZqac');
+  viewAll.textContent = 'View all';
+  viewAll.addEventListener('click', () => {
+    document.body.insertAdjacentHTML('beforeend',
+      '<div role="dialog"><div role="option" bgid="basicblack" id="dark-tile">Dark</div></div>');
+  });
+  document.body.appendChild(viewAll);
 });
 window.__GTR_MOCK__ = { messages: { themeNotice: 'Theme notice', tipOpenTheme: 'Choose a theme', noticeClose: 'Close' } };
 </script>
@@ -34,6 +43,7 @@ test('on a light Gmail theme, a notice on the page suggests Gmail\'s Dark theme'
   assert(notice(), 'notice shown');
   assert(notice().textContent.includes('Theme notice'), 'the notice text');
   assertEqual(buttons().map((b) => b.textContent).join(' | '), 'Choose a theme | Close');
+  assert(buttons().every((b) => b.type === 'button'), 'plain buttons');
   assertEqual(getComputedStyle(notice()).position, 'fixed');
   const box = notice().getBoundingClientRect();
   assert(box.right > innerWidth - 60 && box.bottom > innerHeight - 160, 'bottom right, near the quick bar');
@@ -74,8 +84,8 @@ test('"Choose a theme" opens Gmail\'s theme settings and closes the notice for g
   buttons()[0].click();
   assert(!notice(), 'closed');
   assertEqual(window.gearClicks, 1, 'the gear was pressed');
-  await sleep(50);
-  assertEqual(gtrStores.local.themeNoticeCloses, 3, 'counted as all three closes');
+  await waitFor(() => gtrStores.local.themeNoticeCloses === 3, 3000);
+  assertEqual(gtrStores.local.themeNoticeCloses, 3, 'the Dark tile was shown: counted as all three closes');
   assert(!('themeNoticeCloses' in gtrStores.sync), 'not synced');
   poke();
   await sleep(500);

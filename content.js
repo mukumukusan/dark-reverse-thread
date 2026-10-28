@@ -557,7 +557,10 @@
       const dismissed = changes[DARK_READER_DISMISSED_KEY];
       const closes = changes[THEME_CLOSES_KEY];
       if (dismissed) darkReaderNoticeDismissed = dismissed.newValue === true;
-      if (closes) themeNoticeCloses = closes.newValue || 0;
+      if (closes) {
+        if (noticeCount(closes.newValue) > noticeCount(closes.oldValue)) themeNoticeClosedHere = true;
+        themeNoticeCloses = noticeCount(closes.newValue);
+      }
       if (dismissed || closes) syncNotices();
       return;
     }
@@ -1145,11 +1148,12 @@
   const scriptStart = Date.now();
   let lastThemeCheck = 0;
   let trailingThemeCheck = null;
-  let lastGmailLightTheme = null;
+  let lastGmailLightTheme; // true / false, null for a picture theme (unknown), undefined until seen
+  let themeJudged = false; // judged on this page (a picture theme counts, as "unknown")
 
   try {
     chrome.storage.local.get({ gmailLightTheme: null }, ({ gmailLightTheme }) => {
-      if (gmailLightTheme === null || lastGmailLightTheme !== null) return; // unknown, or already judged
+      if (gmailLightTheme === null || themeJudged) return; // unknown, or already judged
       lastGmailLightTheme = gmailLightTheme;
       document.documentElement.classList.toggle(GMAIL_DARK_THEME_CLASS, !gmailLightTheme);
       syncThemeNotice();
@@ -1178,11 +1182,13 @@
     const loading = !document.querySelector('header[role="banner"]') && Date.now() - scriptStart < THEME_HEADER_WAIT;
     if (loading) return;
     // Dark Reader paints Gmail's background dark whatever Gmail's theme is: keep the last answer
-    if (document.querySelector(DARK_READER_MARKS)) return;
+    if (darkReaderPresent()) return;
     const bg = document.body && parseRGB(getComputedStyle(document.body).backgroundColor);
-    if (!bg || bg.a < 0.5 || !isContextValid()) return; // a picture theme or no context: unknown
-    const light = rgbToHsl(bg).l > 0.5;
-    document.documentElement.classList.toggle(GMAIL_DARK_THEME_CLASS, !light);
+    if (!bg || !isContextValid()) return;
+    themeJudged = true;
+    // A picture theme (transparent background): unknown, so an older "light" answer is dropped
+    const light = bg.a < 0.5 ? null : rgbToHsl(bg).l > 0.5;
+    if (light !== null) document.documentElement.classList.toggle(GMAIL_DARK_THEME_CLASS, !light);
     if (light === lastGmailLightTheme) return;
     lastGmailLightTheme = light;
     syncThemeNotice();
@@ -1218,7 +1224,8 @@
 
   let themeDialogPending = false; // one "View all" click per request, even if the gear is pressed again
 
-  function openThemeSettings() {
+  /** `onDarkTile` runs once the Dark theme tile is on screen. */
+  function openThemeSettings(onDarkTile) {
     const gear = document.querySelector(GEAR_SELECTOR);
     if (!gear) return false;
     if (gear.getAttribute('aria-expanded') !== 'true') gear.click();
@@ -1235,6 +1242,7 @@
         if (!tile) return;
         tile.scrollIntoView({ block: 'center' });
         tile.setAttribute('data-gtr-suggest', '');
+        if (onDarkTile) onDarkTile();
       });
     });
     return true;
@@ -1251,13 +1259,19 @@
    * On a light Gmail theme the inbox stays light (only conversations and compose windows are darkened
    * here), which looks as if the extension did nothing right after installing it. A notice in the same
    * place suggests Gmail's own Dark theme each time Gmail is opened. "Close" hides it until the next
-   * visit, and after three closes it stays away for good; "Choose a theme" ends it at once (a close
-   * count in storage.local). Never both notices at once: the theme is not judged under Dark Reader.
+   * visit (in every Gmail tab), and after three closes it stays away for good; "Choose a theme" ends it
+   * once Gmail's Dark theme tile is on screen (a close count in storage.local). Never both notices at once: the theme is not judged under Dark Reader.
    */
-  const DARK_READER_MARKS = 'html[data-darkreader-mode], html[data-darkreader-scheme], meta[name="darkreader"], style.darkreader';
+  // Its <html> attributes (dynamic mode) or its <meta> / <style> in <head>; checked on every page change, so
+  // the head is searched rather than the whole page
+  const darkReaderPresent = () => {
+    const html = document.documentElement;
+    return html.hasAttribute('data-darkreader-mode') || html.hasAttribute('data-darkreader-scheme') ||
+      (document.head !== null && document.head.querySelector('meta[name="darkreader"], style.darkreader') !== null);
+  };
   const DARK_READER_NOTICE_ID = 'gtr-dark-reader-notice';
   const DARK_READER_DISMISSED_KEY = 'darkReaderNoticeDismissed';
-  const darkReaderClashes = () => config.smartDark && document.querySelector(DARK_READER_MARKS) !== null;
+  const darkReaderClashes = () => config.smartDark && darkReaderPresent();
   let darkReaderNoticeDismissed = null; // unknown until storage answers
 
   const THEME_NOTICE_ID = 'gtr-theme-notice';
@@ -1265,9 +1279,10 @@
   const THEME_NOTICE_MAX_CLOSES = 3;
   // Only where Gmail has its gear ("Choose a theme" needs it; not in a conversation's own window)
   const themeNoticeWanted = () =>
-    config.smartDark && lastGmailLightTheme === true && document.querySelector(DARK_READER_MARKS) === null &&
+    config.smartDark && lastGmailLightTheme === true && !darkReaderPresent() &&
     document.querySelector(GEAR_SELECTOR) !== null;
   let themeNoticeCloses = null; // unknown until storage answers
+  const noticeCount = (value) => (Number.isInteger(value) && value > 0 ? value : 0);
   let themeNoticeClosedHere = false; // closed on this visit to Gmail
 
   /** Saves a notice's flag or count in storage.local. */
@@ -1286,7 +1301,7 @@
    */
   function syncNotice(id, wanted, textKey, buttons) {
     const existing = document.getElementById(id);
-    if (!wanted || !document.body) {
+    if (!wanted || !document.body || !isContextValid()) { // an updated extension: strings unreadable
       if (existing) existing.remove();
       return;
     }
@@ -1304,6 +1319,7 @@
     notice.append(title, text);
     buttons.forEach(([label, onclick], i) => {
       const button = document.createElement('button');
+      button.type = 'button';
       button.className = i === 0 ? 'gtr-btn active' : 'gtr-btn';
       button.textContent = chrome.i18n.getMessage(label);
       button.onclick = () => onclick(notice);
@@ -1333,8 +1349,12 @@
       !themeNoticeClosedHere && themeNoticeWanted();
     syncNotice(THEME_NOTICE_ID, wanted, 'themeNotice', [
       ['tipOpenTheme', (notice) => {
-        // no gear yet: leave the notice for another try
-        if (openThemeSettings()) close(notice, THEME_NOTICE_MAX_CLOSES);
+        // Ended for good once the Dark theme is on screen; until then it counts as one close
+        const opened = openThemeSettings(() => {
+          themeNoticeCloses = THEME_NOTICE_MAX_CLOSES;
+          rememberNotice(THEME_CLOSES_KEY, THEME_NOTICE_MAX_CLOSES);
+        });
+        if (opened) close(notice, themeNoticeCloses + 1); // no gear yet: leave the notice for another try
       }],
       ['noticeClose', (notice) => close(notice, themeNoticeCloses + 1)]
     ]);
@@ -1347,7 +1367,7 @@
 
   chrome.storage.local.get({ [DARK_READER_DISMISSED_KEY]: false, [THEME_CLOSES_KEY]: 0 }, (items) => {
     darkReaderNoticeDismissed = items[DARK_READER_DISMISSED_KEY];
-    themeNoticeCloses = items[THEME_CLOSES_KEY];
+    themeNoticeCloses = noticeCount(items[THEME_CLOSES_KEY]);
     syncNotices();
   });
 
