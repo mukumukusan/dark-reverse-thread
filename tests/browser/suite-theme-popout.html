@@ -1,0 +1,35 @@
+<!doctype html>
+<html class="gtr-popout"> <!-- what content.js marks on /popout pages -->
+<head>
+  <meta charset="utf-8">
+  <title>A conversation in its own window is not judged</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #ffffff; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+document.getElementById('compose-window').remove();
+// Dark mode off, so the popout stays white (styles.css darkens it otherwise)
+window.__GTR_MOCK__ = { sync: { smartDark: false }, local: { gmailLightTheme: false } };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('the white popout window is never saved as a light Gmail theme', async () => {
+  await sleep(1500);
+  document.body.appendChild(document.createElement('div'));
+  await sleep(1500);
+  assertEqual(gtrStores.local.gmailLightTheme, false, 'the stored dark answer is kept');
+  assert(!document.getElementById('gtr-theme-notice'), 'no theme notice');
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

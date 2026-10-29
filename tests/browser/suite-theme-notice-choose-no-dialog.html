@@ -12,7 +12,9 @@
   <script>
 buildGmail();
 document.getElementById('compose-window').remove();
-// The gear opens no theme choice (e.g. an admin locked the theme): no "View all"
+// The gear opens quick settings, but without a theme choice (e.g. an admin locked the theme)
+const gear = document.getElementById('gear');
+gear.addEventListener('click', () => gear.setAttribute('aria-expanded', 'true'));
 window.__GTR_MOCK__ = {};
 </script>
   <script src="chrome-mock.js"></script>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>"Choose a theme" while Gmail still ignores its gear</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #ffffff; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+buildGmail();
+document.getElementById('compose-window').remove();
+// Gmail has not started yet: its gear ignores clicks (aria-expanded stays "false")
+window.__GTR_MOCK__ = {};
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('a gear that did not open is not taken for a locked theme: one close only', async () => {
+  await waitFor(() => document.getElementById('gtr-theme-notice'), 3000);
+  document.getElementById('gtr-theme-notice').querySelectorAll('button')[0].click();
+  await sleep(4000); // longer than the wait for "View all"
+  assertEqual(gtrStores.local.themeNoticeCloses, 1);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

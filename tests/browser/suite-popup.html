@@ -123,7 +123,7 @@
     });
 
     test('while Dark Reader darkens the tab, only its tip shows (as on the page)', async () => {
-      const win = await openPopup({ local: { gmailLightTheme: true }, sendMessageResponse: { darkReader: true } });
+      const win = await openPopup({ local: { gmailLightTheme: true }, sendMessageResponse: { darkReader: true, lightTheme: true } });
       assert(visible(win, 'darkReaderTip'), 'Dark Reader tip');
       assert(!visible(win, 'themeTip') && visible(win, 'themeLink'), 'no light theme tip');
     });

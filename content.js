@@ -1134,13 +1134,17 @@
 
   /**
    * Whether Gmail itself uses a light theme, judged from the page background. Only this yes/no flag is
-   * kept, on this device (storage.local), so the popup can suggest Gmail's own dark theme. On Gmail's
+   * kept, on this device (storage.local), for the popup when it is opened outside Gmail. On Gmail's
    * dark theme <html> also gets a class, so parts of Gmail's frame (search) are darkened only there.
-   * The last result is applied as soon as the page starts, since the theme rarely changes, and the
-   * check then runs at most once a second while the page changes (plus once after the last skipped
-   * change), so a theme switch is noticed quickly. Until Gmail's header exists, the page may still be a
-   * plain white loading screen, so it is not judged; if the header is never found (Gmail changed its
-   * markup), the check runs anyway after THEME_HEADER_WAIT.
+   * The stored result sets that class as soon as the page starts, since the theme rarely changes; the
+   * light theme notice and the popup's answer from this tab wait for this page's own judgement, since
+   * the flag is shared by every Gmail account. The check runs at most once a second while the page
+   * changes (plus once after the last skipped change), so a theme switch is noticed quickly. Not judged:
+   * a page still loading (until Gmail's header exists; if it never does, because Gmail changed its
+   * markup, the check runs anyway after THEME_HEADER_WAIT), a page without Gmail's frame (the print
+   * view, a conversation in its own window: white whatever the theme), and a page Dark Reader paints.
+   * A picture theme (transparent background) is unknown on the page; the class and the last solid
+   * answer stay as they were.
    */
   const GMAIL_DARK_THEME_CLASS = 'gtr-gmail-dark-theme';
   const THEME_CHECK_INTERVAL = 1000;
@@ -1148,18 +1152,15 @@
   const scriptStart = Date.now();
   let lastThemeCheck = 0;
   let trailingThemeCheck = null;
-  let lastGmailLightTheme; // true / false, null for a picture theme (unknown), undefined until seen
-  let themeJudged = false; // judged on this page (a picture theme counts, as "unknown")
-  // Pages without Gmail's frame (a conversation in its own window, the print view) are white whatever
-  // the theme, so they are never judged
-  const THEMELESS_PAGE = /\/popout$/.test(location.pathname) || new URLSearchParams(location.search).has('view');
+  // This page's judgement: true / false, null for a picture theme (unknown), undefined until judged
+  let lastGmailLightTheme;
+  const THEMELESS_PAGE = document.documentElement.classList.contains('gtr-popout') ||
+    new URLSearchParams(location.search).get('view') === 'pt';
 
   try {
     chrome.storage.local.get({ gmailLightTheme: null }, ({ gmailLightTheme }) => {
-      if (gmailLightTheme === null || themeJudged) return; // unknown, or already judged
-      lastGmailLightTheme = gmailLightTheme;
+      if (gmailLightTheme === null || lastGmailLightTheme !== undefined) return; // unknown, or already judged
       document.documentElement.classList.toggle(GMAIL_DARK_THEME_CLASS, !gmailLightTheme);
-      syncThemeNotice();
     });
   } catch {
     // extension reloaded while this tab stayed open
@@ -1189,22 +1190,15 @@
     if (darkReaderPresent()) return;
     const bg = document.body && parseRGB(getComputedStyle(document.body).backgroundColor);
     if (!bg || !isContextValid()) return;
-    const firstJudgement = !themeJudged; // the notice waits for it, even if the stored answer agrees
-    themeJudged = true;
     if (bg.a < 0.5) {
-      // A picture theme (transparent background): unknown here; the last solid answer stays stored
-      if (lastGmailLightTheme !== null || firstJudgement) {
-        lastGmailLightTheme = null;
-        syncThemeNotice();
-      }
+      if (lastGmailLightTheme === null) return; // the dark class stays as it was
+      lastGmailLightTheme = null;
+      syncThemeNotice();
       return;
     }
     const light = rgbToHsl(bg).l > 0.5;
     document.documentElement.classList.toggle(GMAIL_DARK_THEME_CLASS, !light);
-    if (light === lastGmailLightTheme) {
-      if (firstJudgement) syncThemeNotice();
-      return;
-    }
+    if (light === lastGmailLightTheme) return;
     lastGmailLightTheme = light;
     syncThemeNotice();
     try {
@@ -1215,10 +1209,12 @@
   }
 
   /**
-   * The popup's "Choose a theme" button opens Gmail's theme dialog: the gear opens the quick settings
-   * panel, its theme "View all" button opens the dialog, and the Dark theme tile is scrolled into view
-   * and outlined. The user picks and saves the theme; the extension never changes Gmail's settings.
-   * Each step is optional: if a later control is missing, the panel or dialog simply stays open.
+   * "Choose a theme" (in the popup or the light theme notice) opens Gmail's theme dialog: the gear opens
+   * the quick settings panel, its theme "View all" button opens the dialog, and the Dark theme tile is
+   * scrolled into view and outlined. The user picks and saves the theme; the extension never changes
+   * Gmail's settings. Each step is optional: if a later control is missing, the panel or dialog simply
+   * stays open. Whoever opened it, the light theme notice is not left over Gmail's panel, and it ends for
+   * good once the Dark tile is on screen, or when the panel opens without a theme choice at all.
    */
   const OPEN_THEME_KEY = 'gtrOpenThemeAt'; // set by the popup just before it opens a new Gmail tab
   const GEAR_SELECTOR = 'header[role="banner"] a.FH[role="button"]';
@@ -1239,10 +1235,6 @@
 
   let themeDialogPending = false; // one "View all" click per request, even if the gear is pressed again
 
-  /**
-   * From the page notice or the popup alike, the light theme notice is not left over Gmail's panel, and
-   * it ends for good once the Dark tile is on screen, or when Gmail offers no theme choice at all.
-   */
   function openThemeSettings() {
     const gear = document.querySelector(GEAR_SELECTOR);
     if (!gear) return false;
@@ -1253,7 +1245,9 @@
     whenVisible(THEME_VIEW_ALL_SELECTOR, (viewAll) => {
       if (!viewAll) {
         themeDialogPending = false;
-        endThemeNotice(); // no theme choice (e.g. locked by an admin): nothing to suggest
+        // The panel opened without a theme choice (e.g. locked by an admin): nothing to suggest. A gear
+        // Gmail ignored (still starting) is not that; the next try may open it.
+        if (gear.getAttribute('aria-expanded') === 'true') endThemeNotice();
         return;
       }
       viewAll.click();
@@ -1279,8 +1273,9 @@
    * On a light Gmail theme the inbox stays light (only conversations and compose windows are darkened
    * here), which looks as if the extension did nothing right after installing it. A notice in the same
    * place suggests Gmail's own Dark theme each time Gmail is opened. "Close" hides it until the next
-   * visit (in every Gmail tab), and after three closes it stays away for good; "Choose a theme" ends it
-   * once Gmail's Dark theme tile is on screen (a close count in storage.local). Never both notices at once: the theme is not judged under Dark Reader.
+   * visit (in every Gmail tab), and after three closes (a count in storage.local) it stays away for good;
+   * "Choose a theme" ends it once Gmail's Dark theme tile is on screen. Never both notices at once: the
+   * theme notice waits until Dark Reader is gone from the page.
    */
   // Its <html> attributes (dynamic mode) or its <meta> / <style> in <head>; checked on every page change, so
   // the head is searched rather than the whole page
@@ -1297,14 +1292,13 @@
   const THEME_NOTICE_ID = 'gtr-theme-notice';
   const THEME_CLOSES_KEY = 'themeNoticeCloses';
   const THEME_NOTICE_MAX_CLOSES = 3;
-  // Only from this page's own judgement (the stored flag is shared by every Gmail account), and only
-  // where Gmail has its gear ("Choose a theme" needs it; not in a conversation's own window)
+  // Only where Gmail has its gear ("Choose a theme" needs it; not in a conversation's own window)
   const themeNoticeWanted = () =>
-    config.smartDark && themeJudged && lastGmailLightTheme === true && !darkReaderPresent() &&
+    config.smartDark && lastGmailLightTheme === true && !darkReaderPresent() &&
     document.querySelector(GEAR_SELECTOR) !== null;
   let themeNoticeCloses = null; // unknown until storage answers
   const noticeCount = (value) => (Number.isInteger(value) && value > 0 ? value : 0);
-  let themeNoticeClosedHere = false; // closed on this visit to Gmail
+  let themeNoticeClosedHere = false; // hidden for this visit (closed in any tab, or the theme picker opened)
 
   /** Saves a notice's flag or count in storage.local. */
   function rememberNotice(key, value) {
@@ -1403,7 +1397,7 @@
     if (message && message.type === 'gtr-open-theme-settings') sendResponse({ opened: openThemeSettings() });
     if (message && message.type === 'gtr-status') {
       // This tab's own theme: accounts can differ from the stored flag (unknown until judged)
-      sendResponse({ darkReader: darkReaderClashes(), lightTheme: themeJudged ? lastGmailLightTheme : undefined });
+      sendResponse({ darkReader: darkReaderClashes(), lightTheme: lastGmailLightTheme });
     }
   });
 

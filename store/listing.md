@@ -229,7 +229,7 @@ https://buymeacoffee.com/mukumukusan
 
 | 権限 / Permission | 理由（日本語） | Justification (English) |
 |---|---|---|
-| `storage` | ダークモード・新しい順・返信欄の位置・クイックバー表示の設定と、Gmail が明るいテーマかどうか（設定画面と Gmail の画面の案内用）と、知らせを閉じたかどうか、テーマの選択画面を新しいタブで開くための一時的な目印を保存するため。 | To save the display settings (dark mode, newest-first order, reply position, quick bar visibility), whether Gmail uses a light theme (for a tip in the popup and on the page) whether the extension's notices were closed, and a temporary marker for opening Gmail's theme picker in a new tab. |
+| `storage` | ダークモード・新しい順・返信欄の位置・クイックバー表示の設定と、Gmail が明るいテーマかどうか（設定画面の案内用）と、知らせを閉じたかどうか、テーマの選択画面を新しいタブで開くための一時的な目印を保存するため。 | To save the display settings (dark mode, newest-first order, reply position, quick bar visibility), whether Gmail uses a light theme (for a tip in the popup), whether the extension's notices were closed, and a temporary marker for opening Gmail's theme picker in a new tab. |
 | ホスト権限 `https://mail.google.com/*`（コンテンツスクリプト） | Gmail の画面に CSS とスクリプトを適用し、表示の色と並び順を変えるため。Gmail 以外のサイトでは動作しません。 | To apply the stylesheet and script that change colors and message order on the Gmail page. It does not run on any other site. |
 
 ### リモートコード / Remote code

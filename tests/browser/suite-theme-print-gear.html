@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Print view with Gmail's frame around it</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #ffffff; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script src="gmail-fixture.js"></script>
+  <script>
+history.replaceState(null, '', location.pathname + '?view=pt');
+buildGmail();
+document.getElementById('compose-window').remove();
+window.__GTR_MOCK__ = { local: { gmailLightTheme: true } };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+test('a stored "light" alone never shows the notice: only this page\'s own judgement does', async () => {
+  await sleep(1500);
+  document.body.appendChild(document.createElement('div'));
+  await sleep(500);
+  assert(document.getElementById('gear'), 'the gear is there');
+  assert(!document.getElementById('gtr-theme-notice'), 'no theme notice');
+});
+
+test('the popup is told this page has no theme answer', async () => {
+  assertEqual((await gtrSendMessage({ type: 'gtr-status' })).lightTheme, undefined);
+});
+
+runTests();
+
+  </script>
+</body>
+</html>
