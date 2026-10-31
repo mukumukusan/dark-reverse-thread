@@ -49,7 +49,7 @@ Dark Reverse Thread は、そんな2つの悩みをまとめて解決する拡�
 
 ■ プライバシー
 データの収集や外部への送信は行いません。表示の変更はすべて、お使いのブラウザ内で処理します。
-保存するのは、表示設定（ON / OFF など）と、Gmail が明るいテーマかどうかの情報だけです。
+保存するのは、表示設定（ON / OFF など）、Gmail が明るいテーマかどうか、拡張機能の案内を閉じたかどうかの情報だけです。
 
 ※ 本拡張機能は個人開発のもので、Google とは関係ありません。Gmail は Google LLC の商標です。
 
@@ -128,7 +128,7 @@ Dark Reverse Thread resuelve las dos cosas.
 
 ■ Privacidad
 • No se recopila ni se envía ningún dato. Todo ocurre dentro de tu navegador.
-• Solo se guardan tus ajustes de visualización (activado / desactivado, etc.) y si Gmail usa un tema claro.
+• Solo se guardan tus ajustes de visualización (activado / desactivado, etc.), si Gmail usa un tema claro y si cerraste los avisos de la extensión.
 
 Dark Reverse Thread es un proyecto independiente que no está afiliado a Google ni cuenta con su respaldo. Gmail es una marca comercial de Google LLC.
 
@@ -168,7 +168,7 @@ O Dark Reverse Thread resolve as duas coisas.
 
 ■ Privacidade
 • Nenhum dado é coletado ou enviado. Tudo acontece dentro do seu navegador.
-• Só são salvas suas configurações de exibição (ligado / desligado etc.) e se o Gmail usa um tema claro.
+• Só são salvas suas configurações de exibição (ligado / desligado etc.), se o Gmail usa um tema claro e se você fechou os avisos da extensão.
 
 O Dark Reverse Thread é um projeto independente, não afiliado nem endossado pelo Google. Gmail é uma marca registrada da Google LLC.
 
@@ -208,7 +208,7 @@ Dark Reverse Thread löst beides.
 
 ■ Datenschutz
 • Es werden keinerlei Daten erhoben oder gesendet. Alles passiert in deinem Browser.
-• Gespeichert werden nur deine Anzeigeeinstellungen (an / aus usw.) und ob Gmail ein helles Design verwendet.
+• Gespeichert werden nur deine Anzeigeeinstellungen (an / aus usw.), ob Gmail ein helles Design verwendet und ob du die Hinweise der Erweiterung geschlossen hast.
 
 Dark Reverse Thread ist ein unabhängiges Projekt, das weder mit Google verbunden ist noch von Google unterstützt wird. Gmail ist eine Marke der Google LLC.
 
