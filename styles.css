@@ -534,6 +534,9 @@
   filter: brightness(0) invert(.89) !important;
 }
 
+/* .qz は本文の下に敷かれた Gmail の白い面。普段は .Ap に隠れているが、Gemini で下書きを修正している間は
+   本文の左に 16px ほど白い帯として見えていた */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .qz,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .gU.Up,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aDh,
