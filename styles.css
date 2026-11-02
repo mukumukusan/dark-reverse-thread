@@ -640,11 +640,12 @@
 /* 押された状態のボタン（.J-Z-I-Jp：「文書作成サポート」のオン・オフなど）。Gmail の薄い青の丸（#d3e3fd）が反転で
    rgb(15, 31, 57) になり、暗い地とほぼ同じで押されているか見分けられなかった。同じ行の ◐ と同じ青（#8ab4f8）の丸に
    暗いアイコンにする。ボタンごと反転されるので、丸は反転すると #8ab4f8 になる色、アイコンは反転すると暗くなる明るい灰色 */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC [role="button"].J-Z-I-Jp:not(.T-I-atl):not([role="button"] [role="button"])::before {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC [role="button"]:is(.J-Z-I-Jp, .J-Z-I-KO, [aria-pressed="true"]):not(.T-I-atl):not([role="button"] [role="button"])::before {
   background-color: rgb(41, 83, 151) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC [role="button"].J-Z-I-Jp:not(.T-I-atl):not([role="button"] [role="button"]) * {
+/* 書式バーを開いている間の「Aa」は押された印が別（.J-Z-I-KO と aria-pressed）なので、上と下で一緒に扱う */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC [role="button"]:is(.J-Z-I-Jp, .J-Z-I-KO, [aria-pressed="true"]):not(.T-I-atl):not([role="button"] [role="button"]) * {
   filter: brightness(0) invert(.89) !important;
 }
 
