@@ -33,6 +33,16 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <p><span id="white-alone" style="color: #ffffff">ghost</span> <font color="#ffffff" id="white-font">pale</font></p>
   <p><span id="white-named" style="color: white">snow</span> <font color="white" id="white-named-font">ice</font></p>
   <table width="600"><tbody><tr><td style="background-color: black" width="560"><span id="white-on-black" style="color: white">dusk</span></td></tr></tbody></table>
+  <style>.preheader-hide { display: none; }</style>
+  <p id="with-hidden"><span id="shown-part">shown</span><span class="preheader-hide" id="hidden-part">secret preheader</span></p>
+  <table id="grid"><tbody><tr><td id="a1">A1</td><td id="b1">B1</td></tr><tr><td id="a2">A2</td><td id="b2">B2</td></tr></tbody></table>
+  <ul id="list"><li id="li1">first</li><li id="li2">second</li></ul>
+  <table><tbody><tr><td id="banner" style="background-color: #000000; color: #ffffff">banner text</td></tr></tbody></table>
+  <table><tbody><tr><td id="banner-multi" style="background-color: #000000; color: #ffffff"><p id="bm1">line one</p><p id="bm2">line two</p></td></tr></tbody></table>
+  <table><tbody><tr><td id="image-only" style="background-image: url(data:image/gif;base64,R0lGODlhAQABAAAAACw=)"><span id="white-on-image" style="color: #ffffff">over a picture</span></td></tr></tbody></table>
+  <table><tbody><tr><td style="background-color: #000000"><table><tbody><tr><td bgcolor="transparent"><span id="white-in-clear" style="color: #ffffff">clear cell</span></td></tr></tbody></table></td></tr></tbody></table>
+  <table><tbody><tr><td bgcolor="#333333"><span id="white-on-attr" style="color: #ffffff">attr cell</span></td></tr></tbody></table>
+  <table><tbody><tr><td bgcolor="333333"><span id="white-on-bare" style="color: #ffffff">bare attr</span></td></tr></tbody></table>
   <div id="important-border" style="border-left: 2px solid #ffffff !important">white rule set with !important</div>
   <p id="marker" style="background: #ffff00"><span><strong id="marker-text" style="color: #555555">gray on a yellow marker</strong></span></p>
   <table><tr><td id="teal-cell" style="background: #c8eef7"><a id="teal-link" style="color: #1a73e8">blue link on a pale teal cell</a></td></tr></table>
@@ -352,7 +362,7 @@ test('colors written as names (white, black) are judged too', () => {
   const font = copyText($('white-named-font'));
   assert(font.html.includes('ice') && !/color="white"/i.test(font.html), `<font color="white"> too: ${font.html}`);
   const cell = copyText($('white-on-black'));
-  assert(/color: white/i.test(cell.html) && /background-color: black/i.test(cell.html), `white on a black cell keeps both: ${cell.html}`);
+  assert(/color: white/i.test(cell.html) && /background-color: (black|rgb\(0, 0, 0\))/i.test(cell.html), `white on a black cell keeps both: ${cell.html}`);
   assert(!/width/.test(cell.html), `no fixed widths from the table: ${cell.html}`);
 });
 
@@ -362,6 +372,95 @@ test('white text with no background of its own is copied without the white (it w
   assert(!span.html.includes('rgb(255, 255, 255)'), `the white is dropped: ${span.html}`);
   const font = copyText($('white-font'));
   assert(font.html.includes('pale') && !/color="#ffffff"/i.test(font.html), `<font color> too: ${font.html}`);
+});
+
+// Copy from inside one element's text to inside another's (the way a drag-selection across cells or items ends)
+const copyBetween = (startEl, endEl) => {
+  const range = document.createRange();
+  range.setStart(startEl.firstChild, 0);
+  range.setEnd(endEl.firstChild, endEl.firstChild.length);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  const data = new DataTransfer();
+  startEl.dispatchEvent(new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true }));
+  selection.removeAllRanges();
+  return { html: data.getData('text/html'), text: data.getData('text/plain') };
+};
+
+test('text the email hides (a preheader hidden by its own style rules) is not copied', () => {
+  const { html } = copyNodes($('shown-part'), $('hidden-part'));
+  assert(html.includes('shown') && !html.includes('secret preheader'), `only what is shown: ${html}`);
+});
+
+test('a selection across table cells is copied as a table (it fell apart into loose cells)', () => {
+  const { html } = copyBetween($('a1'), $('b2'));
+  assert(/<table\b/.test(html) && /<tr\b/.test(html) && /<td\b/.test(html), `table, rows and cells: ${html}`);
+  assert(['A1', 'B1', 'A2', 'B2'].every((cell) => html.includes(cell)), `all four cells: ${html}`);
+});
+
+test('a selection across list items is copied as a list (bullets kept)', () => {
+  const { html } = copyBetween($('li1'), $('li2'));
+  assert(/<ul\b/.test(html) && /<li\b/.test(html) && html.includes('first') && html.includes('second'), `a list: ${html}`);
+});
+
+test('text in a cell that sets both the dark background and the white text keeps both (it went out dark on dark)', () => {
+  const { html } = copyText($('banner'));
+  assert(/color: (rgb\(255, 255, 255\)|#ffffff)/.test(html) && /background-color: (rgb\(0, 0, 0\)|#000000)/.test(html), `white on black: ${html}`);
+});
+
+test('several paragraphs from a dark cell are wrapped in a block, so the background is drawn behind them', () => {
+  const { html } = copyBetween($('bm1'), $('bm2'));
+  assert(/^<div style="[^"]*background-color: (rgb\(0, 0, 0\)|#000000)/.test(html), `a block wrapper with the background: ${html}`);
+  assert(/color: (rgb\(255, 255, 255\)|#ffffff)/.test(html) && html.includes('line two'), `with the white text: ${html}`);
+});
+
+test('a picture is not a background for light text (blocked images, Outlook): the white is dropped', () => {
+  const { html } = copyText($('white-on-image'));
+  assert(html.includes('over a picture') && !html.includes('rgb(255, 255, 255)'), `white dropped: ${html}`);
+});
+
+test('a transparent cell does not hide the real dark background further out', () => {
+  const { html } = copyText($('white-in-clear'));
+  assert(html.includes('rgb(255, 255, 255)') && /background-color: (rgb\(0, 0, 0\)|#000000)/.test(html), `white kept with the outer black: ${html}`);
+});
+
+test('a cell background set only with bgcolor (with or without #) keeps its white text', () => {
+  for (const id of ['white-on-attr', 'white-on-bare']) {
+    const { html } = copyText($(id));
+    assert(html.includes('rgb(255, 255, 255)') && /background-color: (rgb\(51, 51, 51\)|#333333)/.test(html), `${id}: ${html}`);
+  }
+});
+
+test('with an input field focused (search box, subject, To), copying is left to the browser even if the page has a selection', () => {
+  const input = document.createElement('input');
+  input.value = 'search words';
+  document.body.appendChild(input);
+  input.focus();
+  const range = document.createRange();
+  range.selectNodeContents($('black'));
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+  const focused = document.activeElement === input;
+  const data = new DataTransfer();
+  const event = new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true });
+  input.dispatchEvent(event);
+  window.getSelection().removeAllRanges();
+  input.remove();
+  assert(focused, 'the input kept the focus while the page had a selection');
+  assert(!event.defaultPrevented && data.getData('text/html') === '', 'not touched');
+});
+
+test('a link only partly in the selection, grabbed by its unselected part, is dragged as the link', () => {
+  const range = document.createRange();
+  range.setStartBefore($('red'));
+  range.setEnd($('link').firstChild, 2);
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+  const data = new DataTransfer();
+  $('link').dispatchEvent(new DragEvent('dragstart', { dataTransfer: data, bubbles: true, cancelable: true }));
+  window.getSelection().removeAllRanges();
+  assertEqual(data.getData('text/html'), '');
 });
 
 test('a link dragged on its own (no selection) keeps the browser\'s data', () => {

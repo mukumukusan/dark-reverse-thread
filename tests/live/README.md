@@ -113,6 +113,11 @@ The full manual pass, as run on 2026-10-18. Everything is read-only except the s
 | **draft** Screen text | with dark on, copy the subject line and a sender name, paste into the draft | no light gray text appears when ◐ is pressed |
 | **draft** Signature / quote word | copy one word from the draft's signature and one from the opened quoted history, paste mid-line in the body | the pasted words are plain body text (not trimmed as a quote, not replaced with the signature) |
 | **draft** Pasted image | paste an image into the draft | no white flash on the editor |
+| **draft** Input fields | with dark on, copy text from the search box, the subject field and the To field, paste it | plain text, as before the extension |
+| **draft** Newsletter cells | from a newsletter with white text on dark cells (bgcolor and style), copy a word and two paragraphs, paste into the draft and into Google Docs | readable white on the dark cell in both; ◐ shows the same |
+| **draft** Table / list | copy 2×2 cells of a table email and two items of a list, paste into Google Sheets / Docs and into the draft | a table and a list, not loose text; no preheader or other hidden text appears |
+| **draft** List screen | copy a row of the inbox list and a sender name, paste into a light page | plain text, no light gray |
+| **draft** Drag | drag a selection inside the draft, then Option-drag one to another box | formatting kept, no light gray text |
 | **draft** What is saved | wait for "保存しました", read the draft through the Gmail API (`get_draft`, full content) | the HTML has none of `rgb(227, 227, 227)`, `#e3e3e3`, `rgb(221, 221, 221)`, `#dddddd`, `rgb(31, 31, 31)`, `#1f1f1f`, `rgb(82, 61, 2)`, `gtr`, `var(` (the same list as tests/browser/suite-sent.html), and no Gmail hint text such as 「改良するには Tab キーを押してください」 (copied with the text once and saved as part of the email) |
 
 The automated suites can't run the browser's own copy or Gmail's paste handling (a synthetic copy event

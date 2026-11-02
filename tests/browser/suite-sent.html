@@ -139,6 +139,15 @@ test('copying Gmail\'s own screen text (subject, counts) carries no display colo
   }
 });
 
+test('Gmail\'s screen outside the conversation (the list, the counts) is copied as plain text: no markup, no hidden parts', () => {
+  $('count').insertAdjacentHTML('beforeend', '<span id="count-hidden" style="display: none">hidden tooltip</span>');
+  select($('count-label'), $('count-hidden'));
+  const { html, text } = fire($('count-label'), 'copy');
+  $('count-hidden').remove();
+  assert(html.includes('1-50 of 100') && !/<(span|div|td)\b/.test(html), `text only: ${html}`);
+  assert(!html.includes('hidden tooltip') && !text.includes('hidden tooltip'), `nothing hidden: ${html} / ${text}`);
+});
+
 test('copying in the reply and pasting it back carries no display colors and adds no color to plain text', () => {
   select($('typed'), $('typed-link'));
   const { html: copied } = fire($('typed'), 'copy');

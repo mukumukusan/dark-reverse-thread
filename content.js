@@ -1084,65 +1084,85 @@
 
   /**
    * Copying, cutting or dragging text. The browser writes the colors it shows, so the dark display
-   * colors (light grey text, a darkened highlight, the editor's #1f1f1f, Gmail's own light screen text)
-   * went into whatever the text was pasted into: a reply (and on to its recipients), or a page with dark
-   * mode off, where it looked inverted. While dark mode is on, a selection anywhere on the page (an email,
-   * the reply / compose editor, or Gmail's own screen such as the subject) is written from the markup
-   * itself instead; the editor holds exactly what will be sent:
-   * - only the inline elements around the selection are put back around it (a word inside a link, bold
-   *   or colored span keeps them), plus the background of the nearest block that has one (a cell's dark
-   *   background stays with its white text); tables, signature and quote wrappers are not copied;
-   * - the extension's data-gtr-* attributes, --gtr-* properties and gtr-* classes are dropped, and the
-   *   !important colors it wrapped in var() get their own value back;
-   * - only colors written in the markup travel, never computed ones, so text without a color stays
-   *   without one; from an email, a light text color with no background of its own is dropped too (it
-   *   would be white on white for recipients); in the editor, the writer's colors are copied as they are;
-   * - Gmail's own hints inside the editor (the "Help me write" Tab / Esc hint) are left out.
+   * colors (light grey text, a darkened highlight, the editor's #1f1f1f, the light screen text) went
+   * into whatever the text was pasted into: a reply (and on to its recipients), or a page with dark mode
+   * off, where it looked inverted. While dark mode is on:
+   * - a selection in the conversation (emails, headers) or the reply / compose editor is written from the
+   *   markup itself; the editor holds exactly what will be sent;
+   *   - what the page doesn't show (hidden by the email's or Gmail's style rules) is left out;
+   *   - the inline elements around the selection are put back (a word inside a link, bold or colored
+   *     span keeps them), and so are the table or list around a selection that spans cells or items;
+   *     the nearest block's background and text color go with it as one wrapper (a block when the
+   *     selection holds paragraphs, so the background is drawn behind them); signature and quote
+   *     wrappers and the other blocks are not copied;
+   *   - the extension's data-gtr-* attributes, --gtr-* properties and gtr-* classes are dropped, and the
+   *     !important colors it wrapped in var() get their own value back;
+   *   - only colors written in the markup travel, never computed ones, so text without a color stays
+   *     without one; from an email, a light text color without a solid background of its own is dropped
+   *     too (white on white for recipients; a picture alone doesn't count: blocked images, Outlook);
+   *     in the editor, the writer's colors are copied as they are;
+   *   - Gmail's own hint inside the editor (the "Help me write" Tab / Esc hint) is left out;
+   * - a selection elsewhere in Gmail's screen (the list, labels, counts) is written as plain text.
    * Nothing on the page or in the editor is changed. A cut in the editor deletes the selection through
-   * the browser's own command. Text in input fields (the search box, the subject field) is left to the
-   * browser.
+   * the browser's own command. Input fields and other editable areas keep the browser's own copy.
    */
   const WRAPPED_VALUE = /^var\(--gtr-[\w-]+,\s*([\s\S]*)\)$/;
   const COPY_LIGHT_TEXT_CONTRAST = 3; // a text color below this against white needs its own background
+  const COPY_SOLID_BACKGROUND_ALPHA = 0.5; // a background fainter than this doesn't make light text readable
   const BODY_SELECTOR = '.gtr-thread .a3s';
+  const COPY_SCOPE_SELECTOR = `.gtr-thread, ${EDITOR_SELECTOR}`;
   const EDITOR_HINT_SELECTOR = '.jKzJCd'; // Gmail's "Help me write" hint inside the editor
   const COPY_INLINE_TAGS = new Set(['A', 'ABBR', 'B', 'BDI', 'BDO', 'BIG', 'CITE', 'CODE', 'DEL', 'DFN', 'EM', 'FONT', 'I',
     'INS', 'KBD', 'MARK', 'Q', 'S', 'SAMP', 'SMALL', 'SPAN', 'STRIKE', 'STRONG', 'SUB', 'SUP', 'TT', 'U', 'VAR']);
+  const COPY_STRUCTURE_TAGS = new Set(['TABLE', 'THEAD', 'TBODY', 'TFOOT', 'TR', 'UL', 'OL', 'DL']);
+  const COPY_STRUCTURE_TOPS = new Set(['TABLE', 'UL', 'OL', 'DL']);
+  const COPY_BLOCK_TAGS = new Set(['ADDRESS', 'ARTICLE', 'ASIDE', 'BLOCKQUOTE', 'CENTER', 'DD', 'DIV', 'DL', 'DT', 'FIGURE',
+    'FOOTER', 'FORM', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HEADER', 'HR', 'LI', 'MAIN', 'NAV', 'OL', 'P', 'PRE', 'SECTION',
+    'TABLE', 'TBODY', 'TD', 'TFOOT', 'TH', 'THEAD', 'TR', 'UL']);
+  const COPY_NEVER_TAGS = new Set(['STYLE', 'SCRIPT', 'TEMPLATE', 'NOSCRIPT']);
 
-  // Any CSS color (hex, rgb(), hsl(), a name such as "white") as rgba, or null. A detached element keeps
-  // names as written, so the color is resolved on a hidden probe in the page
+  // Any CSS color (hex, rgb(), hsl(), a name such as "white", a bare "333333" from a bgcolor attribute) as
+  // rgba, or null. A detached element keeps names as written, so the color is resolved on a hidden probe
   let colorProbe = null;
   const colorCache = new Map();
   function colorValue(value) {
     const key = String(value || '').trim().toLowerCase();
-    if (!key || key === 'inherit' || key === 'currentcolor' || key === 'initial' || key === 'unset') return null;
+    if (!key || key.includes('var(') || /^(inherit|initial|unset|revert|revert-layer|currentcolor)$/.test(key)) return null;
     if (colorCache.has(key)) return colorCache.get(key);
     if (!colorProbe || !colorProbe.isConnected) {
       colorProbe = document.createElement('i');
       colorProbe.style.cssText = 'position: fixed !important; display: none !important;';
       document.documentElement.appendChild(colorProbe);
     }
-    colorProbe.style.setProperty('color', 'rgba(1, 2, 3, 0.5)', 'important');
-    colorProbe.style.setProperty('color', key, 'important');
-    const resolved = getComputedStyle(colorProbe).color;
-    const rgb = colorProbe.style.getPropertyValue('color') === 'rgba(1, 2, 3, 0.5)' ? null : parseRGB(resolved);
+    const SENTINEL = 'rgba(1, 2, 3, 0.5)';
+    const resolve = (candidate) => {
+      colorProbe.style.setProperty('color', SENTINEL, 'important');
+      colorProbe.style.setProperty('color', candidate, 'important');
+      return colorProbe.style.getPropertyValue('color') === SENTINEL ? null : parseRGB(getComputedStyle(colorProbe).color);
+    };
+    const rgb = resolve(key) || (/^[0-9a-f]{3}([0-9a-f]{3})?$/.test(key) ? resolve(`#${key}`) : null);
     colorCache.set(key, rgb);
     return rgb;
   }
 
-  // A background of its own: a color that isn't fully transparent, a bgcolor attribute or a picture
-  function ownBackground(el) {
+  // The background an element sets itself (inline style or bgcolor), or null: { color, image }
+  function blockBackground(el) {
     const style = el.style;
-    const bgcolor = el.getAttribute && el.getAttribute('bgcolor');
-    if (bgcolor && colorValue(bgcolor)) return true;
-    if (style && style.backgroundImage && style.backgroundImage !== 'none') return true;
-    const bg = style && style.backgroundColor ? colorValue(style.backgroundColor) : null;
-    return !!(bg && bg.a > 0);
+    const attr = el.getAttribute && el.getAttribute('bgcolor');
+    const color = (style && style.backgroundColor) || attr || '';
+    const rgb = color && colorValue(color);
+    const image = style && style.backgroundImage && style.backgroundImage !== 'none' ? style.backgroundImage : '';
+    if ((!rgb || rgb.a === 0) && !image) return null;
+    return { color: rgb && rgb.a > 0 ? `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a})` : '', image };
   }
 
-  function hasOwnBackground(el, box) {
+  // Light text is readable only on a solid background color of its own (a picture may not be shown)
+  function hasReadableBackground(el, box) {
     for (let node = el; node && node !== box; node = node.parentElement) {
-      if (ownBackground(node)) return true;
+      const style = node.style;
+      const attr = node.getAttribute && node.getAttribute('bgcolor');
+      const rgb = colorValue((style && style.backgroundColor) || attr || '');
+      if (rgb && rgb.a >= COPY_SOLID_BACKGROUND_ALPHA) return true;
     }
     return false;
   }
@@ -1156,7 +1176,7 @@
     };
     const inlineLight = el.style && tooLight(el.style.color);
     const fontLight = el.tagName === 'FONT' && tooLight(el.getAttribute('color'));
-    if ((!inlineLight && !fontLight) || hasOwnBackground(el, box)) return;
+    if ((!inlineLight && !fontLight) || hasReadableBackground(el, box)) return;
     if (inlineLight) {
       el.style.removeProperty('color');
       if (!el.style.length) el.removeAttribute('style');
@@ -1182,38 +1202,72 @@
     if (!style.length) el.removeAttribute('style');
   }
 
-  // The nearest block's own background as a plain wrapper (the email's value: the !important var() is unwrapped)
-  function backgroundWrapper(block) {
-    const copy = block.cloneNode(false);
-    cleanCopiedElement(copy);
-    const span = document.createElement('span');
-    const image = copy.style && copy.style.backgroundImage;
-    const color = (copy.style && copy.style.backgroundColor) || copy.getAttribute('bgcolor');
-    if (color) span.style.setProperty('background-color', color);
-    if (image && image !== 'none') span.style.setProperty('background-image', image);
-    return span.style.length ? span : null;
+  // The email's own value of an inline property (unwrapping the extension's var() around !important ones)
+  function ownInlineValue(el, property) {
+    const value = el.style ? el.style.getPropertyValue(property).trim() : '';
+    const wrapped = value.match(WRAPPED_VALUE);
+    return wrapped ? wrapped[1].trim() : value;
   }
 
-  // The range's contents wrapped in shallow copies of the inline elements around it, and in the background
-  // of the nearest block that has one, up to (not including) the email body or editor that holds it
+  // Leave out of a copied fragment what the page doesn't show. cloneContents copies the elements the range
+  // touches in document order, so they pair with the originals one to one
+  function dropHiddenClones(range, fragment) {
+    const start = range.commonAncestorContainer;
+    const root = start.nodeType === Node.ELEMENT_NODE ? start : start.parentElement;
+    if (!root) return;
+    const originals = [];
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+    for (let el = walker.nextNode(); el; el = walker.nextNode()) {
+      if (range.intersectsNode(el)) originals.push(el);
+    }
+    const clones = Array.from(fragment.querySelectorAll('*'));
+    if (originals.length !== clones.length) return;
+    originals.forEach((el, i) => {
+      if (clones[i].tagName !== el.tagName) return;
+      const shown = getComputedStyle(el);
+      if (COPY_NEVER_TAGS.has(el.tagName) || shown.display === 'none' || shown.visibility === 'hidden') clones[i].remove();
+    });
+  }
+
+  const hasBlockContent = (fragment) => Array.from(fragment.childNodes).some((node) => node.nodeType === Node.ELEMENT_NODE && COPY_BLOCK_TAGS.has(node.tagName));
+
+  // The range's contents, without what isn't shown, wrapped in the inline elements around it (and the
+  // table or list it spans), plus one wrapper with the nearest block background and text color, up to
+  // (not including) the email body or editor that holds it
   function rangeWithAncestors(range) {
     let content = range.cloneContents();
+    dropHiddenClones(range, content);
     const start = range.commonAncestorContainer;
     let node = start.nodeType === Node.ELEMENT_NODE ? start : start.parentElement;
-    let backgroundTaken = false;
+    let structure = !!node && COPY_STRUCTURE_TAGS.has(node.tagName); // the selection spans rows, cells or items
+    let background = null;
+    let textColor = '';
     while (node && !node.matches(`.a3s, ${EDITOR_SELECTOR}`) && node.closest(`.a3s, ${EDITOR_SELECTOR}`)) {
-      let wrapper = null;
-      if (COPY_INLINE_TAGS.has(node.tagName)) {
-        wrapper = node.cloneNode(false);
-      } else if (!backgroundTaken && ownBackground(node)) {
-        wrapper = backgroundWrapper(node);
-        backgroundTaken = true;
-      }
-      if (wrapper) {
+      if (COPY_INLINE_TAGS.has(node.tagName) || (structure && COPY_STRUCTURE_TAGS.has(node.tagName))) {
+        const wrapper = node.cloneNode(false);
         wrapper.appendChild(content);
         content = wrapper;
+        if (COPY_STRUCTURE_TOPS.has(node.tagName)) structure = false;
+      } else {
+        if (!background) background = blockBackground(node);
+        if (!textColor) textColor = ownInlineValue(node, 'color');
       }
       node = node.parentElement;
+    }
+    if (background || textColor) {
+      const holder = document.createElement('div');
+      holder.appendChild(content);
+      const wrapper = document.createElement(hasBlockContent(holder) ? 'div' : 'span');
+      if (background && background.color) wrapper.style.setProperty('background-color', background.color);
+      if (background && background.image) wrapper.style.setProperty('background-image', background.image);
+      if (textColor) wrapper.style.setProperty('color', textColor);
+      while (holder.firstChild) wrapper.appendChild(holder.firstChild);
+      content = wrapper.style.length ? wrapper : holder;
+      if (content === holder) {
+        const fragment = document.createDocumentFragment();
+        while (holder.firstChild) fragment.appendChild(holder.firstChild);
+        content = fragment;
+      }
     }
     return content;
   }
@@ -1229,6 +1283,8 @@
     return text;
   }
 
+  const escapeHtml = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
   const inEditor = (node) => {
     const el = node && (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement);
     return !!(el && el.closest(EDITOR_SELECTOR));
@@ -1237,10 +1293,18 @@
   function originalSelectionMarkup() {
     if (!config.smartDark || !isContextValid()) return null;
     const active = document.activeElement;
-    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return null; // the browser's plain copy
+    // the browser's own copy: input fields, other editable areas (Settings), components with their own DOM
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.shadowRoot ||
+        (active.isContentEditable && !inEditor(active)))) return null;
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed || !selection.rangeCount) return null;
     const ranges = Array.from({ length: selection.rangeCount }, (_, i) => selection.getRangeAt(i));
+    const scopes = Array.from(document.querySelectorAll(COPY_SCOPE_SELECTOR));
+    if (!ranges.some((range) => scopes.some((scope) => range.intersectsNode(scope)))) {
+      // Gmail's own screen outside the conversation: its text, as plain text (what is shown, no screen colors)
+      const plain = selection.toString();
+      return { html: escapeHtml(plain).replace(/\r?\n/g, '<br>'), text: plain };
+    }
     const box = document.createElement('div');
     let hintRemoved = false;
     ranges.forEach((range) => {
@@ -1282,8 +1346,11 @@
   document.addEventListener('dragstart', (event) => {
     // Only a dragged selection: a link or image dragged on its own keeps the browser's own data
     const selection = window.getSelection();
-    const fromSelection = event.target.nodeType === Node.TEXT_NODE ||
-      (selection && !selection.isCollapsed && selection.containsNode(event.target, true));
+    // A link or image grabbed outside the selection (only partly inside it) is dragged on its own
+    const target = event.target;
+    const grabbed = target.nodeType === Node.ELEMENT_NODE && target.closest('a, img');
+    const fromSelection = target.nodeType === Node.TEXT_NODE ||
+      (selection && !selection.isCollapsed && selection.containsNode(grabbed || target, !grabbed));
     if (fromSelection) writeSelection(event.dataTransfer);
   }, true);
 
@@ -1301,6 +1368,7 @@
   function pasteAgainstSentColors(event) {
     if (!config.smartDark || !isContextValid() || !inEditor(event.target)) return;
     const box = composeBoxOf(event.target.nodeType === Node.ELEMENT_NODE ? event.target : event.target.parentElement);
+    if (pasteRestore) pasteRestore(); // a previous paste still waiting: switch its box back first
     if (!box || box.classList.contains(COMPOSE_ORIGINAL_CLASS)) return;
     box.classList.add(COMPOSE_ORIGINAL_CLASS);
     const restore = () => {
