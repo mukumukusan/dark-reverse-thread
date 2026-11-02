@@ -452,6 +452,56 @@ test('reply / compose: the quoted history (opened with "…") is the original em
 });
 
 // Last: it changes the editor's content
+// Select from the start of one element to the end of another inside the editor and fire a clipboard / drag event
+const editorEvent = (first, last, type) => {
+  const editor = $('compose').querySelector('.Am');
+  editor.focus();
+  const range = document.createRange();
+  range.setStartBefore(first);
+  range.setEndAfter(last);
+  const selection = getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  const data = new DataTransfer();
+  const event = type === 'dragstart'
+    ? new DragEvent('dragstart', { dataTransfer: data, bubbles: true, cancelable: true })
+    : new ClipboardEvent(type, { clipboardData: data, bubbles: true, cancelable: true });
+  first.dispatchEvent(event);
+  return { html: data.getData('text/html'), text: data.getData('text/plain'), prevented: event.defaultPrevented, editor };
+};
+
+test('reply / compose: copying in the editor writes what will be sent, not the dark display (it pasted inverted with dark mode off)', () => {
+  const { html, prevented } = editorEvent($('plain-word'), $('typed-red'), 'copy');
+  getSelection().removeAllRanges();
+  assert(prevented, 'the copy is written by the extension');
+  assert(!html.includes('rgb(227, 227, 227)') && !html.includes('rgb(31, 31, 31)'), `no display colors: ${html}`);
+  assert(html.includes('<span id="plain-word">pick</span>'), `uncolored text stays uncolored (no #222 either): ${html}`);
+  assert(/color="#ff0000"/i.test(html), `a color the user picked is kept: ${html}`);
+});
+
+test('reply / compose: a white the user picked in the editor is copied as it will be sent (only colors copied from emails are dropped)', () => {
+  const { html } = editorEvent($('typed-white'), $('typed-white'), 'copy');
+  getSelection().removeAllRanges();
+  assert(/color="#ffffff"/i.test(html), `the user's white stays: ${html}`);
+});
+
+test('reply / compose: cutting in the editor removes the text and writes what will be sent', () => {
+  const editor = $('compose').querySelector('.Am');
+  editor.insertAdjacentHTML('beforeend', '<span id="cut-start">cut </span><font color="#ff0000" id="cut-end">me</font>');
+  const { html, prevented } = editorEvent($('cut-start'), $('cut-end'), 'cut');
+  getSelection().removeAllRanges();
+  assert(prevented, 'the cut is written by the extension');
+  assert(html.includes('cut ') && /color="#ff0000"/i.test(html), `the cut text with the user's red: ${html}`);
+  assert(!html.includes('rgb(227, 227, 227)'), `no display colors: ${html}`);
+  assert(!editor.textContent.includes('cut me'), `the text is gone from the editor: ${editor.textContent.slice(-40)}`);
+});
+
+test('reply / compose: dragging inside the editor is left to the browser', () => {
+  const { html } = editorEvent($('typed-black'), $('typed-navy'), 'dragstart');
+  getSelection().removeAllRanges();
+  assertEqual(html, '');
+});
+
 test('reply / compose: picking white in dark mode puts white into the email', () => {
   const editor = $('compose').querySelector('.Am');
   assertEqual(color('plain-word'), 'rgb(227, 227, 227)', 'plain text is light gray, not a color Gmail offers: with #ffffff the browser saw "already white" and skipped the color');

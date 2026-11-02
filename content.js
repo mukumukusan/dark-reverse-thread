@@ -1083,15 +1083,58 @@
   }, true);
 
   /**
-   * Copying (or dragging) text out of an email body. The browser writes the colors it shows, so the
-   * dark display colors (light grey text, a darkened highlight) went into the reply the text was pasted
-   * into, and on to its recipients. When the selection touches an email body, the clipboard gets the
-   * email's own markup instead: the extension's data-gtr-* attributes, --gtr-* properties and gtr-*
-   * classes are dropped, and the !important colors it wrapped in var() get their own value back.
-   * Nothing on the page changes. Text selected elsewhere (the reply box itself, headers) is left to
-   * the browser.
+   * Copying, cutting or dragging text. The browser writes the colors it shows, so the dark display
+   * colors (light grey text, a darkened highlight, the editor's #1f1f1f) went into whatever the text
+   * was pasted into: a reply (and on to its recipients), or a page with dark mode off, where it looked
+   * inverted. When the selection touches an email body or the reply / compose editor, the clipboard
+   * gets the markup itself instead (the editor holds exactly what will be sent):
+   * - the elements around the selection, up to the email body or the editor, are put back around it
+   *   (a word inside a link, bold or colored span keeps them; a cell keeps its background);
+   * - the extension's data-gtr-* attributes, --gtr-* properties and gtr-* classes are dropped, and the
+   *   !important colors it wrapped in var() get their own value back;
+   * - only colors written in the markup travel, never computed ones, so text without a color stays
+   *   without one; a light text color with no background of its own is dropped too (it would be white
+   *   on white for recipients).
+   * Nothing on the page or in the editor is changed. A cut in the editor deletes the selection
+   * through the browser's own command, so undo and Gmail's input handling still work. A drag inside
+   * the editor is left to the browser, which drops the styles that match where the text lands.
    */
   const WRAPPED_VALUE = /^var\(--gtr-[\w-]+,\s*([\s\S]*)\)$/;
+  const COPY_LIGHT_TEXT_CONTRAST = 3; // a text color below this against white needs its own background
+  const BODY_SELECTOR = '.gtr-thread .a3s';
+
+  function colorValue(value) {
+    const probe = document.createElement('i');
+    probe.style.color = value;
+    return probe.style.color ? parseRGB(probe.style.color) : null;
+  }
+
+  function hasOwnBackground(el, box) {
+    for (let node = el; node && node !== box; node = node.parentElement) {
+      const style = node.style;
+      if (node.getAttribute('bgcolor') || (style && style.backgroundImage && style.backgroundImage !== 'none')) return true;
+      const bg = style && style.backgroundColor ? colorValue(style.backgroundColor) : null;
+      if (bg && bg.a > 0) return true;
+    }
+    return false;
+  }
+
+  // A text color recipients could not read on their white page unless its background comes with it
+  function dropLoneLightText(el, box) {
+    const white = { r: 255, g: 255, b: 255, a: 1 };
+    const tooLight = (value) => {
+      const rgb = value && colorValue(value);
+      return !!rgb && rgb.a > 0 && contrastBetween(rgb, white) < COPY_LIGHT_TEXT_CONTRAST;
+    };
+    const inlineLight = el.style && tooLight(el.style.color);
+    const fontLight = el.tagName === 'FONT' && tooLight(el.getAttribute('color'));
+    if ((!inlineLight && !fontLight) || hasOwnBackground(el, box)) return;
+    if (inlineLight) {
+      el.style.removeProperty('color');
+      if (!el.style.length) el.removeAttribute('style');
+    }
+    if (fontLight) el.removeAttribute('color');
+  }
 
   function cleanCopiedElement(el) {
     Array.from(el.attributes).forEach(({ name }) => {
@@ -1111,26 +1154,65 @@
     if (!style.length) el.removeAttribute('style');
   }
 
-  function originalSelectionMarkup() {
-    if (!config.smartDark) return null;
+  // The range's contents wrapped in shallow copies of the elements around it, up to (not including) the
+  // email body or editor that holds it
+  function rangeWithAncestors(range) {
+    let content = range.cloneContents();
+    const start = range.commonAncestorContainer;
+    let node = start.nodeType === Node.ELEMENT_NODE ? start : start.parentElement;
+    while (node && !node.matches(`.a3s, ${EDITOR_SELECTOR}`) && node.closest(`.a3s, ${EDITOR_SELECTOR}`)) {
+      const wrapper = node.cloneNode(false);
+      wrapper.appendChild(content);
+      content = wrapper;
+      node = node.parentElement;
+    }
+    return content;
+  }
+
+  // where: 'any' (an email body or the editor) or 'body' (email bodies only)
+  function originalSelectionMarkup(where) {
+    if (!config.smartDark || !isContextValid()) return null;
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed || !selection.rangeCount) return null;
     const ranges = Array.from({ length: selection.rangeCount }, (_, i) => selection.getRangeAt(i));
-    const bodies = Array.from(document.querySelectorAll('.gtr-thread .a3s'));
-    if (!ranges.some((range) => bodies.some((body) => range.intersectsNode(body)))) return null;
+    const roots = Array.from(document.querySelectorAll(where === 'body' ? BODY_SELECTOR : `${BODY_SELECTOR}, ${EDITOR_SELECTOR}`));
+    if (!ranges.some((range) => roots.some((root) => range.intersectsNode(root)))) return null;
     const box = document.createElement('div');
-    ranges.forEach((range) => box.appendChild(range.cloneContents()));
-    box.querySelectorAll(`.${ORIGINAL_BUTTON_CLASS}`).forEach((button) => button.remove());
-    box.querySelectorAll('*').forEach(cleanCopiedElement);
+    ranges.forEach((range) => {
+      const piece = document.createElement('div');
+      piece.appendChild(rangeWithAncestors(range));
+      piece.querySelectorAll(`.${ORIGINAL_BUTTON_CLASS}, .${COMPOSE_BUTTON_CLASS}`).forEach((button) => button.remove());
+      piece.querySelectorAll('*').forEach(cleanCopiedElement);
+      // Colors from an email are guarded; colors in the editor are the writer's and are copied as they will be sent
+      if (!inEditor(range.commonAncestorContainer)) piece.querySelectorAll('*').forEach((el) => dropLoneLightText(el, piece));
+      while (piece.firstChild) box.appendChild(piece.firstChild);
+    });
     return { html: box.innerHTML, text: selection.toString() };
   }
 
+  const inEditor = (node) => {
+    const el = node && (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement);
+    return !!(el && el.closest(EDITOR_SELECTOR));
+  };
+
   document.addEventListener('copy', (event) => {
-    const copied = event.clipboardData && originalSelectionMarkup();
+    const copied = event.clipboardData && originalSelectionMarkup('any');
     if (!copied) return;
     event.clipboardData.setData('text/html', copied.html);
     event.clipboardData.setData('text/plain', copied.text);
     event.preventDefault();
+  }, true);
+
+  document.addEventListener('cut', (event) => {
+    // Only text in the editor can be cut; the email bodies are read-only
+    const selection = window.getSelection();
+    if (!selection || !selection.rangeCount || !inEditor(selection.getRangeAt(0).commonAncestorContainer)) return;
+    const copied = event.clipboardData && originalSelectionMarkup('any');
+    if (!copied) return;
+    event.clipboardData.setData('text/html', copied.html);
+    event.clipboardData.setData('text/plain', copied.text);
+    event.preventDefault(); // this also cancels the browser's delete, so delete the same way it would
+    document.execCommand('delete');
   }, true);
 
   document.addEventListener('dragstart', (event) => {
@@ -1138,8 +1220,8 @@
     const selection = window.getSelection();
     const fromSelection = event.target.nodeType === Node.TEXT_NODE ||
       (selection && !selection.isCollapsed && selection.containsNode(event.target, true));
-    if (!event.dataTransfer || !fromSelection) return;
-    const copied = originalSelectionMarkup();
+    if (!event.dataTransfer || !fromSelection || inEditor(event.target)) return;
+    const copied = originalSelectionMarkup('body');
     if (!copied) return;
     event.dataTransfer.setData('text/html', copied.html);
     event.dataTransfer.setData('text/plain', copied.text);

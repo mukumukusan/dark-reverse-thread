@@ -28,6 +28,9 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <div id="dark-bg" style="background: #101010">dark</div>
   <div id="light-border" style="border: 1px solid #f0f0f0; border-top: 0">card with a light frame</div>
   <div id="dark-border" style="border: 1px solid #333333">dark frame</div>
+  <p><a id="deep-link" href="https://example.com/"><b><span id="deep-word" style="color: #ff0000">deep word</span></b></a></p>
+  <table><tbody><tr><td id="dark-cell" bgcolor="#333333" style="background-color: #333333"><span id="white-on-dark" style="color: #ffffff">night</span></td></tr></tbody></table>
+  <p><span id="white-alone" style="color: #ffffff">ghost</span> <font color="#ffffff" id="white-font">pale</font></p>
   <div id="important-border" style="border-left: 2px solid #ffffff !important">white rule set with !important</div>
   <p id="marker" style="background: #ffff00"><span><strong id="marker-text" style="color: #555555">gray on a yellow marker</strong></span></p>
   <table><tr><td id="teal-cell" style="background: #c8eef7"><a id="teal-link" style="color: #1a73e8">blue link on a pale teal cell</a></td></tr></table>
@@ -297,6 +300,41 @@ test('copying a whole email leaves no trace of the extension (images, frames, cl
   assert(/<img[^>]*id="logo"/.test(html), 'the images are copied');
   const frame = html.match(/<div id="important-border" style="([^"]*)"/);
   assert(frame && frame[1].includes('rgb(255, 255, 255) !important'), `the !important line keeps its own white: ${frame && frame[1]}`);
+});
+
+// Copy only the text inside one element (the way a word is double-clicked): the elements around it are outside the range
+const copyText = (el) => {
+  const range = document.createRange();
+  range.selectNodeContents(el.firstChild);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  const data = new DataTransfer();
+  el.dispatchEvent(new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true }));
+  selection.removeAllRanges();
+  return { html: data.getData('text/html'), text: data.getData('text/plain') };
+};
+
+test('copying a word inside a link, bold and a colored span keeps the link, the bold and the email\'s color', () => {
+  const { html } = copyText($('deep-word'));
+  assert(html.includes('href="https://example.com/"'), `the link: ${html}`);
+  assert(html.includes('<b>'), `the bold: ${html}`);
+  assert(html.includes('color: rgb(255, 0, 0)'), `the email's red: ${html}`);
+  assert(!/gtr/.test(html), `no trace of the extension: ${html}`);
+});
+
+test('white text in a dark cell is copied together with the cell\'s background', () => {
+  const { html } = copyText($('white-on-dark'));
+  assert(html.includes('color: rgb(255, 255, 255)'), `the white text: ${html}`);
+  assert(html.includes('bgcolor="#333333"') && html.includes('background-color: rgb(51, 51, 51)'), `with its dark cell: ${html}`);
+});
+
+test('white text with no background of its own is copied without the white (it would be white on white for recipients)', () => {
+  const span = copyText($('white-alone'));
+  assert(span.text === 'ghost' && span.html.includes('ghost'), `the text is there: ${span.html}`);
+  assert(!span.html.includes('rgb(255, 255, 255)'), `the white is dropped: ${span.html}`);
+  const font = copyText($('white-font'));
+  assert(font.html.includes('pale') && !/color="#ffffff"/i.test(font.html), `<font color> too: ${font.html}`);
 });
 
 test('a link dragged on its own (no selection) keeps the browser\'s data', () => {
