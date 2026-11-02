@@ -449,6 +449,11 @@
   color: var(--gtr-dark-text-subtle) !important;
 }
 
+/* 帯の右の「推敲」ボタンの文字。Gmail の濃い灰色（#444746）のままで、帯（#35363a）とほぼ同じ色だった */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb button :is(span, span *):not(svg):not(svg *) {
+  color: var(--gtr-dark-text) !important;
+}
+
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb :is(svg, svg *, i.google-symbols) {
   color: var(--gtr-dark-text-muted) !important;
   fill: var(--gtr-dark-text-muted) !important;
