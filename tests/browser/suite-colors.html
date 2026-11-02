@@ -250,6 +250,45 @@ test('printing uses the email\'s original colors (the print rules beat the dark 
   }
 });
 
+// Copy the given nodes the way the user would: select them, fire "copy" with a clipboard, read what was written
+const copyNodes = (first, last, type = 'copy') => {
+  const range = document.createRange();
+  range.setStartBefore(first);
+  range.setEndAfter(last);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  const data = new DataTransfer();
+  const event = type === 'copy'
+    ? new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true })
+    : new DragEvent('dragstart', { dataTransfer: data, bubbles: true, cancelable: true });
+  first.dispatchEvent(event);
+  selection.removeAllRanges();
+  return { html: data.getData('text/html'), text: data.getData('text/plain'), handled: event.defaultPrevented || data.getData('text/html') !== '' };
+};
+
+test('copying from an email writes the email\'s own colors, not the dark display colors (they went into replies)', () => {
+  const { html, text, handled } = copyNodes($('black'), $('important-bg'));
+  assert(handled, 'the copy is written by the extension');
+  assert(!/gtr/.test(html), `no trace of the extension's colors or attributes: ${html}`);
+  assert(html.includes('color: rgb(0, 0, 0)'), `black stays black: ${html}`);
+  assert(html.includes('color: rgb(255, 0, 0)'), `red stays the email's red: ${html}`);
+  assert(html.includes('color: rgb(65, 69, 82) !important'), `an inline !important color is written back as the email had it: ${html}`);
+  assert(html.includes('background-color: rgb(255, 255, 255) !important'), `and its !important background: ${html}`);
+  assert(!html.includes('rgb(227, 227, 227)') && !html.includes('rgb(31, 31, 31)'), `no light display text or dark display background: ${html}`);
+  assert(text.includes('black') && text.includes('red'), `the plain text is there too: ${text}`);
+});
+
+test('dragging a selection out of an email carries the email\'s own colors too', () => {
+  const { html } = copyNodes($('black'), $('red'), 'dragstart');
+  assert(html.includes('color: rgb(0, 0, 0)') && !/gtr/.test(html), `dragged markup: ${html}`);
+});
+
+test('copying outside the email bodies is left to the browser', () => {
+  const { handled } = copyNodes($('subject'), $('subject'));
+  assert(!handled, 'the subject line is not touched');
+});
+
 test('turning dark mode off shows the original colors again', async () => {
   chrome.storage.sync.set({ smartDark: false });
   await waitFor(() => !hasClass(html, 'gmail-dark-active'), 2000);

@@ -1083,6 +1083,69 @@
   }, true);
 
   /**
+   * Copying (or dragging) text out of an email body. The browser writes the colors it shows, so the
+   * dark display colors (light grey text, a darkened highlight) went into the reply the text was pasted
+   * into, and on to its recipients. When the selection touches an email body, the clipboard gets the
+   * email's own markup instead: the extension's data-gtr-* attributes, --gtr-* properties and gtr-*
+   * classes are dropped, and the !important colors it wrapped in var() get their own value back.
+   * Nothing on the page changes. Text selected elsewhere (the reply box itself, headers) is left to
+   * the browser.
+   */
+  const WRAPPED_VALUE = /^var\(--gtr-[\w-]+,\s*([\s\S]*)\)$/;
+
+  function cleanCopiedElement(el) {
+    Array.from(el.attributes).forEach(({ name }) => {
+      if (name.startsWith('data-gtr-')) el.removeAttribute(name);
+    });
+    if (el.classList.length) {
+      Array.from(el.classList).forEach((name) => { if (name.startsWith('gtr-')) el.classList.remove(name); });
+      if (!el.classList.length) el.removeAttribute('class');
+    }
+    const style = el.style;
+    if (!style || !style.length) return;
+    Array.from(style).forEach((property) => {
+      if (property.startsWith('--gtr-')) { style.removeProperty(property); return; }
+      const wrapped = style.getPropertyValue(property).trim().match(WRAPPED_VALUE);
+      if (wrapped) style.setProperty(property, wrapped[1].trim(), style.getPropertyPriority(property));
+    });
+    if (!style.length) el.removeAttribute('style');
+  }
+
+  function originalSelectionMarkup() {
+    if (!config.smartDark) return null;
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.rangeCount) return null;
+    const ranges = Array.from({ length: selection.rangeCount }, (_, i) => selection.getRangeAt(i));
+    const bodies = Array.from(document.querySelectorAll('.gtr-thread .a3s'));
+    if (!ranges.some((range) => bodies.some((body) => range.intersectsNode(body)))) return null;
+    const box = document.createElement('div');
+    ranges.forEach((range) => box.appendChild(range.cloneContents()));
+    box.querySelectorAll(`.${ORIGINAL_BUTTON_CLASS}`).forEach((button) => button.remove());
+    box.querySelectorAll('*').forEach(cleanCopiedElement);
+    return { html: box.innerHTML, text: selection.toString() };
+  }
+
+  document.addEventListener('copy', (event) => {
+    const copied = event.clipboardData && originalSelectionMarkup();
+    if (!copied) return;
+    event.clipboardData.setData('text/html', copied.html);
+    event.clipboardData.setData('text/plain', copied.text);
+    event.preventDefault();
+  }, true);
+
+  document.addEventListener('dragstart', (event) => {
+    // Only a dragged selection: a link or image dragged on its own keeps the browser's own data
+    const selection = window.getSelection();
+    const fromSelection = event.target.nodeType === Node.TEXT_NODE ||
+      (selection && !selection.isCollapsed && selection.containsNode(event.target, true));
+    if (!event.dataTransfer || !fromSelection) return;
+    const copied = originalSelectionMarkup();
+    if (!copied) return;
+    event.dataTransfer.setData('text/html', copied.html);
+    event.dataTransfer.setData('text/plain', copied.text);
+  }, true);
+
+  /**
    * Menus opened from a button in the conversation (e.g. a message's "⋮" menu) or in the main toolbar
    * above it (the checkbox "▾", "⋮") are built outside the thread from shared menu components that
    * other parts of Gmail reuse. Gmail opens them on mouse/pointer down, so the source of the press is

@@ -51,8 +51,8 @@ A lightweight Chrome extension (Manifest V3) for Gmail: a dark mode for threads,
 The same email is seen on different backgrounds: by you in dark mode, by recipients on a white screen, and by recipients in dark-mode apps. Matching one breaks another, so every color change follows these four rules.
 
 1. **送る中身には触らない / Never change what is sent**
-   - 日本語: 変えるのは表示だけ。返信欄・作成ウィンドウの中には要素も属性も書き込まず（CSS と CSS Custom Highlight API だけを使う）、相手に届く色はいつも書いた人が選んだ色のまま。
-   - English: Only the display changes. Nothing is written into the reply box or compose window (CSS and the CSS Custom Highlight API only), so recipients always get the colors the writer chose.
+   - 日本語: 変えるのは表示だけ。返信欄・作成ウィンドウの中には要素も属性も書き込まず（CSS と CSS Custom Highlight API だけを使う）、相手に届く色はいつも書いた人が選んだ色のまま。受信メールからコピー・ドラッグした文字も、暗い表示の色ではなくメール本来の色で写る。
+   - English: Only the display changes. Nothing is written into the reply box or compose window (CSS and the CSS Custom Highlight API only), so recipients always get the colors the writer chose. Text copied or dragged out of an email carries the email's own colors, not the dark display colors.
 2. **読めないものだけ直す / Fix only what can't be read**
    - 日本語: 読める色は元の色のまま残す。直すときも色合い（色相・彩度）は残し、明るさだけを読める段階まで変える。
    - English: Readable colors stay as they are. When a color must change, its hue and saturation stay and only its lightness moves until it reads.
