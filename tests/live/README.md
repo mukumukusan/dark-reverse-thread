@@ -109,7 +109,7 @@ The full manual pass, as run on 2026-10-18. Everything is read-only except the s
 | **draft** Copy from an email | open a thread from a search (the hit gets Gmail's yellow), copy a line with the hit and a dark-cell / colored part (Cmd+C, and once by right-click → Copy), paste into the draft | the draft looks like the rest of the text; ◐ shows black text with no background except the email's own colors |
 | **draft** Copy inside the draft | copy plain and red text in the draft, paste it at the end with dark on; then Cmd+X a word and Cmd+Z | plain text stays uncolored, red stays red; the cut word goes and comes back |
 | **draft** Dark off paste | copy in the draft with dark on, turn dark off in the popup, paste into the draft | nothing looks inverted (no dark box, no light gray text) |
-| **draft** What is saved | wait for "保存しました", read the draft through the Gmail API (`get_draft`, full content) | the HTML has none of `rgb(227, 227, 227)`, `#e3e3e3`, `rgb(221, 221, 221)`, `#dddddd`, `rgb(31, 31, 31)`, `#1f1f1f`, `rgb(82, 61, 2)`, `gtr`, `var(` (the same list as tests/browser/suite-sent.html) |
+| **draft** What is saved | wait for "保存しました", read the draft through the Gmail API (`get_draft`, full content) | the HTML has none of `rgb(227, 227, 227)`, `#e3e3e3`, `rgb(221, 221, 221)`, `#dddddd`, `rgb(31, 31, 31)`, `#1f1f1f`, `rgb(82, 61, 2)`, `gtr`, `var(` (the same list as tests/browser/suite-sent.html), and no Gmail hint text such as 「改良するには Tab キーを押してください」 (copied with the text once and saved as part of the email) |
 
 The automated suites can't run the browser's own copy or Gmail's paste handling (a synthetic copy event
 never serializes, and `execCommand('copy')` / clipboard reads are refused in headless Chrome), so the

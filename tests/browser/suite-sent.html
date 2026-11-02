@@ -147,6 +147,20 @@ test('copying in the reply and pasting it back carries no display colors and add
   assert(added.includes('こんにちは'), `the pasted text is in the reply: ${added}`);
 });
 
+test('copying in the reply leaves out Gmail\'s on-screen hints (the "Help me write" Tab hint was pasted in as text)', () => {
+  // Gmail puts the hint inside the editor, hidden from screen readers; it is not part of the email
+  editor().insertAdjacentHTML('beforeend', '<div id="hint-line">最後の行<span class="jKzJCd"><span class="bxX nO" aria-hidden="true" id="hint">改良するには Tab キーを押してください</span></span></div>');
+  select($('hint-line'), $('hint-line'));
+  const data = new DataTransfer();
+  $('hint-line').dispatchEvent(new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true }));
+  const copied = data.getData('text/html');
+  const plain = data.getData('text/plain');
+  assert(copied.includes('最後の行'), `the line is copied: ${copied}`);
+  assert(!copied.includes('改良するには'), `the hint is not: ${copied}`);
+  assert(plain.includes('最後の行') && !plain.includes('改良するには'), `nor in the plain text: ${plain}`);
+  $('hint-line').remove();
+});
+
 test('cutting in the reply carries no display colors', () => {
   const count = () => editor().textContent.split('紺').length - 1; // the paste above added a second one
   const before = count();

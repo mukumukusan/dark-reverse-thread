@@ -1178,16 +1178,26 @@
     const roots = Array.from(document.querySelectorAll(where === 'body' ? BODY_SELECTOR : `${BODY_SELECTOR}, ${EDITOR_SELECTOR}`));
     if (!ranges.some((range) => roots.some((root) => range.intersectsNode(root)))) return null;
     const box = document.createElement('div');
+    let text = selection.toString();
     ranges.forEach((range) => {
       const piece = document.createElement('div');
       piece.appendChild(rangeWithAncestors(range));
       piece.querySelectorAll(`.${ORIGINAL_BUTTON_CLASS}, .${COMPOSE_BUTTON_CLASS}`).forEach((button) => button.remove());
       piece.querySelectorAll('*').forEach(cleanCopiedElement);
-      // Colors from an email are guarded; colors in the editor are the writer's and are copied as they will be sent
-      if (!inEditor(range.commonAncestorContainer)) piece.querySelectorAll('*').forEach((el) => dropLoneLightText(el, piece));
+      if (inEditor(range.commonAncestorContainer)) {
+        // Gmail's on-screen hints inside the editor (the "Help me write" Tab / Esc hint) are hidden from screen
+        // readers and are not part of the email; copied, they were pasted back as real text
+        piece.querySelectorAll('[aria-hidden="true"]').forEach((hint) => {
+          if (hint.textContent) text = text.replace(hint.textContent, '');
+          hint.remove();
+        });
+      } else {
+        // Colors from an email are guarded; colors in the editor are the writer's and are copied as they will be sent
+        piece.querySelectorAll('*').forEach((el) => dropLoneLightText(el, piece));
+      }
       while (piece.firstChild) box.appendChild(piece.firstChild);
     });
-    return { html: box.innerHTML, text: selection.toString() };
+    return { html: box.innerHTML, text };
   }
 
   const inEditor = (node) => {
