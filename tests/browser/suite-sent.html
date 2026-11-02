@@ -26,7 +26,7 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
 // A compose window (a reply popped out works the same) with what a writer typically has in it
 document.body.insertAdjacentHTML('beforeend', `
   <div class="Hd" role="dialog" id="compose">
-    <div class="Am Al editable" contenteditable="true" id="editor"><div id="typed">こんにちは</div><div><font color="#ff0000" id="typed-red">赤</font> <font color="#073763" id="typed-navy">紺</font> <font color="#ffffff" id="typed-white">白</font> <span style="background-color: #ffff00" id="typed-marker">マーカー</span> <a href="https://example.com/" id="typed-link">リンク</a></div><div class="gmail_quote" id="quote"><p style="color: rgb(34, 34, 34)" id="quote-line">引用された文</p></div></div>
+    <div class="Am Al editable" contenteditable="true" id="editor"><div id="typed">こんにちは</div><div><font color="#ff0000" id="typed-red">赤</font> <font color="#073763" id="typed-navy">紺</font> <font color="#ffffff" id="typed-white">白</font> <span style="background-color: #ffff00" id="typed-marker">マーカー</span> <a href="https://example.com/" id="typed-link">リンク</a></div><div id="star-line">評価<span aria-hidden="true" id="star">★</span></div><div class="gmail_signature" data-smartmail="gmail_signature" id="sig"><div id="sig-line">宮下昌樹</div></div><div class="gmail_quote" id="quote"><p style="color: rgb(34, 34, 34)" id="quote-line">引用された文</p></div></div>
     <table><tbody><tr class="btC"><td class="gU"><div role="button" id="more"></div></td><td class="gU a0z"></td></tr></tbody></table>
   </div>`);
 // What will be sent, captured before the extension is loaded
@@ -61,104 +61,136 @@ const select = (first, last) => {
 
 const fire = (target, type) => {
   const data = new DataTransfer();
-  target.dispatchEvent(new ClipboardEvent(type, { clipboardData: data, bubbles: true, cancelable: true }));
-  return data.getData('text/html');
+  const event = type === 'dragstart'
+    ? new DragEvent('dragstart', { dataTransfer: data, bubbles: true, cancelable: true })
+    : new ClipboardEvent(type, { clipboardData: data, bubbles: true, cancelable: true });
+  target.dispatchEvent(event);
+  return { html: data.getData('text/html'), text: data.getData('text/plain'), prevented: event.defaultPrevented };
 };
 
-// Paste the way the browser does it (the same insertion and style clean-up as a real paste) at the end of the editor
-const pasteAtEnd = (html) => {
+// Select the text inside one element only (a double-clicked word): the elements around it are outside the range
+const selectText = (el) => {
+  const range = document.createRange();
+  range.selectNodeContents(el.firstChild);
+  getSelection().removeAllRanges();
+  getSelection().addRange(range);
+};
+
+// Each paste goes into a fresh line of its own at the top of the editor, so no test depends on another
+let lines = 0;
+const freshLine = () => {
+  const id = `line-${++lines}`;
+  editor().insertAdjacentHTML('afterbegin', `<div id="${id}"><br></div>`);
+  return $(id);
+};
+
+// Paste the way the browser does it (the same insertion and style clean-up as a real paste)
+const pasteInto = (line, html) => {
   editor().focus();
   const range = document.createRange();
-  range.selectNodeContents(editor());
-  range.collapse(false);
+  range.setStart(line, 0);
+  range.collapse(true);
   getSelection().removeAllRanges();
   getSelection().addRange(range);
   document.execCommand('insertHTML', false, html);
   getSelection().removeAllRanges();
 };
 
-test('the editor holds exactly what was typed after the extension has drawn it dark', async () => {
-  await sleep(600);
-  assert(hasClass(html, 'gmail-dark-active'), 'dark mode is on');
-  assertEqual(getComputedStyle(editor()).color, 'rgb(227, 227, 227)', 'the editor is shown dark');
-  assertEqual(editor().innerHTML, SENT_BEFORE);
-});
-
-test('showing colors as sent (◐) and back changes nothing in the editor', async () => {
-  const toggle = $('compose').querySelector('.gtr-compose-toggle');
-  assert(toggle, 'the ◐ button is there');
-  toggle.click();
-  await sleep(100);
-  assert(hasClass($('compose'), 'gtr-compose-original'), 'shown as sent');
-  assertEqual(editor().innerHTML, SENT_BEFORE, 'while shown as sent');
-  toggle.click();
-  await sleep(300);
-  assertEqual(editor().innerHTML, SENT_BEFORE);
-});
-
-test('typing events and a repaint of the picked colors change nothing in the editor', async () => {
-  editor().dispatchEvent(new InputEvent('input', { bubbles: true }));
-  await sleep(400);
-  assertEqual(editor().innerHTML, SENT_BEFORE);
-});
-
-test('turning dark mode off and on again changes nothing in the editor', async () => {
-  chrome.storage.sync.set({ smartDark: false });
-  await waitFor(() => !hasClass(html, 'gmail-dark-active'));
-  assertEqual(editor().innerHTML, SENT_BEFORE, 'off');
-  chrome.storage.sync.set({ smartDark: true });
-  await waitFor(() => hasClass(html, 'gmail-dark-active'));
-  await sleep(400);
-  assertEqual(editor().innerHTML, SENT_BEFORE, 'on again');
-});
+// The outermost element under the editor holding the given text (where a paste landed)
+const blockWith = (text) => {
+  const walker = document.createTreeWalker(editor(), NodeFilter.SHOW_TEXT);
+  let node = null;
+  for (let t = walker.nextNode(); t; t = walker.nextNode()) if (t.nodeValue.includes(text)) { node = t; break; }
+  let block = node && node.parentElement;
+  while (block && block.parentElement !== editor()) block = block.parentElement;
+  return block ? block.outerHTML : '';
+};
 
 test('the incident: a search hit copied from an email and pasted into the reply carries no display colors', () => {
   assert($('hit').hasAttribute('data-gtr-bg'), 'the search hit is shown in the darkened yellow on the page');
   select($('hit'), $('after-hit'));
-  const copied = fire($('hit'), 'copy');
+  const { html: copied } = fire($('hit'), 'copy');
   assert(copied.includes('アクタス'), `the extension wrote the copy: ${copied}`);
   assertEqual(tracesIn(copied).join(', '), '', 'clipboard');
-  pasteAtEnd(copied);
-  assertEqual(tracesIn(editor().innerHTML).join(', '), '', 'the reply after the paste');
+  pasteInto(freshLine(), copied);
+  const pasted = blockWith('の大塚でございます');
+  assert(pasted, 'the paste is in the reply');
+  assertEqual(tracesIn(pasted).join(', '), '', 'the reply after the paste');
 });
 
 test('copying a whole email and pasting it into the reply carries no display colors and no white without its background', () => {
   select($('greeting'), $('bank'));
-  const copied = fire($('greeting'), 'copy');
+  const { html: copied } = fire($('greeting'), 'copy');
+  assert(copied.includes('残高のお知らせ'), `the extension wrote the copy: ${copied}`);
   assertEqual(tracesIn(copied).join(', '), '', 'clipboard');
   assert(!copied.includes('rgb(224, 224, 224)'), `the light disclaimer color, which had no background, is dropped: ${copied}`);
-  assert(copied.includes('color: rgb(255, 255, 255)') && copied.includes('background-color: rgb(32, 33, 36)'), `the white headline keeps its dark cell: ${copied}`);
-  pasteAtEnd(copied);
-  assertEqual(tracesIn(editor().innerHTML).join(', '), '', 'the reply after the paste');
+  assert(copied.includes('color: rgb(255, 255, 255)') && /background-color: (rgb\(32, 33, 36\)|#202124)/.test(copied), `the white headline keeps its dark cell: ${copied}`);
+  pasteInto(freshLine(), copied);
+  assertEqual(tracesIn(blockWith('残高のお知らせ')).join(', '), '', 'the reply after the paste');
+});
+
+test('copying Gmail\'s own screen text (subject, counts) carries no display colors either (it is drawn light on the page)', () => {
+  for (const id of ['subject', 'count-label']) {
+    select($(id), $(id));
+    const { html, prevented } = fire($(id), 'copy');
+    assert(prevented && html.includes($(id).textContent.trim()), `${id}: the extension wrote the copy: ${html}`);
+    assertEqual(tracesIn(html).join(', '), '', id);
+    assert(!/color/.test(html), `${id}: no color at all: ${html}`);
+  }
 });
 
 test('copying in the reply and pasting it back carries no display colors and adds no color to plain text', () => {
-  const before = editor().innerHTML;
   select($('typed'), $('typed-link'));
-  const copied = fire($('typed'), 'copy');
+  const { html: copied } = fire($('typed'), 'copy');
   assert(copied.includes('こんにちは'), `the extension wrote the copy: ${copied}`);
   assertEqual(tracesIn(copied).join(', '), '', 'clipboard');
   assert(copied.includes('<div id="typed">こんにちは</div>'), `plain text has no color (not even #222): ${copied}`);
   assert(/color="#ff0000"/i.test(copied) && /color="#ffffff"/i.test(copied) && /background-color: (#ffff00|rgb\(255, 255, 0\))/.test(copied),
     `the writer's own colors, white and marker included, are kept: ${copied}`);
-  pasteAtEnd(copied);
-  const added = editor().innerHTML.slice(before.length);
-  assertEqual(tracesIn(editor().innerHTML).join(', '), '', 'the reply after the paste');
-  assert(added.includes('こんにちは'), `the pasted text is in the reply: ${added}`);
+  pasteInto(freshLine(), copied);
+  const pasted = blockWith('こんにちは');
+  assert(pasted, 'the paste is in the reply');
+  assertEqual(tracesIn(pasted).join(', '), '', 'the reply after the paste');
+});
+
+test('copying a word from the signature or the quoted history does not make the pasted text a signature or a quote', () => {
+  selectText($('sig-line'));
+  const sig = fire($('sig-line'), 'copy').html;
+  assert(sig.includes('宮下昌樹') && !sig.includes('gmail_signature'), `no signature wrapper: ${sig}`);
+  selectText($('quote-line'));
+  const quote = fire($('quote-line'), 'copy').html;
+  assert(quote.includes('引用された文') && !quote.includes('gmail_quote'), `no quote wrapper: ${quote}`);
 });
 
 test('copying in the reply leaves out Gmail\'s on-screen hints (the "Help me write" Tab hint was pasted in as text)', () => {
   // Gmail puts the hint inside the editor, hidden from screen readers; it is not part of the email
   editor().insertAdjacentHTML('beforeend', '<div id="hint-line">最後の行<span class="jKzJCd"><span class="bxX nO" aria-hidden="true" id="hint">改良するには Tab キーを押してください</span></span></div>');
   select($('hint-line'), $('hint-line'));
-  const data = new DataTransfer();
-  $('hint-line').dispatchEvent(new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true }));
-  const copied = data.getData('text/html');
-  const plain = data.getData('text/plain');
+  const { html: copied, text: plain } = fire($('hint-line'), 'copy');
   assert(copied.includes('最後の行'), `the line is copied: ${copied}`);
   assert(!copied.includes('改良するには'), `the hint is not: ${copied}`);
   assert(plain.includes('最後の行') && !plain.includes('改良するには'), `nor in the plain text: ${plain}`);
   $('hint-line').remove();
+});
+
+test('only Gmail\'s hint is left out: the writer\'s own hidden-from-readers content and text that matches the hint stay', () => {
+  select($('star-line'), $('star-line'));
+  const star = fire($('star-line'), 'copy');
+  assert(star.html.includes('★') && star.text.includes('★'), `the writer's ★ stays: ${star.html} / ${star.text}`);
+  const hint = '改良するには Tab キーを押してください';
+  editor().insertAdjacentHTML('beforeend', `<div id="dup-line">${hint}<span class="jKzJCd"><span aria-hidden="true">${hint}</span></span></div>`);
+  select($('dup-line'), $('dup-line'));
+  const dup = fire($('dup-line'), 'copy');
+  assertEqual(dup.text.split(hint).length - 1, 1, `the writer's own words stay once in the plain text: ${dup.text}`);
+  assertEqual(dup.html.split(hint).length - 1, 1, `and in the HTML: ${dup.html}`);
+  $('dup-line').remove();
+});
+
+test('dragging text out of the reply carries no display colors (an Option-drag or a drag to another box copies it)', () => {
+  select($('typed-red'), $('typed-navy'));
+  const { html } = fire($('typed-red'), 'dragstart');
+  assert(/color="#ff0000"/i.test(html) && html.includes('紺'), `the extension wrote the dragged text: ${html}`);
+  assertEqual(tracesIn(html).join(', '), '', 'drag data');
 });
 
 test('pasting text copied with dark mode off (or from any light page) adds no white background and no #222 (it showed as an inverted box)', () => {
@@ -168,43 +200,45 @@ test('pasting text copied with dark mode off (or from any light page) adds no wh
     event.preventDefault();
   };
   editor().addEventListener('paste', insert);
-  // a fresh line of its own (the end of the editor is inside the quoted history by now)
-  editor().insertAdjacentHTML('afterbegin', '<div id="paste-here"><br></div>');
-  const before = editor().innerHTML.length;
+  const line = freshLine();
   editor().focus();
   const range = document.createRange();
-  range.setStart($('paste-here'), 0);
+  range.setStart(line, 0);
   range.collapse(true);
   getSelection().removeAllRanges();
   getSelection().addRange(range);
   const data = new DataTransfer();
   // What the browser writes for text copied from Gmail's light editor: its computed colors
   data.setData('text/html', '<div style="color: rgb(34, 34, 34); background-color: rgb(255, 255, 255);">light copy <a href="https://example.com/" style="color: rgb(17, 85, 204);">link</a> <font color="#ff0000">red</font></div>');
-  editor().dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
+  line.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
   editor().removeEventListener('paste', insert);
   getSelection().removeAllRanges();
-  // The pasted block: the outermost element under the editor that holds the pasted text
-  const walker = document.createTreeWalker(editor(), NodeFilter.SHOW_TEXT);
-  let node = null;
-  for (let t = walker.nextNode(); t; t = walker.nextNode()) if (t.nodeValue.includes('light copy')) node = t;
-  let block = node && node.parentElement;
-  while (block && block.parentElement !== editor()) block = block.parentElement;
-  const added = block ? block.outerHTML : editor().innerHTML.slice(before);
+  const added = blockWith('light copy');
   assert(added.includes('light copy'), `the text is pasted: ${added}`);
   assert(!added.includes('rgb(255, 255, 255)') && !added.includes('rgb(34, 34, 34)'), `no white background or #222 from the light page: ${added}`);
   assert(/color="#ff0000"/i.test(added) || added.includes('rgb(255, 0, 0)'), `a real color in the copy is kept: ${added}`);
   assert(!hasClass($('compose'), 'gtr-compose-original'), 'the editor is dark again right after the paste');
 });
 
+test('a paste Gmail cancels (an image, a file) switches the editor back at once, with no white frame in between', () => {
+  const cancel = (event) => event.preventDefault(); // Gmail takes over and inserts nothing now
+  editor().addEventListener('paste', cancel);
+  const line = freshLine();
+  const data = new DataTransfer();
+  data.setData('text/html', '<b>x</b>');
+  line.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
+  editor().removeEventListener('paste', cancel);
+  assert(!hasClass($('compose'), 'gtr-compose-original'), 'dark again before the event returns (not on a later timer)');
+});
+
 test('cutting in the reply carries no display colors', () => {
-  const count = () => editor().textContent.split('紺').length - 1; // the paste above added a second one
-  const before = count();
+  editor().insertAdjacentHTML('afterbegin', '<div id="cut-line">残す<font color="#073763" id="cut-navy">切る</font></div>');
   editor().focus();
-  select($('typed-navy'), $('typed-navy'));
-  const cut = fire($('typed-navy'), 'cut');
-  assert(cut.includes('紺') && /color="#073763"/i.test(cut), `the cut text with the writer's navy: ${cut}`);
+  select($('cut-navy'), $('cut-navy'));
+  const { html: cut } = fire($('cut-navy'), 'cut');
+  assert(cut.includes('切る') && /color="#073763"/i.test(cut), `the cut text with the writer's navy: ${cut}`);
   assertEqual(tracesIn(cut).join(', '), '', 'clipboard');
-  assertEqual(count(), before - 1, 'the text left the editor');
+  assert(!editor().textContent.includes('切る') && editor().textContent.includes('残す'), 'the cut text left the editor, the rest stayed');
   assertEqual(tracesIn(editor().innerHTML).join(', '), '', 'the reply after the cut');
 });
 

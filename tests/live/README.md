@@ -109,6 +109,10 @@ The full manual pass, as run on 2026-10-18. Everything is read-only except the s
 | **draft** Copy from an email | open a thread from a search (the hit gets Gmail's yellow), copy a line with the hit and a dark-cell / colored part (Cmd+C, and once by right-click → Copy), paste into the draft | the draft looks like the rest of the text; ◐ shows black text with no background except the email's own colors |
 | **draft** Copy inside the draft | copy plain and red text in the draft, paste it at the end with dark on; then Cmd+X a word and Cmd+Z | plain text stays uncolored, red stays red; the cut word goes and comes back |
 | **draft** Dark off paste | copy in the draft with dark on, turn dark off in the popup, paste into the draft | nothing looks inverted (no dark box, no light gray text) |
+| **draft** Light paste | copy text with dark mode off (or from a light web page), turn dark on, paste with Cmd+V into the draft; also drop it in | no white box, the text looks like the rest; ◐ shows it without a white background |
+| **draft** Screen text | with dark on, copy the subject line and a sender name, paste into the draft | no light gray text appears when ◐ is pressed |
+| **draft** Signature / quote word | copy one word from the draft's signature and one from the opened quoted history, paste mid-line in the body | the pasted words are plain body text (not trimmed as a quote, not replaced with the signature) |
+| **draft** Pasted image | paste an image into the draft | no white flash on the editor |
 | **draft** What is saved | wait for "保存しました", read the draft through the Gmail API (`get_draft`, full content) | the HTML has none of `rgb(227, 227, 227)`, `#e3e3e3`, `rgb(221, 221, 221)`, `#dddddd`, `rgb(31, 31, 31)`, `#1f1f1f`, `rgb(82, 61, 2)`, `gtr`, `var(` (the same list as tests/browser/suite-sent.html), and no Gmail hint text such as 「改良するには Tab キーを押してください」 (copied with the text once and saved as part of the email) |
 
 The automated suites can't run the browser's own copy or Gmail's paste handling (a synthetic copy event

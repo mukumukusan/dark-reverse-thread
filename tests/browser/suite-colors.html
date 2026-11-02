@@ -31,6 +31,8 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <p><a id="deep-link" href="https://example.com/"><b><span id="deep-word" style="color: #ff0000">deep word</span></b></a></p>
   <table><tbody><tr><td id="dark-cell" bgcolor="#333333" style="background-color: #333333"><span id="white-on-dark" style="color: #ffffff">night</span></td></tr></tbody></table>
   <p><span id="white-alone" style="color: #ffffff">ghost</span> <font color="#ffffff" id="white-font">pale</font></p>
+  <p><span id="white-named" style="color: white">snow</span> <font color="white" id="white-named-font">ice</font></p>
+  <table width="600"><tbody><tr><td style="background-color: black" width="560"><span id="white-on-black" style="color: white">dusk</span></td></tr></tbody></table>
   <div id="important-border" style="border-left: 2px solid #ffffff !important">white rule set with !important</div>
   <p id="marker" style="background: #ffff00"><span><strong id="marker-text" style="color: #555555">gray on a yellow marker</strong></span></p>
   <table><tr><td id="teal-cell" style="background: #c8eef7"><a id="teal-link" style="color: #1a73e8">blue link on a pale teal cell</a></td></tr></table>
@@ -287,9 +289,23 @@ test('dragging a selection out of an email carries the email\'s own colors too',
   assert(html.includes('color: rgb(0, 0, 0)') && !/gtr/.test(html), `dragged markup: ${html}`);
 });
 
-test('copying outside the email bodies is left to the browser', () => {
-  const { handled } = copyNodes($('subject'), $('subject'));
-  assert(!handled, 'the subject line is not touched');
+test('copying Gmail\'s own screen text (the subject) writes it without the light screen color', () => {
+  const { html, handled } = copyNodes($('subject'), $('subject'));
+  assert(handled && html.includes('Subject'), `the subject is written by the extension: ${html}`);
+  assert(!/color/.test(html), `no color: ${html}`);
+});
+
+test('text in an input field (the search box) is left to the browser', () => {
+  const input = document.createElement('input');
+  input.value = 'search words';
+  document.body.appendChild(input);
+  input.focus();
+  input.select();
+  const data = new DataTransfer();
+  const event = new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true });
+  input.dispatchEvent(event);
+  input.remove();
+  assert(!event.defaultPrevented && data.getData('text/html') === '', 'not touched');
 });
 
 test('copying a whole email leaves no trace of the extension (images, frames, classes) and restores !important frames', () => {
@@ -323,10 +339,21 @@ test('copying a word inside a link, bold and a colored span keeps the link, the 
   assert(!/gtr/.test(html), `no trace of the extension: ${html}`);
 });
 
-test('white text in a dark cell is copied together with the cell\'s background', () => {
+test('white text in a dark cell is copied together with the cell\'s background, without the table around it', () => {
   const { html } = copyText($('white-on-dark'));
   assert(html.includes('color: rgb(255, 255, 255)'), `the white text: ${html}`);
-  assert(html.includes('bgcolor="#333333"') && html.includes('background-color: rgb(51, 51, 51)'), `with its dark cell: ${html}`);
+  assert(/background-color: (rgb\(51, 51, 51\)|#333333)/.test(html), `with its dark cell's background: ${html}`);
+  assert(!/<(table|tbody|tr|td)\b/.test(html), `a word does not bring the email's tables (fixed widths, nesting) along: ${html}`);
+});
+
+test('colors written as names (white, black) are judged too', () => {
+  const span = copyText($('white-named'));
+  assert(span.html.includes('snow') && !/color: white/i.test(span.html), `a lone white written as a name is dropped: ${span.html}`);
+  const font = copyText($('white-named-font'));
+  assert(font.html.includes('ice') && !/color="white"/i.test(font.html), `<font color="white"> too: ${font.html}`);
+  const cell = copyText($('white-on-black'));
+  assert(/color: white/i.test(cell.html) && /background-color: black/i.test(cell.html), `white on a black cell keeps both: ${cell.html}`);
+  assert(!/width/.test(cell.html), `no fixed widths from the table: ${cell.html}`);
 });
 
 test('white text with no background of its own is copied without the white (it would be white on white for recipients)', () => {

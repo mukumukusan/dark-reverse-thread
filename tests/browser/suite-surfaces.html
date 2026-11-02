@@ -496,10 +496,11 @@ test('reply / compose: cutting in the editor removes the text and writes what wi
   assert(!editor.textContent.includes('cut me'), `the text is gone from the editor: ${editor.textContent.slice(-40)}`);
 });
 
-test('reply / compose: dragging inside the editor is left to the browser', () => {
+test('reply / compose: dragging in the editor writes what will be sent, not the dark display', () => {
   const { html } = editorEvent($('typed-black'), $('typed-navy'), 'dragstart');
   getSelection().removeAllRanges();
-  assertEqual(html, '');
+  assert(/color="#073763"/i.test(html), `the writer's navy: ${html}`);
+  assert(!html.includes('rgb(227, 227, 227)') && !html.includes('rgb(31, 31, 31)'), `no display colors: ${html}`);
 });
 
 test('reply / compose: picking white in dark mode puts white into the email', () => {
