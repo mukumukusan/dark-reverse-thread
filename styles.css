@@ -534,8 +534,8 @@
   filter: brightness(0) invert(.89) !important;
 }
 
-/* .qz は本文の下に敷かれた Gmail の白い面。普段は .Ap に隠れているが、Gemini で下書きを修正している間は
-   本文の左に 16px ほど白い帯として見えていた */
+/* .qz は本文の下に敷かれた Gmail の白い面。普段は .Ap に隠れているが、返信欄で本文の左に 16px ほど
+   白い帯として見えることがあった（条件は未確認） */
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .qz,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC,
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .gU.Up,
@@ -628,6 +628,13 @@
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG [role="button"]:not([role="button"] [role="button"]),
 .gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC [role="button"]:not(.T-I-atl):not([role="button"] [role="button"]) {
   filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* 下のツールバーの押された状態のボタン（.J-Z-I-Jp：「文書作成サポート」のオン・オフなど）。Gmail の薄い青の丸
+   （#d3e3fd）が上の反転で rgb(15, 31, 57) になり、暗い地とほぼ同じで押されているか見分けられなかった。
+   反転すると Gmail のダークテーマの押された色（#004a77）になる色を塗る */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC [role="button"].J-Z-I-Jp:not(.T-I-atl)::before {
+  background-color: rgb(132, 206, 251) !important;
 }
 
 /* 返信欄の書式ツールバー（フォント・太字など）。背景を暗くし、画像のアイコンと文字は上と同じく反転して明るくする */
