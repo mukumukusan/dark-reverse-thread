@@ -12,7 +12,8 @@
   <script>buildGmail(); window.__GTR_MOCK__ = {};
 document.body.insertAdjacentHTML('beforeend', `
   <div class="J-M" role="menu" id="palette"><table class="aAj"><tr><td class="aAi" id="palette-heading" style="color: #1f1f1f">Text color</td></tr></table></div>
-  <div class="J-M" role="menu" id="align-menu"><div class="J-Kw"><div class="J-Z-I" id="align-icon"><div class="e4"></div></div></div></div>`);
+  <div class="J-M" role="menu" id="align-menu"><div class="J-Kw"><div class="J-Z-I" id="align-icon"><div class="e4"></div></div></div></div>
+  <div class="tB5Jxf-M-X"><ul class="aqdrmf-Kf" role="menu"><li class="aqdrmf-Kf-J8" role="menuitem"><span class="aqdrmf-Kf-KkROqb" id="ai-menu-icon-box"><span><svg class="aoH" id="ai-menu-icon" viewBox="0 0 20 20" style="fill: currentColor"><path id="ai-menu-icon-path" d="M0 0h20v20H0z"></path></svg></span></span><span id="ai-menu-text">More formal</span></li></ul></div>`);
 </script>
   <script src="chrome-mock.js"></script>
   <script src="../../settings.js"></script>
@@ -32,6 +33,14 @@ test('a press inside the thread notes the menu source', async () => {
 
 test('a menu opened then is dark', () => {
   assertEqual(getComputedStyle($('menu')).backgroundColor, 'rgb(40, 41, 44)');
+});
+
+test('"Help me write" ⋮ menu: its drawn (SVG) icons show light, not dark (the menu text color was inverted with them)', () => {
+  // the icon box is inverted for Gmail's image icons, so a drawn icon is made the near-black that inverts into #e3e3e3
+  assertEqual(getComputedStyle($('ai-menu-icon-box')).filter, 'invert(1) hue-rotate(180deg)');
+  assertEqual(getComputedStyle($('ai-menu-icon')).fill, 'rgb(28, 28, 28)');
+  assertEqual(getComputedStyle($('ai-menu-icon-path')).fill, 'rgb(28, 28, 28)');
+  assertEqual(getComputedStyle($('ai-menu-text')).color, 'rgb(227, 227, 227)', 'the text stays light');
 });
 
 test('pressing a menu item keeps the menu dark until it closes', () => {

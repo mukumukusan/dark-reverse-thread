@@ -796,6 +796,13 @@
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
+/* 上の反転は画像のアイコン用。図形（SVG）のアイコン（「文書作成サポート」の ⋮ のメニューなど）は、上のメニューの文字色で
+   先に明るくなっていて、反転で暗くなり見えなかった。反転すると #e3e3e3 になる #1c1c1c にそろえる */
+.gmail-dark-active.gtr-menu-source :is(.tB5Jxf-M-X, .J-M) .aqdrmf-Kf-KkROqb :is(svg, svg *) {
+  color: #1c1c1c !important;
+  fill: #1c1c1c !important;
+}
+
 /* 上部の検索バー。Gmail のダークテーマでも、押すと検索欄と候補（.gssb_e）が白くなるので暗くする。
    検索バーは Gmail の外枠の一部なので、Gmail がダークテーマのとき（.gtr-gmail-dark-theme）だけ */
 .gmail-dark-active.gtr-gmail-dark-theme form[role="search"],
