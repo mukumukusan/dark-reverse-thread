@@ -16,7 +16,7 @@ document.getElementById('body1').insertAdjacentHTML('afterend', `
   <a class="aQy" id="attachment"><div class="aSG" id="attachment-thumb"></div><div class="aYy" id="attachment-cover"><span>name.xlsx</span></div><span class="aV3" id="attachment-name">name.xlsx</span></a>
   <h3 class="iw gFxsud"><div class="Xg2J0b"><span class="Ca" role="link" id="unsubscribe" style="color: #1a73e8">Unsubscribe</span></div></h3>
   <div class="amn"><span class="ams bkH" role="link" id="reply-button">Reply</span></div>
-  <div class="M9" id="reply-box"><div class="qz aiL" id="reply-underlay" style="background-color: #ffffff"></div></div>
+  <div class="M9" id="reply-box"><div class="qz aiL" id="reply-underlay" style="background-color: #ffffff"></div><table class="IZ"><tbody><tr class="btC"><td class="gU Up"><div class="T-I J-J5-Ji aoO v7 T-I-atl L3" role="button" id="reply-send">Send</div><div class="T-I J-J5-Ji hG T-I-atl L3" role="button" id="reply-send-more"><div class="G-asx" id="reply-send-arrow"></div></div></td><td class="gU oc"><div class="J-Z-I J-J5-Ji" role="button" id="reply-format"><div class="dv" id="reply-format-icon" style="opacity: 0.71"></div></div></td><td class="gU"><div class="wG J-Z-I J-Z-I-Je" role="button" id="reply-pressed-je"><div class="aaA" id="reply-pressed-je-icon"></div></div></td><td class="gU"><div class="J-JN-M-I J-JN-M-I-Kq" role="button" id="reply-pressed-kq"><div class="J-JN-M-I-JG" id="reply-pressed-kq-icon"></div></div></td><td class="gU"><div class="J-Z-M-I J-Z-M-I-Kq" role="button" id="reply-pressed-mkq"><div class="aaA" id="reply-pressed-mkq-icon"></div></div></td></tr></tbody></table></div>
   <div class="ajy" role="button"><img class="ajz" id="details-arrow" src=""></div>
   <div class="gH"><div class="gK"><span><img class="f gW" id="header-clip" alt=""></span><span class="g3">18:22</span></div></div>
   <button class="bHI"><svg id="print-all-icon" viewBox="0 0 20 20"><path d="M0 0h20v20H0z"></path></svg></button>
@@ -293,6 +293,28 @@ test('reply / compose: the "Aa" button while the formatting bar is open (marked 
 test('reply / compose: the "⋮" button while its menu is open is the same light blue circle', () => {
   assertEqual(getComputedStyle(document.getElementById('open-menu-button'), '::before').backgroundColor, 'rgb(41, 83, 151)');
   assertEqual(getComputedStyle(document.getElementById('open-menu-icon')).filter, 'brightness(0) invert(0.89)');
+});
+
+test('reply box in the thread: the bottom toolbar icons are light too', () => {
+  assertEqual(getComputedStyle(document.getElementById('reply-format')).filter, 'invert(1) hue-rotate(180deg)');
+  const icon = getComputedStyle(document.getElementById('reply-format-icon'));
+  assertEqual(icon.filter, 'brightness(0) invert(0.11)');
+  assertEqual(icon.opacity, '1');
+});
+
+test('reply box in the thread: every class Gmail draws the pressed circle for gets the ◐ blue circle and a dark icon', () => {
+  for (const id of ['reply-pressed-je', 'reply-pressed-kq', 'reply-pressed-mkq']) {
+    assertEqual(getComputedStyle(document.getElementById(id), '::before').backgroundColor, 'rgb(41, 83, 151)', id);
+    assertEqual(getComputedStyle(document.getElementById(id + '-icon')).filter, 'brightness(0) invert(0.89)', id);
+  }
+});
+
+test('reply box in the thread: the blue Send button and its ▾ are left as Gmail draws them', () => {
+  for (const id of ['reply-send', 'reply-send-more']) {
+    assertEqual(getComputedStyle(document.getElementById(id)).filter, 'none', id);
+    assertEqual(getComputedStyle(document.getElementById(id), '::before').backgroundColor, 'rgba(0, 0, 0, 0)', id);
+  }
+  assertEqual(getComputedStyle(document.getElementById('reply-send-arrow')).filter, 'none', 'the white ▾ arrow is not flattened');
 });
 
 test('reply / compose: a toolbar button Gmail shows without a circle keeps its light icon (the "Help me write" button only says aria-expanded)', () => {
