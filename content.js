@@ -1225,6 +1225,33 @@
     document.execCommand('delete');
   }, true);
 
+  /**
+   * Pasting or dropping into the editor. The browser drops the styles of the pasted text that match the
+   * place it lands, and compares them with the colors on screen: in the dark editor, text copied from a
+   * light page (Gmail with dark mode off, a web page) kept its #222 and white background and showed as an
+   * inverted box, which would also have gone out with the email. For the paste, the box is switched to
+   * the colors as sent (◐), so the comparison is the one a light Gmail makes; it is switched back as
+   * soon as the text is in (the input event, before anything is painted), with a timeout as a fallback.
+   */
+  function pasteAgainstSentColors(event) {
+    if (!config.smartDark || !isContextValid() || !inEditor(event.target)) return;
+    const box = composeBoxOf(event.target.nodeType === Node.ELEMENT_NODE ? event.target : event.target.parentElement);
+    if (!box || box.classList.contains(COMPOSE_ORIGINAL_CLASS)) return;
+    box.classList.add(COMPOSE_ORIGINAL_CLASS);
+    let restored = false;
+    const restore = () => {
+      if (restored) return;
+      restored = true;
+      document.removeEventListener('input', restore, true);
+      box.classList.remove(COMPOSE_ORIGINAL_CLASS);
+    };
+    document.addEventListener('input', restore, true);
+    setTimeout(restore, 0);
+  }
+
+  window.addEventListener('paste', pasteAgainstSentColors, true);
+  window.addEventListener('drop', pasteAgainstSentColors, true);
+
   document.addEventListener('dragstart', (event) => {
     // Only a dragged selection: a link or image dragged on its own keeps the browser's own data
     const selection = window.getSelection();

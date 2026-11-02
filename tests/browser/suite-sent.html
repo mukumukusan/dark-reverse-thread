@@ -161,6 +161,41 @@ test('copying in the reply leaves out Gmail\'s on-screen hints (the "Help me wri
   $('hint-line').remove();
 });
 
+test('pasting text copied with dark mode off (or from any light page) adds no white background and no #222 (it showed as an inverted box)', () => {
+  // A synthetic paste has no default action: insert the way the browser (and Gmail) does, inside the paste
+  const insert = (event) => {
+    document.execCommand('insertHTML', false, event.clipboardData.getData('text/html'));
+    event.preventDefault();
+  };
+  editor().addEventListener('paste', insert);
+  // a fresh line of its own (the end of the editor is inside the quoted history by now)
+  editor().insertAdjacentHTML('afterbegin', '<div id="paste-here"><br></div>');
+  const before = editor().innerHTML.length;
+  editor().focus();
+  const range = document.createRange();
+  range.setStart($('paste-here'), 0);
+  range.collapse(true);
+  getSelection().removeAllRanges();
+  getSelection().addRange(range);
+  const data = new DataTransfer();
+  // What the browser writes for text copied from Gmail's light editor: its computed colors
+  data.setData('text/html', '<div style="color: rgb(34, 34, 34); background-color: rgb(255, 255, 255);">light copy <a href="https://example.com/" style="color: rgb(17, 85, 204);">link</a> <font color="#ff0000">red</font></div>');
+  editor().dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
+  editor().removeEventListener('paste', insert);
+  getSelection().removeAllRanges();
+  // The pasted block: the outermost element under the editor that holds the pasted text
+  const walker = document.createTreeWalker(editor(), NodeFilter.SHOW_TEXT);
+  let node = null;
+  for (let t = walker.nextNode(); t; t = walker.nextNode()) if (t.nodeValue.includes('light copy')) node = t;
+  let block = node && node.parentElement;
+  while (block && block.parentElement !== editor()) block = block.parentElement;
+  const added = block ? block.outerHTML : editor().innerHTML.slice(before);
+  assert(added.includes('light copy'), `the text is pasted: ${added}`);
+  assert(!added.includes('rgb(255, 255, 255)') && !added.includes('rgb(34, 34, 34)'), `no white background or #222 from the light page: ${added}`);
+  assert(/color="#ff0000"/i.test(added) || added.includes('rgb(255, 0, 0)'), `a real color in the copy is kept: ${added}`);
+  assert(!hasClass($('compose'), 'gtr-compose-original'), 'the editor is dark again right after the paste');
+});
+
 test('cutting in the reply carries no display colors', () => {
   const count = () => editor().textContent.split('紺').length - 1; // the paste above added a second one
   const before = count();
