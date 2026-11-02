@@ -231,6 +231,20 @@ test('after the extension is updated, pressing still works in an open tab', asyn
   }
 });
 
+test('copying from the message header into the body leaves the ◐ button out of the copy', () => {
+  const range = document.createRange();
+  range.setStartBefore($('group1'));
+  range.setEndAfter($('black'));
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+  const data = new DataTransfer();
+  $('black').dispatchEvent(new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true }));
+  window.getSelection().removeAllRanges();
+  const html = data.getData('text/html');
+  assert(html.includes('Reply') && html.includes('black'), `the header and body text are copied: ${html}`);
+  assert(!/gtr/.test(html), `no ◐ button or other trace of the extension: ${html}`);
+});
+
 test('the button is hidden while dark mode is off', async () => {
   chrome.storage.sync.set({ smartDark: false });
   await waitFor(() => !hasClass(html, 'gmail-dark-active'));

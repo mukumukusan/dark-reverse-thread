@@ -289,6 +289,23 @@ test('copying outside the email bodies is left to the browser', () => {
   assert(!handled, 'the subject line is not touched');
 });
 
+test('copying a whole email leaves no trace of the extension (images, frames, classes) and restores !important frames', () => {
+  assert($('important-border').style.getPropertyValue('border-left-color').includes('var(--gtr-'), 'the page itself wraps the !important line color');
+  const { html } = copyNodes($('body1'), $('body1'));
+  assert(!/gtr/.test(html), `no data-gtr-*, --gtr-* or gtr-* class left: ${html.match(/.{60}gtr.{60}/)}`);
+  assert(!html.includes('var('), 'no var() left');
+  assert(/<img[^>]*id="logo"/.test(html), 'the images are copied');
+  const frame = html.match(/<div id="important-border" style="([^"]*)"/);
+  assert(frame && frame[1].includes('rgb(255, 255, 255) !important'), `the !important line keeps its own white: ${frame && frame[1]}`);
+});
+
+test('a link dragged on its own (no selection) keeps the browser\'s data', () => {
+  window.getSelection().removeAllRanges();
+  const data = new DataTransfer();
+  $('link').dispatchEvent(new DragEvent('dragstart', { dataTransfer: data, bubbles: true, cancelable: true }));
+  assertEqual(data.getData('text/html'), '');
+});
+
 test('turning dark mode off shows the original colors again', async () => {
   chrome.storage.sync.set({ smartDark: false });
   await waitFor(() => !hasClass(html, 'gmail-dark-active'), 2000);
@@ -297,6 +314,11 @@ test('turning dark mode off shows the original colors again', async () => {
   assertEqual(background('yellow-bg'), 'rgb(255, 255, 0)');
   assertEqual(color('important-text'), 'rgb(65, 69, 82)', 'inline !important text');
   assertEqual(background('important-bg'), 'rgb(255, 255, 255)', 'inline !important background');
+});
+
+test('with dark mode off, copying is left to the browser', () => {
+  const { handled } = copyNodes($('black'), $('red'));
+  assert(!handled, 'nothing is written by the extension');
 });
 
 runTests();
