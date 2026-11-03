@@ -1228,6 +1228,19 @@
     return wrapped ? wrapped[1].trim() : value;
   }
 
+  // Whether the page shows an element's text. Besides display / visibility: Gmail's button labels are
+  // squeezed into a 1px box (they were copied as "ダウンロード", "ドライブに追加", …), and emails hide preheaders
+  // with opacity 0, font-size 0 or a zero height with overflow hidden. Only elements with text are judged
+  // by their box, so images and empty elements are kept
+  function isShown(el) {
+    const style = getComputedStyle(el);
+    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0' || parseFloat(style.fontSize) === 0) return false;
+    if (!el.textContent.trim()) return true;
+    const box = el.getBoundingClientRect();
+    const clipped = style.overflow !== 'visible' || style.clip !== 'auto' || style.clipPath !== 'none';
+    return !((box.width <= 1 && box.height <= 1) || (clipped && (box.width <= 1 || box.height <= 1)));
+  }
+
   // Leave out of a copied fragment what the page doesn't show. cloneContents copies the elements the range
   // touches in document order, so they pair with the originals one to one
   function dropHiddenClones(range, fragment) {
@@ -1243,8 +1256,7 @@
     if (originals.length !== clones.length) return;
     originals.forEach((el, i) => {
       if (clones[i].tagName !== el.tagName) return;
-      const shown = getComputedStyle(el);
-      if (COPY_NEVER_TAGS.has(el.tagName) || shown.display === 'none' || shown.visibility === 'hidden') clones[i].remove();
+      if (COPY_NEVER_TAGS.has(el.tagName) || !isShown(el)) clones[i].remove();
     });
   }
 

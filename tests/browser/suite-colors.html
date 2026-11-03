@@ -35,6 +35,7 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <table width="600"><tbody><tr><td style="background-color: black" width="560"><span id="white-on-black" style="color: white">dusk</span></td></tr></tbody></table>
   <style>.preheader-hide { display: none; }</style>
   <p id="with-hidden"><span id="shown-part">shown</span><span class="preheader-hide" id="hidden-part">secret preheader</span></p>
+  <div id="visually-hidden-set"><p id="vh-first">visible start</p><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">tooltip label</span><span style="opacity: 0">see-through words</span><span style="font-size: 0">zero size words</span><div style="max-height: 0; overflow: hidden">collapsed words</div><p id="vh-last">visible end</p></div>
   <table id="grid"><tbody><tr><td id="a1">A1</td><td id="b1">B1</td></tr><tr><td id="a2">A2</td><td id="b2">B2</td></tr></tbody></table>
   <ul id="list"><li id="li1">first</li><li id="li2">second</li></ul>
   <table><tbody><tr><td id="banner" style="background-color: #000000; color: #ffffff">banner text</td></tr></tbody></table>
@@ -398,6 +399,14 @@ const copyBetween = (startEl, endEl) => {
 test('text the email hides (a preheader hidden by its own style rules) is not copied', () => {
   const { html } = copyNodes($('shown-part'), $('hidden-part'));
   assert(html.includes('shown') && !html.includes('secret preheader'), `only what is shown: ${html}`);
+});
+
+test('text the page hides by other means is not copied either: a 1px tooltip (Gmail\'s button labels), opacity 0, font-size 0, max-height 0', () => {
+  const { html } = copyNodes($('vh-first'), $('vh-last'));
+  assert(html.includes('visible start') && html.includes('visible end'), `the shown text: ${html}`);
+  for (const hidden of ['tooltip label', 'see-through words', 'zero size words', 'collapsed words']) {
+    assert(!html.includes(hidden), `"${hidden}" is not copied: ${html}`);
+  }
 });
 
 test('a selection across table cells is copied as a table (it fell apart into loose cells)', () => {
