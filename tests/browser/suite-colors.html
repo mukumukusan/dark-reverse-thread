@@ -56,6 +56,8 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <div><p id="vis-before">before hidden</p><div style="visibility: hidden" id="vis-wrap"><span id="vis-hidden-text">invisible part</span><p style="visibility: visible" id="vis-shown">visible child</p></div></div>
   <p id="float-caption-line"><a href="https://example.com/" style="overflow: hidden" id="float-link"><img src="${png(10, 10)}" style="float: left">caption text</a></p>
   <table style="color: #ffffff"><tbody><tr><td style="background-color: #000000"><span id="outer-color-text">outer white</span></td></tr></tbody></table>
+  <table><tbody><tr><td style="background-color: #222222; color: #ffffff"><a href="https://example.com/" id="bare-link">bare link</a></td></tr></tbody></table>
+  <p><span style="background-color: rgba(100, 100, 100, 0.5)"><span id="white-on-half-grey" style="color: #ffffff">half grey</span></span></p>
   <div id="important-border" style="border-left: 2px solid #ffffff !important">white rule set with !important</div>
   <p id="marker" style="background: #ffff00"><span><strong id="marker-text" style="color: #555555">gray on a yellow marker</strong></span></p>
   <table><tr><td id="teal-cell" style="background: #c8eef7"><a id="teal-link" style="color: #1a73e8">blue link on a pale teal cell</a></td></tr></table>
@@ -444,6 +446,17 @@ test('a dark background whose light text color comes from farther out is not cop
   const { html } = copyText($('outer-color-text'));
   assert(html.includes('outer white'), `the text: ${html}`);
   assert(!/background-color: (rgb\(0, 0, 0\)|#000000)/.test(html), `no black box without its white text: ${html}`);
+});
+
+test('a link without a color of its own counts as Gmail\'s link blue: a dark background it can\'t be read on is not copied', () => {
+  const { html } = copyText($('bare-link'));
+  assert(html.includes('bare link') && html.includes('href="https://example.com/"'), `the link: ${html}`);
+  assert(!/background-color: (rgb\(34, 34, 34\)|#222222)/.test(html), `no #222 box behind blue link text: ${html}`);
+});
+
+test('light text on a see-through background is judged on the color it gives on white', () => {
+  const { html } = copyText($('white-on-half-grey'));
+  assert(html.includes('half grey') && !html.includes('rgb(255, 255, 255)'), `white on 50% grey (about #b2b2b2) is dropped: ${html}`);
 });
 
 test('a block background picture is not carried by the wrapper (blocked images, Outlook)', () => {

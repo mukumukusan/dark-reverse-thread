@@ -455,12 +455,13 @@
 }
 
 /* 指示を入れると帯の右端に出る送信ボタン（丸い ↑）。Gmail の薄い水色（#c2e7ff）の丸に、下の規則で明るい灰色に
-   なった矢印が乗り、色の抜けた不自然な見た目だった。押されたボタンと同じ ◐ の青の丸に暗い矢印にそろえる */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb .wX4xVc-JX-I {
+   なった矢印が乗り、色の抜けた不自然な見た目だった。押されたボタンと同じ ◐ の青の丸に暗い矢印にそろえる。
+   .wX4xVc-JX-I は帯の中の丸いボタンの共通部品なので、塗りつぶしの種類（.MNFoWc）で押せるものだけに絞る */
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb .wX4xVc-JX-I.MNFoWc:not([disabled]):not([aria-disabled="true"]) {
   background-color: var(--gtr-dark-link) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb .wX4xVc-JX-I :is(svg, svg *, i.google-symbols) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb .wX4xVc-JX-I.MNFoWc:not([disabled]):not([aria-disabled="true"]) :is(svg, svg *, i.google-symbols) {
   color: var(--gtr-dark-page) !important;
   fill: var(--gtr-dark-page) !important;
 }

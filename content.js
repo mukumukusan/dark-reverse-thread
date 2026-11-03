@@ -1089,28 +1089,39 @@
    * off, where it looked inverted. While dark mode is on:
    * - a selection in the conversation (emails, headers) or the reply / compose editor is written from the
    *   markup itself; the editor holds exactly what will be sent;
-   *   - what the page doesn't show (hidden by the email's or Gmail's style rules) is left out;
-   *   - the inline elements around the selection are put back (a word inside a link, bold or colored
-   *     span keeps them), and so are the table or list around a selection that spans cells or items;
-   *     the nearest block's background and text color go with it as one wrapper (a block when the
-   *     selection holds paragraphs, so the background is drawn behind them); signature and quote
-   *     wrappers and the other blocks are not copied;
-   *   - the extension's data-gtr-* attributes, --gtr-* properties and gtr-* classes are dropped, and the
-   *     !important colors it wrapped in var() get their own value back;
+   *   - what the page doesn't show is left out: elements with display none or opacity 0 (nothing inside
+   *     can undo those), and text whose own visibility or font size hides it or that sits in a clipping box
+   *     of 1px or less (Gmail's button labels, preheaders hidden with max-height 0). Text is judged one by
+   *     one, since a child can undo its container (columns with a real size inside a font-size 0 wrapper);
+   *   - the inline elements around the selection are put back (a word inside a link, bold or colored span
+   *     keeps them), and so are the table or list around a selection that spans cells or items; signature
+   *     and quote wrappers and the other blocks are not copied;
+   *   - the nearest block's solid background color goes with it as one wrapper (a block when the selection
+   *     holds paragraphs), only if every text color in the copy reads on it (a link without its own color
+   *     counts as the mail app's link blue, text without a color as Gmail's #222); that block's text color
+   *     goes with it; a background picture never does (blocked images, Outlook);
+   *   - the extension's data-gtr-* attributes, --gtr-* properties and gtr-* classes, Gmail's message
+   *     classes and the newest-first 'order' are dropped; the !important colors the extension wrapped in
+   *     var() get their own value back;
    *   - only colors written in the markup travel, never computed ones, so text without a color stays
-   *     without one; from an email, a light text color without a solid background of its own is dropped
-   *     too (white on white for recipients; a picture alone doesn't count: blocked images, Outlook);
-   *     in the editor, the writer's colors are copied as they are;
+   *     without one; from an email, a light text color without a solid background of its own that it
+   *     reads on is dropped too (white on white for recipients); in the editor, the writer's colors are
+   *     copied as they are;
    *   - Gmail's own hint inside the editor (the "Help me write" Tab / Esc hint) is left out;
-   * - a selection elsewhere in Gmail's screen (the list, labels, counts) is written as plain text.
-   * Nothing on the page or in the editor is changed. A cut in the editor deletes the selection through
-   * the browser's own command. Input fields and other editable areas keep the browser's own copy.
+   *   - when anything was left out, the plain text is laid out from the cleaned copy too;
+   * - a selection elsewhere in Gmail's screen (the list, labels, counts) is written as plain text only, so a
+   *   spreadsheet keeps the list's tab-separated columns.
+   * The browser's own copy is kept for input fields, other editable areas, the reply / compose window's own
+   * fields (To chips, subject), and whenever building the copy fails. Nothing on the page or in the editor
+   * is changed (a hidden probe and an off-screen holder are added to <html> for a moment). A cut in the
+   * editor deletes the selection through the browser's own command.
    */
   const WRAPPED_VALUE = /^var\(--gtr-[\w-]+,\s*([\s\S]*)\)$/;
   const COPY_LIGHT_TEXT_CONTRAST = 3; // a text color below this against white needs its own background
   const COPY_SOLID_BACKGROUND_ALPHA = 0.5; // a background fainter than this doesn't make light text readable
   const COPY_ROOT_SELECTOR = `.a3s, ${EDITOR_SELECTOR}`; // the email body or the editor a copy is built up to
   const COPY_DEFAULT_TEXT = { r: 34, g: 34, b: 34, a: 1 }; // Gmail's default text color (#222), as recipients see it
+  const COPY_LINK_BLUE = { r: 17, g: 85, b: 204, a: 1 }; // the link blue Gmail and Outlook give a link without a color (#15c)
   const COPY_SCOPE_SELECTOR = `.gtr-thread, ${EDITOR_SELECTOR}`;
   const EDITOR_HINT_SELECTOR = '.jKzJCd'; // Gmail's "Help me write" hint inside the editor
   const COPY_INLINE_TAGS = new Set(['A', 'ABBR', 'B', 'BDI', 'BDO', 'BIG', 'CITE', 'CODE', 'DEL', 'DFN', 'EM', 'FONT', 'I',
@@ -1176,7 +1187,7 @@
       const style = node.style;
       const attr = node.getAttribute && node.getAttribute('bgcolor');
       const rgb = colorValue((style && style.backgroundColor) || attr || '');
-      if (rgb && rgb.a >= COPY_SOLID_BACKGROUND_ALPHA) return rgb;
+      if (rgb && rgb.a >= COPY_SOLID_BACKGROUND_ALPHA) return solidOnWhite(rgb); // as a white page shows it
     }
     return null;
   }
@@ -1239,17 +1250,27 @@
     return COPY_NEVER_TAGS.has(el.tagName) || style.display === 'none' || style.opacity === '0';
   }
 
-  function textHidden(text, stop) {
+  // Whether an element is a clipping box of 1px or less (cached for one copy: texts share their ancestors)
+  function clipsTiny(el, cache) {
+    if (cache.has(el)) return cache.get(el);
+    const box = getComputedStyle(el);
+    let tiny = false;
+    if (box.display !== 'contents' && box.display !== 'inline' && // no box of their own to clip with
+        (box.overflow !== 'visible' || box.clip !== 'auto' || box.clipPath !== 'none')) {
+      const rect = el.getBoundingClientRect();
+      tiny = rect.width <= 1 || rect.height <= 1;
+    }
+    cache.set(el, tiny);
+    return tiny;
+  }
+
+  function textHidden(text, stop, cache) {
     const parent = text.parentElement;
     if (!parent || !text.nodeValue.trim()) return false;
     const style = getComputedStyle(parent);
     if (style.visibility === 'hidden' || parseFloat(style.fontSize) === 0) return true;
     for (let el = parent; el && el !== stop && el !== document.body; el = el.parentElement) {
-      const box = getComputedStyle(el);
-      if (box.display === 'contents' || box.display === 'inline') continue; // no box of their own to clip with
-      if (box.overflow === 'visible' && box.clip === 'auto' && box.clipPath === 'none') continue;
-      const rect = el.getBoundingClientRect();
-      if (rect.width <= 1 || rect.height <= 1) return true;
+      if (clipsTiny(el, cache)) return true;
     }
     return false;
   }
@@ -1281,7 +1302,8 @@
     if (elements.length !== elementClones.length || texts.length !== textClones.length ||
         elements.some((el, i) => elementClones[i].tagName !== el.tagName)) return false;
     const hidden = [];
-    texts.forEach((text, i) => { if (textHidden(text, stop)) hidden.push(textClones[i]); });
+    const cache = new Map();
+    texts.forEach((text, i) => { if (textHidden(text, stop, cache)) hidden.push(textClones[i]); });
     elements.forEach((el, i) => { if (elementHidden(el)) hidden.push(elementClones[i]); });
     hidden.forEach((node) => node.remove());
     return hidden.length > 0;
@@ -1291,7 +1313,8 @@
     Array.from(content.querySelectorAll('*')).some((el) => COPY_BLOCK_TAGS.has(el.tagName));
 
   // The colors the copied text is drawn in: each text's nearest color inside the copy (inline style or
-  // <font color>), else the given fallback
+  // <font color>); a link without a color of its own is drawn in the mail app's link blue, not in the color
+  // around it; else the given fallback
   function textColorsOf(content, fallback) {
     const colors = [];
     const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
@@ -1301,6 +1324,7 @@
       for (let el = text.parentElement; el && !rgb; el = el.parentElement) {
         const value = (el.style && ownInlineValue(el, 'color')) || (el.tagName === 'FONT' && el.getAttribute('color')) || '';
         rgb = value ? colorValue(value) : null;
+        if (!rgb && el.tagName === 'A') rgb = COPY_LINK_BLUE;
       }
       colors.push(rgb || fallback);
     }
