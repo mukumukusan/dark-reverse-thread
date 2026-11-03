@@ -118,6 +118,11 @@ The full manual pass, as run on 2026-10-18. Everything is read-only except the s
 | **draft** Table / list | copy 2×2 cells of a table email and two items of a list, paste into Google Sheets / Docs and into the draft | a table and a list, not loose text; no preheader or other hidden text appears |
 | **draft** List screen | copy a row of the inbox list and a sender name, paste into a light page | plain text, no light gray |
 | **draft** Drag | drag a selection inside the draft, then Option-drag one to another box | formatting kept, no light gray text |
+| **draft** Two messages | copy from the middle of one message to the middle of the next, paste into the draft | no `a3s` / `adn` classes or `data-gtr-*` in the draft (read it with `get_draft`) |
+| List select-all | in the inbox after leaving a conversation (and once with a compose window open), Cmd+A then copy, paste into a sheet | plain text with the list's columns, no lag |
+| Gmail's own copy | the sender hovercard's "copy email address", selected To-field chips | the address is copied as before |
+| Pop-out | copy from an email in a conversation opened with "open in new window" | no light gray or #1f1f1f in the pasted HTML |
+| Banners | from real newsletters (and a bank notice using !important colors), copy text from dark banners and cards | readable everywhere it is pasted; never white on white or dark on dark |
 | **draft** What is saved | wait for "保存しました", read the draft through the Gmail API (`get_draft`, full content) | the HTML has none of `rgb(227, 227, 227)`, `#e3e3e3`, `rgb(221, 221, 221)`, `#dddddd`, `rgb(31, 31, 31)`, `#1f1f1f`, `rgb(82, 61, 2)`, `gtr`, `var(` (the same list as tests/browser/suite-sent.html), and no Gmail hint text such as 「改良するには Tab キーを押してください」 (copied with the text once and saved as part of the email) |
 
 The automated suites can't run the browser's own copy or Gmail's paste handling (a synthetic copy event

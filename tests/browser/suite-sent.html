@@ -130,13 +130,15 @@ test('copying a whole email and pasting it into the reply carries no display col
 });
 
 test('copying Gmail\'s own screen text (subject, counts) carries no display colors either (it is drawn light on the page)', () => {
-  for (const id of ['subject', 'count-label']) {
-    select($(id), $(id));
-    const { html, prevented } = fire($(id), 'copy');
-    assert(prevented && html.includes($(id).textContent.trim()), `${id}: the extension wrote the copy: ${html}`);
-    assertEqual(tracesIn(html).join(', '), '', id);
-    assert(!/color/.test(html), `${id}: no color at all: ${html}`);
-  }
+  select($('subject'), $('subject'));
+  const subject = fire($('subject'), 'copy');
+  assert(subject.prevented && subject.html.includes('Subject'), `subject: the extension wrote the copy: ${subject.html}`);
+  assertEqual(tracesIn(subject.html).join(', '), '', 'subject');
+  assert(!/color/.test(subject.html), `subject: no color at all: ${subject.html}`);
+  select($('count-label'), $('count-label'));
+  const count = fire($('count-label'), 'copy');
+  assert(count.prevented && count.text.includes('1-50 of 100'), `counts: the extension wrote the copy: ${count.text}`);
+  assertEqual(count.html, '', 'counts: plain text only');
 });
 
 test('Gmail\'s screen outside the conversation (the list, the counts) is copied as plain text: no markup, no hidden parts', () => {
@@ -144,8 +146,25 @@ test('Gmail\'s screen outside the conversation (the list, the counts) is copied 
   select($('count-label'), $('count-hidden'));
   const { html, text } = fire($('count-label'), 'copy');
   $('count-hidden').remove();
-  assert(html.includes('1-50 of 100') && !/<(span|div|td)\b/.test(html), `text only: ${html}`);
-  assert(!html.includes('hidden tooltip') && !text.includes('hidden tooltip'), `nothing hidden: ${html} / ${text}`);
+  assert(text.includes('1-50 of 100') && html === '', `plain text only (Sheets keeps the tab-separated columns): ${html} / ${text}`);
+  assert(!text.includes('hidden tooltip'), `nothing hidden: ${text}`);
+});
+
+test('a select-all in the list, with the last conversation still hidden in the page, is copied as plain text', () => {
+  const thread = document.querySelector('.gtr-thread');
+  thread.style.display = 'none';
+  try {
+    const range = document.createRange();
+    range.selectNodeContents(document.body);
+    getSelection().removeAllRanges();
+    getSelection().addRange(range);
+    const { html, text, prevented } = fire($('count-label'), 'copy');
+    getSelection().removeAllRanges();
+    assert(prevented && text.includes('1-50 of 100'), `the extension wrote the text: ${text.slice(0, 80)}`);
+    assertEqual(html, '', 'plain text only: the hidden conversation does not count');
+  } finally {
+    thread.style.display = '';
+  }
 });
 
 test('copying in the reply and pasting it back carries no display colors and adds no color to plain text', () => {
@@ -174,12 +193,15 @@ test('copying a word from the signature or the quoted history does not make the 
 test('copying in the reply leaves out Gmail\'s on-screen hints (the "Help me write" Tab hint was pasted in as text)', () => {
   // Gmail puts the hint inside the editor, hidden from screen readers; it is not part of the email
   editor().insertAdjacentHTML('beforeend', '<div id="hint-line">最後の行<span class="jKzJCd"><span class="bxX nO" aria-hidden="true" id="hint">改良するには Tab キーを押してください</span></span></div>');
-  select($('hint-line'), $('hint-line'));
-  const { html: copied, text: plain } = fire($('hint-line'), 'copy');
-  assert(copied.includes('最後の行'), `the line is copied: ${copied}`);
-  assert(!copied.includes('改良するには'), `the hint is not: ${copied}`);
-  assert(plain.includes('最後の行') && !plain.includes('改良するには'), `nor in the plain text: ${plain}`);
-  $('hint-line').remove();
+  try {
+    select($('hint-line'), $('hint-line'));
+    const { html: copied, text: plain } = fire($('hint-line'), 'copy');
+    assert(copied.includes('最後の行'), `the line is copied: ${copied}`);
+    assert(!copied.includes('改良するには'), `the hint is not: ${copied}`);
+    assert(plain.includes('最後の行') && !plain.includes('改良するには'), `nor in the plain text: ${plain}`);
+  } finally {
+    $('hint-line').remove();
+  }
 });
 
 test('only Gmail\'s hint is left out: the writer\'s own hidden-from-readers content and text that matches the hint stay', () => {
@@ -188,11 +210,14 @@ test('only Gmail\'s hint is left out: the writer\'s own hidden-from-readers cont
   assert(star.html.includes('★') && star.text.includes('★'), `the writer's ★ stays: ${star.html} / ${star.text}`);
   const hint = '改良するには Tab キーを押してください';
   editor().insertAdjacentHTML('beforeend', `<div id="dup-line">${hint}<span class="jKzJCd"><span aria-hidden="true">${hint}</span></span></div>`);
-  select($('dup-line'), $('dup-line'));
-  const dup = fire($('dup-line'), 'copy');
-  assertEqual(dup.text.split(hint).length - 1, 1, `the writer's own words stay once in the plain text: ${dup.text}`);
-  assertEqual(dup.html.split(hint).length - 1, 1, `and in the HTML: ${dup.html}`);
-  $('dup-line').remove();
+  try {
+    select($('dup-line'), $('dup-line'));
+    const dup = fire($('dup-line'), 'copy');
+    assertEqual(dup.text.split(hint).length - 1, 1, `the writer's own words stay once in the plain text: ${dup.text}`);
+    assertEqual(dup.html.split(hint).length - 1, 1, `and in the HTML: ${dup.html}`);
+  } finally {
+    $('dup-line').remove();
+  }
 });
 
 test('dragging text out of the reply carries no display colors (an Option-drag or a drag to another box copies it)', () => {

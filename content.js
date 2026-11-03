@@ -1120,6 +1120,7 @@
     'FOOTER', 'FORM', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HEADER', 'HR', 'LI', 'MAIN', 'NAV', 'OL', 'P', 'PRE', 'SECTION',
     'TABLE', 'TBODY', 'TD', 'TFOOT', 'TH', 'THEAD', 'TR', 'UL']);
   const COPY_NEVER_TAGS = new Set(['STYLE', 'SCRIPT', 'TEMPLATE', 'NOSCRIPT']);
+  const COPY_GMAIL_MESSAGE_CLASSES = new Set(['a3s', 'adn', 'ii', 'gt', 'hP']);
 
   // Any CSS color (hex, rgb(), hsl(), a name such as "white", a bare "333333" from a bgcolor attribute) as
   // rgba, or null. A detached element keeps names as written, so the color is resolved on a hidden probe
@@ -1127,6 +1128,8 @@
   const colorCache = new Map();
   function colorValue(value) {
     const key = String(value || '').trim().toLowerCase();
+    const fallback = key.match(/^var\(\s*--[\w-]+\s*,\s*([\s\S]+)\)$/);
+    if (fallback) return colorValue(fallback[1]); // an email's own var(): its fallback is what other mail apps show
     if (!key || key.includes('var(') || /^(inherit|initial|unset|revert|revert-layer|currentcolor)$/.test(key)) return null;
     if (colorCache.has(key)) return colorCache.get(key);
     if (!colorProbe || !colorProbe.isConnected) {
@@ -1145,26 +1148,36 @@
     return rgb;
   }
 
-  // The background an element sets itself (inline style or bgcolor), or null: { color, image }
+  // A see-through color as the solid color it gives on a white page (Outlook drops see-through colors)
+  const solidOnWhite = (rgb) => ({
+    r: Math.round(rgb.r * rgb.a + 255 * (1 - rgb.a)),
+    g: Math.round(rgb.g * rgb.a + 255 * (1 - rgb.a)),
+    b: Math.round(rgb.b * rgb.a + 255 * (1 - rgb.a)),
+    a: 1
+  });
+
+  // The background an element sets itself (inline style, also through the extension's !important rewrite,
+  // or bgcolor), or null: { rgb (solid), image }
   function blockBackground(el) {
-    const style = el.style;
     const attr = el.getAttribute && el.getAttribute('bgcolor');
-    const color = (style && style.backgroundColor) || attr || '';
-    const rgb = color && colorValue(color);
-    const image = style && style.backgroundImage && style.backgroundImage !== 'none' ? style.backgroundImage : '';
-    if ((!rgb || rgb.a === 0) && !image) return null;
-    return { color: rgb && rgb.a > 0 ? `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a})` : '', image };
+    const color = ownInlineValue(el, 'background-color') || attr || '';
+    const found = color && colorValue(color);
+    const rgb = found && found.a > 0 ? solidOnWhite(found) : null;
+    const imageValue = ownInlineValue(el, 'background-image');
+    const image = imageValue && imageValue !== 'none' ? imageValue : '';
+    if (!rgb && !image) return null;
+    return { rgb, image };
   }
 
-  // Light text is readable only on a solid background color of its own (a picture may not be shown)
-  function hasReadableBackground(el, box) {
+  // The nearest solid background color around a copied element (a picture may not be shown), or null
+  function solidBackgroundOf(el, box) {
     for (let node = el; node && node !== box; node = node.parentElement) {
       const style = node.style;
       const attr = node.getAttribute && node.getAttribute('bgcolor');
       const rgb = colorValue((style && style.backgroundColor) || attr || '');
-      if (rgb && rgb.a >= COPY_SOLID_BACKGROUND_ALPHA) return true;
+      if (rgb && rgb.a >= COPY_SOLID_BACKGROUND_ALPHA) return rgb;
     }
-    return false;
+    return null;
   }
 
   // A text color recipients could not read on their white page unless its background comes with it
@@ -1176,7 +1189,11 @@
     };
     const inlineLight = el.style && tooLight(el.style.color);
     const fontLight = el.tagName === 'FONT' && tooLight(el.getAttribute('color'));
-    if ((!inlineLight && !fontLight) || hasReadableBackground(el, box)) return;
+    if (!inlineLight && !fontLight) return;
+    // kept only on a solid background it can be read on
+    const background = solidBackgroundOf(el, box);
+    const text = colorValue(inlineLight ? el.style.color : el.getAttribute('color'));
+    if (background && contrastBetween(text, background) >= COPY_LIGHT_TEXT_CONTRAST) return;
     if (inlineLight) {
       el.style.removeProperty('color');
       if (!el.style.length) el.removeAttribute('style');
@@ -1189,13 +1206,15 @@
       if (name.startsWith('data-gtr-')) el.removeAttribute(name);
     });
     if (el.classList.length) {
-      Array.from(el.classList).forEach((name) => { if (name.startsWith('gtr-')) el.classList.remove(name); });
+      // the extension's classes, and Gmail's message classes (pasted into a reply, they would make the extension
+      // treat the reply's text as a received email)
+      Array.from(el.classList).forEach((name) => { if (name.startsWith('gtr-') || COPY_GMAIL_MESSAGE_CLASSES.has(name)) el.classList.remove(name); });
       if (!el.classList.length) el.removeAttribute('class');
     }
     const style = el.style;
     if (!style || !style.length) return;
     Array.from(style).forEach((property) => {
-      if (property.startsWith('--gtr-')) { style.removeProperty(property); return; }
+      if (property.startsWith('--gtr-') || property === 'order') { style.removeProperty(property); return; } // order: the newest-first layout
       const wrapped = style.getPropertyValue(property).trim().match(WRAPPED_VALUE);
       if (wrapped) style.setProperty(property, wrapped[1].trim(), style.getPropertyPriority(property));
     });
@@ -1229,7 +1248,7 @@
     });
   }
 
-  const hasBlockContent = (fragment) => Array.from(fragment.childNodes).some((node) => node.nodeType === Node.ELEMENT_NODE && COPY_BLOCK_TAGS.has(node.tagName));
+  const hasBlockContent = (holder) => Array.from(holder.querySelectorAll('*')).some((el) => COPY_BLOCK_TAGS.has(el.tagName));
 
   // The range's contents, without what isn't shown, wrapped in the inline elements around it (and the
   // table or list it spans), plus one wrapper with the nearest block background and text color, up to
@@ -1248,17 +1267,22 @@
         wrapper.appendChild(content);
         content = wrapper;
         if (COPY_STRUCTURE_TOPS.has(node.tagName)) structure = false;
-      } else {
-        if (!background) background = blockBackground(node);
+      } else if (!background) {
+        // the text color of the background's own block or a block inside it, never one from farther out
         if (!textColor) textColor = ownInlineValue(node, 'color');
+        background = blockBackground(node);
       }
       node = node.parentElement;
     }
+    // A pair from two blocks (or a background the email set by class) may not read together: keep the text
+    // color, and leave the background out (light text left alone is then judged on a white page)
+    const textRgb = textColor && colorValue(textColor);
+    if (background && background.rgb && textRgb && contrastBetween(textRgb, background.rgb) < COPY_LIGHT_TEXT_CONTRAST) background = null;
     if (background || textColor) {
       const holder = document.createElement('div');
       holder.appendChild(content);
       const wrapper = document.createElement(hasBlockContent(holder) ? 'div' : 'span');
-      if (background && background.color) wrapper.style.setProperty('background-color', background.color);
+      if (background && background.rgb) wrapper.style.setProperty('background-color', `rgb(${background.rgb.r}, ${background.rgb.g}, ${background.rgb.b})`);
       if (background && background.image) wrapper.style.setProperty('background-image', background.image);
       if (textColor) wrapper.style.setProperty('color', textColor);
       while (holder.firstChild) wrapper.appendChild(holder.firstChild);
@@ -1283,7 +1307,17 @@
     return text;
   }
 
-  const escapeHtml = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // A range belongs to the conversation or the editor when it lies inside one (or starts and ends inside them),
+  // on screen: a select-all of the page doesn't, nor does the last conversation Gmail keeps hidden in the page
+  function inCopyScope(range) {
+    const elementOf = (node) => (node && node.nodeType === Node.ELEMENT_NODE ? node : node && node.parentElement);
+    const scopeOf = (node) => {
+      const el = elementOf(node);
+      const scope = el && el.closest(COPY_SCOPE_SELECTOR);
+      return scope && scope.getClientRects().length > 0 ? scope : null;
+    };
+    return !!(scopeOf(range.commonAncestorContainer) || (scopeOf(range.startContainer) && scopeOf(range.endContainer)));
+  }
 
   const inEditor = (node) => {
     const el = node && (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement);
@@ -1299,11 +1333,10 @@
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed || !selection.rangeCount) return null;
     const ranges = Array.from({ length: selection.rangeCount }, (_, i) => selection.getRangeAt(i));
-    const scopes = Array.from(document.querySelectorAll(COPY_SCOPE_SELECTOR));
-    if (!ranges.some((range) => scopes.some((scope) => range.intersectsNode(scope)))) {
-      // Gmail's own screen outside the conversation: its text, as plain text (what is shown, no screen colors)
-      const plain = selection.toString();
-      return { html: escapeHtml(plain).replace(/\r?\n/g, '<br>'), text: plain };
+    if (!ranges.some(inCopyScope)) {
+      // Gmail's own screen outside the conversation: its text only (what is shown, no screen colors); without
+      // HTML, so a spreadsheet keeps the tab-separated columns of the list
+      return { html: null, text: selection.toString() };
     }
     const box = document.createElement('div');
     let hintRemoved = false;
@@ -1325,7 +1358,7 @@
   function writeSelection(data) {
     const copied = data && originalSelectionMarkup();
     if (!copied) return false;
-    data.setData('text/html', copied.html);
+    if (copied.html !== null) data.setData('text/html', copied.html);
     data.setData('text/plain', copied.text);
     return true;
   }

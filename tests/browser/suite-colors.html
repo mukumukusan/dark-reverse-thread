@@ -43,6 +43,13 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <table><tbody><tr><td style="background-color: #000000"><table><tbody><tr><td bgcolor="transparent"><span id="white-in-clear" style="color: #ffffff">clear cell</span></td></tr></tbody></table></td></tr></tbody></table>
   <table><tbody><tr><td bgcolor="#333333"><span id="white-on-attr" style="color: #ffffff">attr cell</span></td></tr></tbody></table>
   <table><tbody><tr><td bgcolor="333333"><span id="white-on-bare" style="color: #ffffff">bare attr</span></td></tr></tbody></table>
+  <table><tbody><tr><td id="imp-banner" style="background-color: #000033 !important; color: #ffffff !important">bank banner</td></tr></tbody></table>
+  <table><tbody><tr><td style="background-color: #111111"><div id="inner-card" style="color: #333333">card text</div></td></tr></tbody></table>
+  <table><tbody><tr><td style="background-color: #eeeeee"><div id="ghost-card" style="color: #ffffff">ghost text</div></td></tr></tbody></table>
+  <table><tbody><tr><td style="background-color: #000000"><font color="#ffffff" id="font-wrap"><p id="fp1">para one</p><p id="fp2">para two</p></font></td></tr></tbody></table>
+  <table><tbody><tr><td style="background-color: rgba(0, 0, 0, 0.6)"><span id="white-on-translucent" style="color: #ffffff">glass</span></td></tr></tbody></table>
+  <p><span id="var-white" style="color: var(--brand, #ffffff)">varwhite</span></p>
+  <p><span style="background-color: #eeeeee"><span id="white-on-light-mark" style="color: #ffffff">pale mark</span></span></p>
   <div id="important-border" style="border-left: 2px solid #ffffff !important">white rule set with !important</div>
   <p id="marker" style="background: #ffff00"><span><strong id="marker-text" style="color: #555555">gray on a yellow marker</strong></span></p>
   <table><tr><td id="teal-cell" style="background: #c8eef7"><a id="teal-link" style="color: #1a73e8">blue link on a pale teal cell</a></td></tr></table>
@@ -417,7 +424,7 @@ test('several paragraphs from a dark cell are wrapped in a block, so the backgro
 
 test('a picture is not a background for light text (blocked images, Outlook): the white is dropped', () => {
   const { html } = copyText($('white-on-image'));
-  assert(html.includes('over a picture') && !html.includes('rgb(255, 255, 255)'), `white dropped: ${html}`);
+  assert(html.includes('over a picture') && !/rgb\(255, 255, 255\)|#ffffff/i.test(html), `white dropped: ${html}`);
 });
 
 test('a transparent cell does not hide the real dark background further out', () => {
@@ -430,6 +437,50 @@ test('a cell background set only with bgcolor (with or without #) keeps its whit
     const { html } = copyText($(id));
     assert(html.includes('rgb(255, 255, 255)') && /background-color: (rgb\(51, 51, 51\)|#333333)/.test(html), `${id}: ${html}`);
   }
+});
+
+test('a banner whose background and white text are set with !important keeps both (the background was lost)', () => {
+  const { html } = copyText($('imp-banner'));
+  assert(/color: (rgb\(255, 255, 255\)|#ffffff)/i.test(html) && /background-color: (rgb\(0, 0, 51\)|#000033)/i.test(html), `white on navy: ${html}`);
+  assert(!html.includes('var('), `no var(): ${html}`);
+});
+
+test('a text color and a background from different blocks are not paired when they can\'t be read together', () => {
+  const dark = copyText($('inner-card'));
+  assert(!(dark.html.includes('rgb(51, 51, 51)') && dark.html.includes('rgb(17, 17, 17)')), `no dark grey on near-black: ${dark.html}`);
+  assert(dark.html.includes('card text'), `the text is there: ${dark.html}`);
+  const light = copyText($('ghost-card'));
+  assert(!(light.html.includes('rgb(255, 255, 255)') && light.html.includes('rgb(238, 238, 238)')), `no white on light grey: ${light.html}`);
+  assert(!/color: (rgb\(255, 255, 255\)|#ffffff)/i.test(light.html), `white text left without a dark background is dropped: ${light.html}`);
+});
+
+test('white text on a light highlight the email set on a span is dropped (it can\'t be read there either)', () => {
+  const { html } = copyText($('white-on-light-mark'));
+  assert(html.includes('pale mark') && !html.includes('rgb(255, 255, 255)'), `the white is dropped: ${html}`);
+});
+
+test('paragraphs inside a <font> in a dark cell get a block wrapper (the background is drawn behind them)', () => {
+  const { html } = copyBetween($('fp1'), $('fp2'));
+  assert(/^<div style="[^"]*background-color: (rgb\(0, 0, 0\)|#000000)/.test(html), `a block wrapper: ${html}`);
+  assert(/color="#ffffff"/i.test(html) && html.includes('para two'), `the white font stays: ${html}`);
+});
+
+test('a see-through background is copied as a solid color (Outlook drops see-through colors: white on white)', () => {
+  const { html } = copyText($('white-on-translucent'));
+  assert(!html.includes('rgba('), `no see-through color: ${html}`);
+  assert(html.includes('background-color: rgb(102, 102, 102)') && html.includes('rgb(255, 255, 255)'), `the color it gives on a white page (60% black = #666), with the white: ${html}`);
+});
+
+test('a light color the email writes through its own var() is judged by its fallback value', () => {
+  const { html } = copyText($('var-white'));
+  assert(html.includes('varwhite') && !/var\(--brand/.test(html.replace(/color: var\(--brand, #ffffff\)/, 'KEPT')) && !html.includes('#ffffff'), `the white is dropped: ${html}`);
+});
+
+test('copying across two messages does not carry Gmail\'s message classes (the reply would be treated as an email)', () => {
+  const { html } = copyNodes($('text1'), $('text2'));
+  assert(html.includes('Message 1') && html.includes('Message 2'), `both messages: ${html}`);
+  assert(!/class="[^"]*\b(a3s|adn|ii|gt)\b/.test(html), `no a3s / adn classes: ${html}`);
+  assert(!/\border:/.test(html), `no order from the newest-first layout: ${html}`);
 });
 
 test('with an input field focused (search box, subject, To), copying is left to the browser even if the page has a selection', () => {
@@ -449,6 +500,8 @@ test('with an input field focused (search box, subject, To), copying is left to 
   input.remove();
   assert(focused, 'the input kept the focus while the page had a selection');
   assert(!event.defaultPrevented && data.getData('text/html') === '', 'not touched');
+  const control = copyText($('black'));
+  assert(control.html.includes('black'), `control: the same selection without the input is written by the extension: ${control.html}`);
 });
 
 test('a link only partly in the selection, grabbed by its unselected part, is dragged as the link', () => {
@@ -461,6 +514,8 @@ test('a link only partly in the selection, grabbed by its unselected part, is dr
   $('link').dispatchEvent(new DragEvent('dragstart', { dataTransfer: data, bubbles: true, cancelable: true }));
   window.getSelection().removeAllRanges();
   assertEqual(data.getData('text/html'), '');
+  const control = copyNodes($('red'), $('link'), 'dragstart');
+  assert(control.html.includes('link'), `control: a link fully inside the selection is dragged with it: ${control.html}`);
 });
 
 test('a link dragged on its own (no selection) keeps the browser\'s data', () => {
