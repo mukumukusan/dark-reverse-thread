@@ -1109,7 +1109,8 @@
   const WRAPPED_VALUE = /^var\(--gtr-[\w-]+,\s*([\s\S]*)\)$/;
   const COPY_LIGHT_TEXT_CONTRAST = 3; // a text color below this against white needs its own background
   const COPY_SOLID_BACKGROUND_ALPHA = 0.5; // a background fainter than this doesn't make light text readable
-  const BODY_SELECTOR = '.gtr-thread .a3s';
+  const COPY_ROOT_SELECTOR = `.a3s, ${EDITOR_SELECTOR}`; // the email body or the editor a copy is built up to
+  const COPY_DEFAULT_TEXT = { r: 34, g: 34, b: 34, a: 1 }; // Gmail's default text color (#222), as recipients see it
   const COPY_SCOPE_SELECTOR = `.gtr-thread, ${EDITOR_SELECTOR}`;
   const EDITOR_HINT_SELECTOR = '.jKzJCd'; // Gmail's "Help me write" hint inside the editor
   const COPY_INLINE_TAGS = new Set(['A', 'ABBR', 'B', 'BDI', 'BDO', 'BIG', 'CITE', 'CODE', 'DEL', 'DFN', 'EM', 'FONT', 'I',
@@ -1228,52 +1229,96 @@
     return wrapped ? wrapped[1].trim() : value;
   }
 
-  // Whether the page shows an element's text. Besides display / visibility: Gmail's button labels are
-  // squeezed into a 1px box (they were copied as "ダウンロード", "ドライブに追加", …), and emails hide preheaders
-  // with opacity 0, font-size 0 or a zero height with overflow hidden. Only elements with text are judged
-  // by their box, so images and empty elements are kept
-  function isShown(el) {
+  // What the page doesn't show. An element hides everything inside it only when nothing inside can undo it:
+  // display none, opacity 0. The rest is judged on each piece of text, since a child can undo it: the text's
+  // own visibility and font size (responsive emails set font-size 0 on a column wrapper and the real size on
+  // the columns), and a clipped box of 1px or less around it (Gmail's button labels are squeezed into one:
+  // they were copied as 「ダウンロード」「ドライブに追加」…; a preheader hidden with max-height 0)
+  function elementHidden(el) {
     const style = getComputedStyle(el);
-    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0' || parseFloat(style.fontSize) === 0) return false;
-    if (!el.textContent.trim()) return true;
-    const box = el.getBoundingClientRect();
-    const clipped = style.overflow !== 'visible' || style.clip !== 'auto' || style.clipPath !== 'none';
-    return !((box.width <= 1 && box.height <= 1) || (clipped && (box.width <= 1 || box.height <= 1)));
+    return COPY_NEVER_TAGS.has(el.tagName) || style.display === 'none' || style.opacity === '0';
   }
 
-  // Leave out of a copied fragment what the page doesn't show. cloneContents copies the elements the range
-  // touches in document order, so they pair with the originals one to one
+  function textHidden(text, stop) {
+    const parent = text.parentElement;
+    if (!parent || !text.nodeValue.trim()) return false;
+    const style = getComputedStyle(parent);
+    if (style.visibility === 'hidden' || parseFloat(style.fontSize) === 0) return true;
+    for (let el = parent; el && el !== stop && el !== document.body; el = el.parentElement) {
+      const box = getComputedStyle(el);
+      if (box.display === 'contents' || box.display === 'inline') continue; // no box of their own to clip with
+      if (box.overflow === 'visible' && box.clip === 'auto' && box.clipPath === 'none') continue;
+      const rect = el.getBoundingClientRect();
+      if (rect.width <= 1 || rect.height <= 1) return true;
+    }
+    return false;
+  }
+
+  // Leave out of a copied fragment what the page doesn't show. cloneContents copies the nodes the range touches
+  // in document order, so elements and texts pair with the originals one to one; if they don't, nothing is
+  // dropped rather than the wrong things. Returns whether anything was left out
   function dropHiddenClones(range, fragment) {
     const start = range.commonAncestorContainer;
     const root = start.nodeType === Node.ELEMENT_NODE ? start : start.parentElement;
-    if (!root) return;
-    const originals = [];
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
-    for (let el = walker.nextNode(); el; el = walker.nextNode()) {
-      if (range.intersectsNode(el)) originals.push(el);
-    }
-    const clones = Array.from(fragment.querySelectorAll('*'));
-    if (originals.length !== clones.length) return;
-    originals.forEach((el, i) => {
-      if (clones[i].tagName !== el.tagName) return;
-      if (COPY_NEVER_TAGS.has(el.tagName) || !isShown(el)) clones[i].remove();
-    });
+    if (!root) return false;
+    const stop = root.closest(COPY_ROOT_SELECTOR);
+    const originalsOf = (what) => {
+      const found = [];
+      const walker = document.createTreeWalker(root, what);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) if (range.intersectsNode(node)) found.push(node);
+      return found;
+    };
+    const clonesOf = (what) => {
+      const found = [];
+      const walker = document.createTreeWalker(fragment, what);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) found.push(node);
+      return found;
+    };
+    const elements = originalsOf(NodeFilter.SHOW_ELEMENT);
+    const elementClones = clonesOf(NodeFilter.SHOW_ELEMENT);
+    const texts = start.nodeType === Node.TEXT_NODE ? [start] : originalsOf(NodeFilter.SHOW_TEXT);
+    const textClones = clonesOf(NodeFilter.SHOW_TEXT);
+    if (elements.length !== elementClones.length || texts.length !== textClones.length ||
+        elements.some((el, i) => elementClones[i].tagName !== el.tagName)) return false;
+    const hidden = [];
+    texts.forEach((text, i) => { if (textHidden(text, stop)) hidden.push(textClones[i]); });
+    elements.forEach((el, i) => { if (elementHidden(el)) hidden.push(elementClones[i]); });
+    hidden.forEach((node) => node.remove());
+    return hidden.length > 0;
   }
 
-  const hasBlockContent = (holder) => Array.from(holder.querySelectorAll('*')).some((el) => COPY_BLOCK_TAGS.has(el.tagName));
+  const hasBlockContent = (content) => (content.nodeType === Node.ELEMENT_NODE && COPY_BLOCK_TAGS.has(content.tagName)) ||
+    Array.from(content.querySelectorAll('*')).some((el) => COPY_BLOCK_TAGS.has(el.tagName));
+
+  // The colors the copied text is drawn in: each text's nearest color inside the copy (inline style or
+  // <font color>), else the given fallback
+  function textColorsOf(content, fallback) {
+    const colors = [];
+    const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
+    for (let text = walker.nextNode(); text; text = walker.nextNode()) {
+      if (!text.nodeValue.trim()) continue;
+      let rgb = null;
+      for (let el = text.parentElement; el && !rgb; el = el.parentElement) {
+        const value = (el.style && ownInlineValue(el, 'color')) || (el.tagName === 'FONT' && el.getAttribute('color')) || '';
+        rgb = value ? colorValue(value) : null;
+      }
+      colors.push(rgb || fallback);
+    }
+    return colors;
+  }
 
   // The range's contents, without what isn't shown, wrapped in the inline elements around it (and the
   // table or list it spans), plus one wrapper with the nearest block background and text color, up to
   // (not including) the email body or editor that holds it
-  function rangeWithAncestors(range) {
+  function rangeWithAncestors(range, report) {
     let content = range.cloneContents();
-    dropHiddenClones(range, content);
+    if (dropHiddenClones(range, content)) report.dropped = true;
     const start = range.commonAncestorContainer;
     let node = start.nodeType === Node.ELEMENT_NODE ? start : start.parentElement;
     let structure = !!node && COPY_STRUCTURE_TAGS.has(node.tagName); // the selection spans rows, cells or items
     let background = null;
     let textColor = '';
-    while (node && !node.matches(`.a3s, ${EDITOR_SELECTOR}`) && node.closest(`.a3s, ${EDITOR_SELECTOR}`)) {
+    while (node && !node.matches(COPY_ROOT_SELECTOR) && node.closest(COPY_ROOT_SELECTOR)) {
       if (COPY_INLINE_TAGS.has(node.tagName) || (structure && COPY_STRUCTURE_TAGS.has(node.tagName))) {
         const wrapper = node.cloneNode(false);
         wrapper.appendChild(content);
@@ -1286,26 +1331,21 @@
       }
       node = node.parentElement;
     }
-    // A pair from two blocks (or a background the email set by class) may not read together: keep the text
-    // color, and leave the background out (light text left alone is then judged on a white page)
-    const textRgb = textColor && colorValue(textColor);
-    if (background && background.rgb && textRgb && contrastBetween(textRgb, background.rgb) < COPY_LIGHT_TEXT_CONTRAST) background = null;
-    if (background || textColor) {
-      const holder = document.createElement('div');
-      holder.appendChild(content);
-      const wrapper = document.createElement(hasBlockContent(holder) ? 'div' : 'span');
-      if (background && background.rgb) wrapper.style.setProperty('background-color', `rgb(${background.rgb.r}, ${background.rgb.g}, ${background.rgb.b})`);
-      if (background && background.image) wrapper.style.setProperty('background-image', background.image);
-      if (textColor) wrapper.style.setProperty('color', textColor);
-      while (holder.firstChild) wrapper.appendChild(holder.firstChild);
-      content = wrapper.style.length ? wrapper : holder;
-      if (content === holder) {
-        const fragment = document.createDocumentFragment();
-        while (holder.firstChild) fragment.appendChild(holder.firstChild);
-        content = fragment;
-      }
-    }
-    return content;
+    // Only a solid background color travels (a picture may not be shown). A pair from two blocks (or a text
+    // color the email set by class, which is lost) may not read together: the text color, or the default dark
+    // text when there is none, must read on it, or the background is left out (light text left alone is then
+    // judged on a white page)
+    const backgroundRgb = background && background.rgb;
+    const fallback = (textColor && colorValue(textColor)) || COPY_DEFAULT_TEXT;
+    const keepBackground = !!backgroundRgb && textColorsOf(content, fallback)
+      .every((rgb) => contrastBetween(rgb, backgroundRgb) >= COPY_LIGHT_TEXT_CONTRAST);
+    if (!keepBackground && !textColor) return content;
+    const wrapper = document.createElement(hasBlockContent(content) ? 'div' : 'span');
+    if (keepBackground) wrapper.style.setProperty('background-color', `rgb(${backgroundRgb.r}, ${backgroundRgb.g}, ${backgroundRgb.b})`);
+    if (textColor) wrapper.style.setProperty('color', textColor);
+    if (!wrapper.style.length) return content; // a value the browser doesn't accept
+    wrapper.appendChild(content);
+    return wrapper;
   }
 
   // Plain text of a cleaned copy: laid out off screen so line breaks come out as the browser would write them
@@ -1336,6 +1376,11 @@
     return !!(el && el.closest(EDITOR_SELECTOR));
   };
 
+  const inComposeFields = (node) => {
+    const el = node && (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement);
+    return !!(el && el.closest('.M9, .Hd[role="dialog"]') && !inEditor(el));
+  };
+
   function originalSelectionMarkup() {
     if (!config.smartDark || !isContextValid()) return null;
     const active = document.activeElement;
@@ -1345,18 +1390,20 @@
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed || !selection.rangeCount) return null;
     const ranges = Array.from({ length: selection.rangeCount }, (_, i) => selection.getRangeAt(i));
+    // the reply / compose window's own fields (the To chips, the subject line) keep Gmail's and the browser's copy
+    if (ranges.some((range) => inComposeFields(range.commonAncestorContainer))) return null;
     if (!ranges.some(inCopyScope)) {
       // Gmail's own screen outside the conversation: its text only (what is shown, no screen colors); without
       // HTML, so a spreadsheet keeps the tab-separated columns of the list
       return { html: null, text: selection.toString() };
     }
     const box = document.createElement('div');
-    let hintRemoved = false;
+    const report = { dropped: false };
     ranges.forEach((range) => {
       const piece = document.createElement('div');
-      piece.appendChild(rangeWithAncestors(range));
+      piece.appendChild(rangeWithAncestors(range, report));
       piece.querySelectorAll(`.${ORIGINAL_BUTTON_CLASS}, .${COMPOSE_BUTTON_CLASS}, ${EDITOR_HINT_SELECTOR}`).forEach((el) => {
-        if (el.matches(EDITOR_HINT_SELECTOR)) hintRemoved = true;
+        if (el.matches(EDITOR_HINT_SELECTOR)) report.dropped = true;
         el.remove();
       });
       piece.querySelectorAll('*').forEach(cleanCopiedElement);
@@ -1364,11 +1411,18 @@
       if (!inEditor(range.commonAncestorContainer)) piece.querySelectorAll('*').forEach((el) => dropLoneLightText(el, piece));
       while (piece.firstChild) box.appendChild(piece.firstChild);
     });
-    return { html: box.innerHTML, text: hintRemoved ? plainTextOf(box) : selection.toString() };
+    // the browser's plain text has what was left out of the HTML: lay out the cleaned copy instead
+    return { html: box.innerHTML, text: report.dropped ? plainTextOf(box) : selection.toString() };
   }
 
   function writeSelection(data) {
-    const copied = data && originalSelectionMarkup();
+    let copied = null;
+    try {
+      copied = data && originalSelectionMarkup();
+    } catch (error) {
+      console.warn('[Dark Reverse Thread] copy left to the browser:', error); // the browser's own copy still runs
+      return false;
+    }
     if (!copied) return false;
     if (copied.html !== null) data.setData('text/html', copied.html);
     data.setData('text/plain', copied.text);

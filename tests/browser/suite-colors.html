@@ -51,6 +51,11 @@ document.getElementById('body1').insertAdjacentHTML('beforeend', `
   <table><tbody><tr><td style="background-color: rgba(0, 0, 0, 0.6)"><span id="white-on-translucent" style="color: #ffffff">glass</span></td></tr></tbody></table>
   <p><span id="var-white" style="color: var(--brand, #ffffff)">varwhite</span></p>
   <p><span style="background-color: #eeeeee"><span id="white-on-light-mark" style="color: #ffffff">pale mark</span></span></p>
+  <div><p id="zero-before">before the columns</p><table><tbody><tr><td style="font-size: 0px" id="zero-wrap"><div style="display: inline-block; font-size: 14px" id="col-a">column one</div><div style="display: inline-block; font-size: 14px" id="col-b">column two</div></td></tr></tbody></table></div>
+  <div><p id="ct-before">before contents</p><div style="display: contents" id="contents-wrap"><p id="ct-a">contents one</p><p id="ct-b">contents two</p></div></div>
+  <div><p id="vis-before">before hidden</p><div style="visibility: hidden" id="vis-wrap"><span id="vis-hidden-text">invisible part</span><p style="visibility: visible" id="vis-shown">visible child</p></div></div>
+  <p id="float-caption-line"><a href="https://example.com/" style="overflow: hidden" id="float-link"><img src="${png(10, 10)}" style="float: left">caption text</a></p>
+  <table style="color: #ffffff"><tbody><tr><td style="background-color: #000000"><span id="outer-color-text">outer white</span></td></tr></tbody></table>
   <div id="important-border" style="border-left: 2px solid #ffffff !important">white rule set with !important</div>
   <p id="marker" style="background: #ffff00"><span><strong id="marker-text" style="color: #555555">gray on a yellow marker</strong></span></p>
   <table><tr><td id="teal-cell" style="background: #c8eef7"><a id="teal-link" style="color: #1a73e8">blue link on a pale teal cell</a></td></tr></table>
@@ -407,6 +412,43 @@ test('text the page hides by other means is not copied either: a 1px tooltip (Gm
   for (const hidden of ['tooltip label', 'see-through words', 'zero size words', 'collapsed words']) {
     assert(!html.includes(hidden), `"${hidden}" is not copied: ${html}`);
   }
+});
+
+test('visible text inside a font-size 0 wrapper (responsive email columns) is copied', () => {
+  const { html, text } = copyBetween($('zero-before'), $('col-b'));
+  assert(html.includes('column one') && html.includes('column two'), `both columns: ${html}`);
+  assert(text.includes('column one') && text.includes('column two'), `and in the plain text: ${text}`);
+});
+
+test('text inside display: contents and inside a visible child of a hidden parent is copied; the hidden part is not', () => {
+  const contents = copyBetween($('ct-before'), $('ct-b'));
+  assert(contents.html.includes('contents one') && contents.html.includes('contents two'), `display: contents: ${contents.html}`);
+  const vis = copyNodes($('vis-before'), $('vis-shown'));
+  assert(vis.html.includes('visible child') && !vis.html.includes('invisible part'), `visibility: ${vis.html}`);
+});
+
+test('a link with overflow: hidden around a floated image keeps its caption', () => {
+  const { html } = copyNodes($('float-link'), $('float-link'));
+  assert(html.includes('caption text'), `the caption: ${html}`);
+});
+
+test('the plain text leaves out what the HTML leaves out (tooltips, hidden preheaders)', () => {
+  const { text } = copyNodes($('vh-first'), $('vh-last'));
+  assert(text.includes('visible start') && text.includes('visible end'), `the shown text: ${text}`);
+  for (const hidden of ['tooltip label', 'see-through words', 'zero size words', 'collapsed words']) {
+    assert(!text.includes(hidden), `"${hidden}" is not in the plain text: ${text}`);
+  }
+});
+
+test('a dark background whose light text color comes from farther out is not copied alone (dark on dark)', () => {
+  const { html } = copyText($('outer-color-text'));
+  assert(html.includes('outer white'), `the text: ${html}`);
+  assert(!/background-color: (rgb\(0, 0, 0\)|#000000)/.test(html), `no black box without its white text: ${html}`);
+});
+
+test('a block background picture is not carried by the wrapper (blocked images, Outlook)', () => {
+  const { html } = copyText($('white-on-image'));
+  assert(!html.includes('background-image'), `no background picture: ${html}`);
 });
 
 test('a selection across table cells is copied as a table (it fell apart into loose cells)', () => {
