@@ -102,6 +102,7 @@ The full manual pass, as run on 2026-10-18. Everything is read-only except the s
 | Toolbar "⋮" menu | same | dark, nothing listed |
 | Compose window | open it (empty: no draft yet) | dark; ◐ "show colors as sent" sits before the trash can, lined up with the other icons |
 | "Help me write" | press the pen button in the compose toolbar (nothing is generated) | a dark pill, no white band or black box |
+| "Help me write" prompt | type a word into the pill (don't press send), then clear it | the send button (↑) that appears is a ◐-blue circle with a dark arrow, not a pale blue one with a light grey arrow; "推敲" and the ⋮ menu icons are light |
 | **draft** Colors while writing | subject `gtr test - 削除してください`, then text in black, dark navy, red, white, yellow (see below) | black shown light gray, navy light blue, red as chosen, white and yellow underlined with yellow dots, ◐ shows a yellow dot |
 | **draft** Picking white | color a plain word white | the email gets `<font color="#ffffff">` (the editor's plain text is #e3e3e3, never a palette color) |
 | **draft** ◐ toggle | press ◐, then again | a white page with the colors as sent (plain text #222, no highlights, the caret stays), then back to dark |
