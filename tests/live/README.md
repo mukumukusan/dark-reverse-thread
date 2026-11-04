@@ -118,7 +118,7 @@ The full manual pass, as run on 2026-10-18. Everything is read-only except the s
 | **draft** Newsletter cells | from a newsletter with white text on dark cells (bgcolor and style), copy a word and two paragraphs, paste into the draft and into Google Docs | readable white on the dark cell in both; ◐ shows the same |
 | **draft** Table / list | copy 2×2 cells of a table email and two items of a list, paste into Google Sheets / Docs and into the draft | a table and a list, not loose text; no preheader or other hidden text appears |
 | **draft** List screen | copy a row of the inbox list and a sender name, paste into a light page | plain text, no light gray |
-| **draft** Drag | drag a selection inside the draft, then Option-drag one to another box | formatting kept, no light gray text |
+| **draft** Drag | drag a selection inside the draft, then Option-drag one to another box | formatting kept, no light gray text. Gmail's reply box doesn't move a dragged selection at all, even with dark mode off (checked 2026-11-05): "nothing happens" is Gmail's own behavior; compare with dark mode off before calling it a bug |
 | **draft** Two messages | copy from the middle of one message to the middle of the next, paste into the draft | no `a3s` / `adn` classes or `data-gtr-*` in the draft (read it with `get_draft`), and no Gmail button labels such as 「ダウンロード」「ドライブに追加」「リアクションを追加」 (hidden 1px tooltips, found in the 2026-11-03 run) |
 | List select-all | in the inbox after leaving a conversation (and once with a compose window open), Cmd+A then copy, paste into a sheet | plain text with the list's columns, no lag |
 | Gmail's own copy | the sender hovercard's "copy email address", selected To-field chips | the address is copied as before |
