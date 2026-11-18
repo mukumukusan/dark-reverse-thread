@@ -331,6 +331,20 @@
   background-color: var(--gtr-dark-surface-high) !important;
 }
 
+/* 件名の上の返信を促す帯（.bAR：「3 日前に受信しました。返信しますか？」と「表示しない」）。
+   Gmail の明るい灰色（#f5f5f5）の帯に、灰色の文字（#5f6368）と濃い青のボタン（#0b57d0）のままだった */
+.gmail-dark-active .gtr-thread .bAR {
+  background-color: var(--gtr-dark-surface-high) !important;
+}
+
+.gmail-dark-active .gtr-thread .bAR .bAV {
+  color: var(--gtr-dark-text-muted) !important;
+}
+
+.gmail-dark-active .gtr-thread .bAR .mUIrbf-anl {
+  color: var(--gtr-dark-link) !important;
+}
+
 /* --------------------------------------------------------------------------
    7. BOTTOM FOOTER BUTTONS (返信・全員に返信・転送ボタン)
    ボタンの行を包む .nr.wR は Gmail では白い。返信欄を開くとボタンが先に消えて一瞬見えるので暗くする

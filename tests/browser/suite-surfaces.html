@@ -16,6 +16,7 @@ document.getElementById('body1').insertAdjacentHTML('afterend', `
   <a class="aQy" id="attachment"><div class="aSG" id="attachment-thumb"></div><div class="aYy" id="attachment-cover"><span>name.xlsx</span></div><span class="aV3" id="attachment-name">name.xlsx</span></a>
   <h3 class="iw gFxsud"><div class="Xg2J0b"><span class="Ca" role="link" id="unsubscribe" style="color: #1a73e8">Unsubscribe</span></div></h3>
   <div class="amn"><span class="ams bkH" role="link" id="reply-button">Reply</span></div>
+  <div class="bAR kj9RDc" id="nudge" style="background-color: #f5f5f5"><span class="bAV" id="nudge-text" style="color: #5f6368">Received 3 days ago. Reply?</span><div class="bAS"><button class="mUIrbf-I" id="nudge-dismiss" style="color: #000000"><span class="mUIrbf-anl" id="nudge-dismiss-label" style="color: #0b57d0">Dismiss</span></button></div></div>
   <div class="M9" id="reply-box"><div class="qz aiL" id="reply-underlay" style="background-color: #ffffff"></div><table class="IZ"><tbody><tr class="btC"><td class="gU Up"><div class="T-I J-J5-Ji aoO v7 T-I-atl L3" role="button" id="reply-send">Send</div><div class="T-I J-J5-Ji hG T-I-atl L3" role="button" id="reply-send-more"><div class="G-asx" id="reply-send-arrow"></div></div></td><td class="gU oc"><div class="J-Z-I J-J5-Ji" role="button" id="reply-format"><div class="dv" id="reply-format-icon" style="opacity: 0.71"></div></div></td><td class="gU"><div class="wG J-Z-I J-Z-I-Je" role="button" id="reply-pressed-je"><div class="aaA" id="reply-pressed-je-icon"></div></div></td><td class="gU"><div class="J-JN-M-I J-JN-M-I-Kq" role="button" id="reply-pressed-kq"><div class="J-JN-M-I-JG" id="reply-pressed-kq-icon"></div></div></td><td class="gU"><div class="J-Z-M-I J-Z-M-I-Kq" role="button" id="reply-pressed-mkq"><div class="aaA" id="reply-pressed-mkq-icon"></div></div></td></tr></tbody></table></div>
   <div class="ajy" role="button"><img class="ajz" id="details-arrow" src=""></div>
   <div class="gH"><div class="gK"><span><img class="f gW" id="header-clip" alt=""></span><span class="g3">18:22</span></div></div>
@@ -322,6 +323,12 @@ test('reply box in the thread: the blue Send button and its ▾ are left as Gmai
 test('reply / compose: a toolbar button Gmail shows without a circle keeps its light icon (the "Help me write" button only says aria-expanded)', () => {
   // Gmail draws the circle for the pressed classes only; a dark icon without the circle vanished on the dark page
   assertEqual(getComputedStyle(document.getElementById('expanded-unpressed-icon')).filter, 'brightness(0) invert(0.11)');
+});
+
+test('the "Received 3 days ago. Reply?" nudge above the subject is a dark band with readable text', () => {
+  assertEqual(bg('nudge'), 'rgb(53, 54, 58)', 'not Gmail\'s light grey bar');
+  assertEqual(color('nudge-text'), 'rgb(196, 199, 197)');
+  assertEqual(color('nudge-dismiss-label'), 'rgb(138, 180, 248)', 'the Dismiss button: light blue, not Gmail\'s dark blue');
 });
 
 test('reply / compose: the white underlay below the editor is dark (it showed as a white bar left of the reply text)', () => {
