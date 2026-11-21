@@ -345,6 +345,27 @@
   color: var(--gtr-dark-link) !important;
 }
 
+/* 最後のメールの下に出る Gemini の「返信の候補」の箱（.pqmbKf）。左上の見出し（.tcJTwd）と ✦ のアイコンが
+   Gmail の #222、フィードバックのアイコンが #444746 のままで、暗いページの上で読めなかった。
+   アイコンは svg に色を付けて中の path に継がせる（透明な枠の rect は fill="none" のまま） */
+.gmail-dark-active .gtr-thread .pqmbKf .tcJTwd {
+  color: var(--gtr-dark-text-muted) !important;
+}
+
+.gmail-dark-active .gtr-thread .pqmbKf svg {
+  color: var(--gtr-dark-text-muted) !important;
+  fill: var(--gtr-dark-text-muted) !important;
+}
+
+/* 候補の本文（Gmail の #80868b）と、それを囲む明るい灰色の枠 */
+.gmail-dark-active .gtr-thread .pqmbKf .V97zWc {
+  color: var(--gtr-dark-text-subtle) !important;
+}
+
+.gmail-dark-active .gtr-thread .pqmbKf .Kz7eFc {
+  border-color: var(--gtr-dark-outline) !important;
+}
+
 /* --------------------------------------------------------------------------
    7. BOTTOM FOOTER BUTTONS (返信・全員に返信・転送ボタン)
    ボタンの行を包む .nr.wR は Gmail では白い。返信欄を開くとボタンが先に消えて一瞬見えるので暗くする

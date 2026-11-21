@@ -17,6 +17,7 @@ document.getElementById('body1').insertAdjacentHTML('afterend', `
   <h3 class="iw gFxsud"><div class="Xg2J0b"><span class="Ca" role="link" id="unsubscribe" style="color: #1a73e8">Unsubscribe</span></div></h3>
   <div class="amn"><span class="ams bkH" role="link" id="reply-button">Reply</span></div>
   <div class="bAR kj9RDc" id="nudge" style="background-color: #f5f5f5"><span class="bAV" id="nudge-text" style="color: #5f6368">Received 3 days ago. Reply?</span><div class="bAS"><button class="mUIrbf-I" id="nudge-dismiss" style="color: #000000"><span class="mUIrbf-anl" id="nudge-dismiss-label" style="color: #0b57d0">Dismiss</span></button></div></div>
+  <div class="pqmbKf" id="suggest"><div class="s5NHA"><div class="sgq6ec"><div class="udN2Pc"><svg class="aoH" id="suggest-icon" viewBox="0 0 24 24" style="fill: #222"><g><rect id="suggest-icon-frame" fill="none" height="24" width="24"></rect></g><path id="suggest-icon-path" d="M0 0h24v24H0z"></path></svg><span class="tcJTwd" id="suggest-title" style="color: #222">Suggested reply</span></div><div class="l17XZb"><span><button class="pYTkkf-JX-I Y7YbJb" aria-label="Feedback" style="color: #444746"><span class="pYTkkf-JX-ank-Rtc0Jf"><svg class="aoH" id="suggest-feedback-icon" viewBox="0 0 24 24" style="fill: #444746"><path d="M0 0h24v24H0z"></path></svg></span></button></span></div></div></div><div class="lKyqpf"><div class="NsOMed" role="button"><div class="V8Y2F"><div class="DJwJ8b"><div class="Kz7eFc" id="suggest-card" style="border: 1px solid #c4c7c5"><div class="V97zWc" id="suggest-line" style="color: #80868b">Thanks, see you then.</div></div></div></div></div></div></div>
   <div class="M9" id="reply-box"><div class="qz aiL" id="reply-underlay" style="background-color: #ffffff"></div><table class="IZ"><tbody><tr class="btC"><td class="gU Up"><div class="T-I J-J5-Ji aoO v7 T-I-atl L3" role="button" id="reply-send">Send</div><div class="T-I J-J5-Ji hG T-I-atl L3" role="button" id="reply-send-more"><div class="G-asx" id="reply-send-arrow"></div></div></td><td class="gU oc"><div class="J-Z-I J-J5-Ji" role="button" id="reply-format"><div class="dv" id="reply-format-icon" style="opacity: 0.71"></div></div></td><td class="gU"><div class="wG J-Z-I J-Z-I-Je" role="button" id="reply-pressed-je"><div class="aaA" id="reply-pressed-je-icon"></div></div></td><td class="gU"><div class="J-JN-M-I J-JN-M-I-Kq" role="button" id="reply-pressed-kq"><div class="J-JN-M-I-JG" id="reply-pressed-kq-icon"></div></div></td><td class="gU"><div class="J-Z-M-I J-Z-M-I-Kq" role="button" id="reply-pressed-mkq"><div class="aaA" id="reply-pressed-mkq-icon"></div></div></td></tr></tbody></table></div>
   <div class="ajy" role="button"><img class="ajz" id="details-arrow" src=""></div>
   <div class="gH"><div class="gK"><span><img class="f gW" id="header-clip" alt=""></span><span class="g3">18:22</span></div></div>
@@ -329,6 +330,15 @@ test('the "Received 3 days ago. Reply?" nudge above the subject is a dark band w
   assertEqual(bg('nudge'), 'rgb(53, 54, 58)', 'not Gmail\'s light grey bar');
   assertEqual(color('nudge-text'), 'rgb(196, 199, 197)');
   assertEqual(color('nudge-dismiss-label'), 'rgb(138, 180, 248)', 'the Dismiss button: light blue, not Gmail\'s dark blue');
+});
+
+test('Gemini\'s "Suggested reply" box under the last message: title, icons and the suggested text are readable', () => {
+  assertEqual(color('suggest-title'), 'rgb(196, 199, 197)', 'Gmail\'s #222 on the dark page');
+  assertEqual(getComputedStyle($('suggest-icon-path')).fill, 'rgb(196, 199, 197)', 'the sparkle icon');
+  assertEqual(getComputedStyle($('suggest-feedback-icon')).fill, 'rgb(196, 199, 197)', 'the feedback icon (#444746)');
+  assertEqual(getComputedStyle($('suggest-icon-frame')).fill, 'none', 'the icon\'s transparent frame stays transparent');
+  assertEqual(color('suggest-line'), 'rgb(154, 160, 166)');
+  assertEqual(getComputedStyle($('suggest-card')).borderTopColor, 'rgb(95, 99, 104)');
 });
 
 test('reply / compose: the white underlay below the editor is dark (it showed as a white bar left of the reply text)', () => {
