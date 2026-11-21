@@ -18,6 +18,8 @@ document.getElementById('body1').insertAdjacentHTML('afterend', `
   <div class="amn"><span class="ams bkH" role="link" id="reply-button">Reply</span></div>
   <div class="bAR kj9RDc" id="nudge" style="background-color: #f5f5f5"><span class="bAV" id="nudge-text" style="color: #5f6368">Received 3 days ago. Reply?</span><div class="bAS"><button class="mUIrbf-I" id="nudge-dismiss" style="color: #000000"><span class="mUIrbf-anl" id="nudge-dismiss-label" style="color: #0b57d0">Dismiss</span></button></div></div>
   <div class="pqmbKf" id="suggest"><div class="s5NHA"><div class="sgq6ec"><div class="udN2Pc"><svg class="aoH" id="suggest-icon" viewBox="0 0 24 24" style="fill: #222"><g><rect id="suggest-icon-frame" fill="none" height="24" width="24"></rect></g><path id="suggest-icon-path" d="M0 0h24v24H0z"></path></svg><span class="tcJTwd" id="suggest-title" style="color: #222">Suggested reply</span></div><div class="l17XZb"><span><button class="pYTkkf-JX-I Y7YbJb" aria-label="Feedback" style="color: #444746"><span class="pYTkkf-JX-ank-Rtc0Jf"><svg class="aoH" id="suggest-feedback-icon" viewBox="0 0 24 24" style="fill: #444746"><path d="M0 0h24v24H0z"></path></svg></span></button></span></div></div></div><div class="lKyqpf"><div class="NsOMed" role="button"><div class="V8Y2F"><div class="DJwJ8b"><div class="Kz7eFc" id="suggest-card" style="border: 1px solid #c4c7c5"><div class="V97zWc" id="suggest-line" style="color: #80868b">Thanks, see you then.</div></div></div></div></div></div></div>
+  <div class="K4vxLd-aLs rPlcIc" id="translate-bar" style="background-color: #f0f4f9; color: #222"><div class="ze861"><div class="AUVned"><span class="bzc-ank"><svg class="aoH" id="translate-icon" viewBox="0 0 24 24" style="fill: #444746"><path d="M0 0h24v24H0z"></path></svg></span><div class="USjH8"><div class="MbQJj" id="translate-title" style="color: #1f1f1f">Translated: English to Japanese</div><div class="bBtyx" id="translate-note" style="color: #444746">Translations can be inaccurate</div><button class="mUIrbf-I"><span class="mUIrbf-anl" id="translate-original" style="color: #0b57d0">Show original</span></button></div></div></div><div class="fbBQHf" id="translate-auto" style="background-color: #e9eef6"><span class="mUIrbf-anl" id="translate-auto-link" style="color: #0b57d0">Always translate English</span></div></div>
+  <div class="K4vxLd-aLs eJ9qKc" id="translate-bar-old" style="background-color: #f0f4f9"><div id="translate-old-title" style="color: #1f1f1f">Translating...</div></div>
   <div class="M9" id="reply-box"><div class="qz aiL" id="reply-underlay" style="background-color: #ffffff"></div><table class="IZ"><tbody><tr class="btC"><td class="gU Up"><div class="T-I J-J5-Ji aoO v7 T-I-atl L3" role="button" id="reply-send">Send</div><div class="T-I J-J5-Ji hG T-I-atl L3" role="button" id="reply-send-more"><div class="G-asx" id="reply-send-arrow"></div></div></td><td class="gU oc"><div class="J-Z-I J-J5-Ji" role="button" id="reply-format"><div class="dv" id="reply-format-icon" style="opacity: 0.71"></div></div></td><td class="gU"><div class="wG J-Z-I J-Z-I-Je" role="button" id="reply-pressed-je"><div class="aaA" id="reply-pressed-je-icon"></div></div></td><td class="gU"><div class="J-JN-M-I J-JN-M-I-Kq" role="button" id="reply-pressed-kq"><div class="J-JN-M-I-JG" id="reply-pressed-kq-icon"></div></div></td><td class="gU"><div class="J-Z-M-I J-Z-M-I-Kq" role="button" id="reply-pressed-mkq"><div class="aaA" id="reply-pressed-mkq-icon"></div></div></td></tr></tbody></table></div>
   <div class="ajy" role="button"><img class="ajz" id="details-arrow" src=""></div>
   <div class="gH"><div class="gK"><span><img class="f gW" id="header-clip" alt=""></span><span class="g3">18:22</span></div></div>
@@ -339,6 +341,18 @@ test('Gemini\'s "Suggested reply" box under the last message: title, icons and t
   assertEqual(getComputedStyle($('suggest-icon-frame')).fill, 'none', 'the icon\'s transparent frame stays transparent');
   assertEqual(color('suggest-line'), 'rgb(154, 160, 166)');
   assertEqual(getComputedStyle($('suggest-card')).borderTopColor, 'rgb(95, 99, 104)');
+});
+
+test('the translation box ("Translating...", "Translated: English to Japanese") is dark with readable text, also with Gmail\'s new rPlcIc class', () => {
+  assertEqual(bg('translate-bar'), 'rgb(40, 41, 44)', 'not Gmail\'s light #f0f4f9');
+  assertEqual(color('translate-title'), 'rgb(227, 227, 227)');
+  assertEqual(getComputedStyle($('translate-icon')).fill, 'rgb(196, 199, 197)');
+  assertEqual(color('translate-note'), 'rgb(196, 199, 197)');
+  assertEqual(color('translate-original'), 'rgb(138, 180, 248)', '"Show original" is a link: light blue');
+  assertEqual(bg('translate-auto'), 'rgb(53, 54, 58)');
+  assertEqual(color('translate-auto-link'), 'rgb(138, 180, 248)');
+  assertEqual(bg('translate-bar-old'), 'rgb(40, 41, 44)', 'the older eJ9qKc class still works');
+  assertEqual(color('translate-old-title'), 'rgb(227, 227, 227)');
 });
 
 test('reply / compose: the white underlay below the editor is dark (it showed as a white bar left of the reply text)', () => {
