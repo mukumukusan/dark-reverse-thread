@@ -445,18 +445,19 @@
   fill: var(--gtr-dark-text) !important;
 }
 
-/* スレッド内のインライン返信欄と、新規作成ウィンドウ（.Hd[role="dialog"]：右下・全画面とも）。どちらも同じ部品でできている。
+/* スレッド内のインライン返信欄と、新規作成ウィンドウ（.Hd[role="dialog"]：右下・全画面とも。別ウィンドウの作成画面では .gtr-compose-page .M9）。
+   どれも同じ部品でできている。
    文字は Gmail の色の選択肢にない明るい灰色（#e3e3e3）にする。白（#ffffff）だと、書式ツールで「白」を選んだときに
    ブラウザが「もう白い」と見なして色を付けず、選んだ白がメールに入らなかった */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .Am.Al.editable:not(.gtr-compose-original *),
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) div[role="textbox"]:not(.gtr-compose-original *):not(.nHuJb *) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .Am.Al.editable:not(.gtr-compose-original *),
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) div[role="textbox"]:not(.gtr-compose-original *):not(.nHuJb *) {
   background-color: var(--gtr-dark-page) !important;
   color: var(--gtr-dark-text) !important;
 }
 
 /* 返信欄の本文に書いたリンク。Gmail の濃い青のままで暗い背景では読みにくかった（履歴の中のリンクは下の反転で明るくなる） */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]):not(.gtr-compose-original *) a:not(.gmail_quote a),
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]):not(.gtr-compose-original *) a:not(.gmail_quote a) * {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) :is(.Am.Al.editable, div[role="textbox"]):not(.gtr-compose-original *) a:not(.gmail_quote a),
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) :is(.Am.Al.editable, div[role="textbox"]):not(.gtr-compose-original *) a:not(.gmail_quote a) * {
   color: var(--gtr-dark-link) !important;
 }
 
@@ -464,54 +465,54 @@
    返信欄の中身は送るメールそのものなので要素には何も書き込まず、CSS だけで扱う：履歴を元のメールの見た目
    （明るい灰色 #e0e0e0 の地に Gmail の文字色 #222）で描いてから明暗だけ反転する。地は #1f1f1f、文字は #ddd になり、
    赤や青の文字は色合いを残す。中の古い履歴は外側と一緒に反転されるので二重に反転しない。画像は反転し直して元の色に */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]):not(.gtr-compose-original *) .gmail_quote:not(.gmail_quote .gmail_quote) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) :is(.Am.Al.editable, div[role="textbox"]):not(.gtr-compose-original *) .gmail_quote:not(.gmail_quote .gmail_quote) {
   background-color: #e0e0e0 !important;
   color: #222 !important;
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]):not(.gtr-compose-original *) .gmail_quote :is(img, video, canvas) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) :is(.Am.Al.editable, div[role="textbox"]):not(.gtr-compose-original *) .gmail_quote :is(img, video, canvas) {
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
 /* 「文書作成サポート」（Gemini）の指示の入力欄（.nHuJb の丸い帯）。Gmail の明るい帯（#f0f4f9）のまま、中の入力欄だけに
    本文用の暗い地が塗られ、白い帯に黒い箱が載っていた。帯をほかのチップと同じ暗い面にし、入力欄は透明にして帯と一体に。
    案内の文字（::before）とペンのアイコンは Gmail の濃い灰色のままだと読めないので明るく */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.nHuJb, .nHuJb .YfAtle) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) :is(.nHuJb, .nHuJb .YfAtle) {
   background-color: var(--gtr-dark-surface-high) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb div[role="textbox"] {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .nHuJb div[role="textbox"] {
   background-color: transparent !important;
   color: var(--gtr-dark-text) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb div[role="textbox"] * {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .nHuJb div[role="textbox"] * {
   color: inherit !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb div[role="textbox"]::before {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .nHuJb div[role="textbox"]::before {
   color: var(--gtr-dark-text-subtle) !important;
 }
 
 /* 帯の右の「推敲」ボタンの文字。Gmail の濃い灰色（#444746）のままで、帯（#35363a）とほぼ同じ色だった */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb button :is(span, span *):not(svg):not(svg *) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .nHuJb button :is(span, span *):not(svg):not(svg *) {
   color: var(--gtr-dark-text) !important;
 }
 
 /* 指示を入れると帯の右端に出る送信ボタン（丸い ↑）。Gmail の薄い水色（#c2e7ff）の丸に、下の規則で明るい灰色に
    なった矢印が乗り、色の抜けた不自然な見た目だった。押されたボタンと同じ ◐ の青の丸に暗い矢印にそろえる。
    .wX4xVc-JX-I は帯の中の丸いボタンの共通部品なので、塗りつぶしの種類（.MNFoWc）で押せるものだけに絞る */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb .wX4xVc-JX-I.MNFoWc:not([disabled]):not([aria-disabled="true"]) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .nHuJb .wX4xVc-JX-I.MNFoWc:not([disabled]):not([aria-disabled="true"]) {
   background-color: var(--gtr-dark-link) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb .wX4xVc-JX-I.MNFoWc:not([disabled]):not([aria-disabled="true"]) :is(svg, svg *, i.google-symbols) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .nHuJb .wX4xVc-JX-I.MNFoWc:not([disabled]):not([aria-disabled="true"]) :is(svg, svg *, i.google-symbols) {
   color: var(--gtr-dark-page) !important;
   fill: var(--gtr-dark-page) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .nHuJb :is(svg, svg *, i.google-symbols) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .nHuJb :is(svg, svg *, i.google-symbols) {
   color: var(--gtr-dark-text-muted) !important;
   fill: var(--gtr-dark-text-muted) !important;
 }
@@ -580,32 +581,32 @@
 
 /* 書いている途中で添付したファイルの欄（.dL：ファイル名 .vI・サイズ .vJ・外す × .vq）。
    Gmail の明るい灰色（#f5f5f5）の帯に濃い青の文字のままだったので、チップと同じ暗い面にする。× は黒い画像 */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .dL {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .dL {
   background-color: var(--gtr-dark-surface-high) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .dL :is(.dO, .vI) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .dL :is(.dO, .vI) {
   color: var(--gtr-dark-link) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .dL .vJ {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .dL .vJ {
   color: var(--gtr-dark-text-muted) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .dL .vq {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .dL .vq {
   filter: brightness(0) invert(.89) !important;
 }
 
 /* .qz は本文の下に敷かれた Gmail の白い面。普段は .Ap に隠れているが、返信欄で本文の左に 16px ほど
    白い帯として見えることがあった（条件は未確認） */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .qz,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .gU.Up,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aDh,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IZ,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .I5,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .Ap {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .qz,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .btC,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .gU.Up,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .aDh,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .IZ,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .I5,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .IG,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .Ap {
   background-color: var(--gtr-dark-page) !important;
   border-color: var(--gtr-dark-raised) !important;
 }
@@ -618,8 +619,8 @@
 }
 
 /* 宛先行（.IG）の文字。アイコンボタンは下の反転で明るくするので文字色は付けない */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG *:not([role="button"]):not([role="button"] *):not(svg):not(svg *) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .IG,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .IG *:not([role="button"]):not([role="button"] *):not(svg):not(svg *) {
   color: var(--gtr-dark-text) !important;
 }
 
@@ -633,68 +634,68 @@
 /* 宛先行（返信欄の .IG、作成ウィンドウで宛先をまとめた1行の .aoD.hl）の「他 N 人」のチップ。
    Gmail の明るい背景の上に明るい文字色が乗って読めなくなるので、背景を暗くする。
    隠れた宛先があると分かるように、まわりより一段明るい背景と白い文字でチップとして目立たせる */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) :is(.IG, .aoD.hl) .aDp {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) :is(.IG, .aoD.hl) .aDp {
   background-color: var(--gtr-dark-outline) !important;
   color: var(--gtr-dark-text-strong) !important;
 }
 
 /* 宛先の欄を押して開いたときの入力行（.aGb・input.agP）と、宛先のチップ（.afV）。Gmail の白い背景のままだと
    上の明るい文字色で名前が読めない */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aGb,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) input.agP {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .aGb,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) input.agP {
   background-color: var(--gtr-dark-page) !important;
   color: var(--gtr-dark-text) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .agh {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .agh {
   background-color: transparent !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .afV[role="option"] {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .afV[role="option"] {
   background-color: var(--gtr-dark-surface-high) !important;
   border-color: var(--gtr-dark-outline) !important;
   color: var(--gtr-dark-text) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .afV[role="option"] * {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .afV[role="option"] * {
   color: var(--gtr-dark-text) !important;
 }
 
 /* 宛先の欄を押したときに下に出る「追加: 名前」の候補の行（.bFF）。Gmail の白い背景のままでまぶしかった。
    選ばれている候補の青い枠（.arb.bjE）は、暗い背景で見えるように明るい青にする */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .bFF {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .bFF {
   background-color: transparent !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .bFF .ara {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .bFF .ara {
   color: var(--gtr-dark-text-subtle) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .bFF .arb,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .bFF .arb * {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .bFF .arb,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .bFF .arb * {
   color: var(--gtr-dark-text) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .bFF .arb.bjE {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .bFF .arb.bjE {
   box-shadow: inset 0 0 0 2px var(--gtr-dark-link) !important;
 }
 
 /* 宛先の欄から離れたときに出る、宛先をまとめた1行（.aoD.hl）。Gmail の濃い文字のままで背景に溶けて見えなかった */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aoD.hl,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aoD.hl * {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .aoD.hl,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .aoD.hl * {
   color: var(--gtr-dark-text) !important;
 }
 
 /* 返信欄のアイコン（宛先行・ツールバー）は画像のため、明度を反転して明るくする
    （hue-rotate で色付きアイコンの色相は維持）。青い送信ボタン(.T-I-atl)は対象外 */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .IG [role="button"]:not([role="button"] [role="button"]),
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC [role="button"]:not(.T-I-atl):not([role="button"] [role="button"]) {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .IG [role="button"]:not([role="button"] [role="button"]),
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .btC [role="button"]:not(.T-I-atl):not([role="button"] [role="button"]) {
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
 /* 下のツールバーのアイコン（Aa・添付・⋮ など）。Gmail の濃い灰色の画像（一部は不透明度 .71）を上の反転で
    明るくしただけでは #bbb ほどで暗かった。いったん黒（反転すると #e3e3e3 になる #1c1c1c）にそろえて不透明に */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC [role="button"]:not(.T-I-atl):not([role="button"] [role="button"]) * {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .btC [role="button"]:not(.T-I-atl):not([role="button"] [role="button"]) * {
   filter: brightness(0) invert(.11) !important;
   opacity: 1 !important;
 }
@@ -705,26 +706,26 @@
 /* 丸が出る状態は Gmail の CSS（.gU の中の ::before に #d3e3fd を塗る規則）と同じクラスで見る：書式バーを開いている
    「Aa」は .J-Z-I-KO、メニューを開いている「⋮」は .T-I-Kq、押している最中は :active。aria-expanded では見ない
    （「文書作成サポート」は丸なしで aria-expanded だけになり、暗いアイコンが暗い地に消えた） */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC [role="button"]:is(.J-Z-I-Jp, .J-Z-I-KO, .J-Z-I-Je, .J-JN-M-I-Kq, .T-I-Kq, .J-Z-M-I-Kq, :active):not(.T-I-atl):not([role="button"] [role="button"])::before {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .btC [role="button"]:is(.J-Z-I-Jp, .J-Z-I-KO, .J-Z-I-Je, .J-JN-M-I-Kq, .T-I-Kq, .J-Z-M-I-Kq, :active):not(.T-I-atl):not([role="button"] [role="button"])::before {
   background-color: rgb(41, 83, 151) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .btC [role="button"]:is(.J-Z-I-Jp, .J-Z-I-KO, .J-Z-I-Je, .J-JN-M-I-Kq, .T-I-Kq, .J-Z-M-I-Kq, :active):not(.T-I-atl):not([role="button"] [role="button"]) * {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .btC [role="button"]:is(.J-Z-I-Jp, .J-Z-I-KO, .J-Z-I-Je, .J-JN-M-I-Kq, .T-I-Kq, .J-Z-M-I-Kq, :active):not(.T-I-atl):not([role="button"] [role="button"]) * {
   filter: brightness(0) invert(.89) !important;
 }
 
 /* 返信欄の書式ツールバー（フォント・太字など）。背景を暗くし、画像のアイコンと文字は上と同じく反転して明るくする */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-Z[role="toolbar"] {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .J-Z[role="toolbar"] {
   background-color: var(--gtr-dark-surface) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-Z[role="toolbar"] > * {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .J-Z[role="toolbar"] > * {
   filter: invert(1) hue-rotate(180deg) !important;
 }
 
 /* 返信欄・作成ウィンドウの下のツールバーの後ろに Gmail が敷く白い背景（左右に 8px はみ出して白い線に見える）。
    .aC3 はツールバーが画面下に、.azX は返信欄の上端が画面上部に張り付いたときに出る帯 */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .aDj::after,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .aDj::after,
 .gmail-dark-active .gtr-thread .aC2,
 .gmail-dark-active .gtr-thread .aC3,
 .gmail-dark-active .gtr-thread .azX {
@@ -732,62 +733,84 @@
 }
 
 /* 差出人を選ぶメニュー（返信欄・作成ウィンドウの中に作られる） */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .J-M[role="menu"] {
   background-color: var(--gtr-dark-surface) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 0 0 1px var(--gtr-dark-raised) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N * {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .J-M[role="menu"] .J-N,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .J-M[role="menu"] .J-N * {
   color: var(--gtr-dark-text) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N:hover,
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .J-M[role="menu"] .J-N-JT {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .J-M[role="menu"] .J-N:hover,
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .J-M[role="menu"] .J-N-JT {
   background-color: var(--gtr-dark-raised) !important;
 }
 
 /* 返信欄の案内文の「/」キー表示 */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .LbtP4e {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .LbtP4e {
   background-color: var(--gtr-dark-raised) !important;
   color: var(--gtr-dark-text) !important;
 }
 
 /* 新規作成ウィンドウだけにある部分：タイトルバー・外枠・差出人／宛先／件名の行・下のツールバー */
-.gmail-dark-active .Hd[role="dialog"] .l.m {
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) .l.m {
   background-color: var(--gtr-dark-surface) !important;
 }
 
-.gmail-dark-active .Hd[role="dialog"] .l.m :is(.Hp, .aYF, .aYF *),
-.gmail-dark-active .Hd[role="dialog"] .l.m .Hm button {
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) .l.m :is(.Hp, .aYF, .aYF *),
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) .l.m .Hm button {
   color: var(--gtr-dark-text) !important;
 }
 
-.gmail-dark-active .Hd[role="dialog"] .aaZ,
-.gmail-dark-active .Hd[role="dialog"] .aDj {
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) .aaZ,
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) .aDj {
   background-color: var(--gtr-dark-page) !important;
 }
 
-.gmail-dark-active .Hd[role="dialog"] .gO,
-.gmail-dark-active .Hd[role="dialog"] .aB,
-.gmail-dark-active .Hd[role="dialog"] .az2 span {
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) .gO,
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) .aB,
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) .az2 span {
   color: var(--gtr-dark-text-muted) !important;
 }
 
 /* 差出人のアドレスの横の ▾（黒い画像）。横の文字と同じ灰色に（brightness(0) で黒に揃えてから invert(.77) で #c4c4c4） */
-.gmail-dark-active .Hd[role="dialog"] .az2 .J-JN-M-I-JG {
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) .az2 .J-JN-M-I-JG {
   filter: brightness(0) invert(.77) !important;
 }
 
-.gmail-dark-active .Hd[role="dialog"] .aGb,
-.gmail-dark-active .Hd[role="dialog"] input.agP,
-.gmail-dark-active .Hd[role="dialog"] input.aoT {
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) .aGb,
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) input.agP,
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) input.aoT {
   background-color: transparent !important;
   color: var(--gtr-dark-text) !important;
 }
 
-.gmail-dark-active .Hd[role="dialog"] input::placeholder {
+.gmail-dark-active :is(.Hd[role="dialog"], .gtr-compose-page .M9) input::placeholder {
   color: var(--gtr-dark-text-subtle) !important;
+}
+
+/* 作成だけの別ウィンドウ（Shift を押しながら「作成」、「返信をポップアウト」。?fs=1&tf=cm、content.js が html に
+   gtr-compose-page を付ける）。Gmail はここでテーマを使わず、ページは明るい灰色（#eee）、作成欄の外枠（.aoI）は白、
+   タイトルバー（.Io）は薄い青、下のツールバーを包む枠（.aDg）も白のまま（中の .aDj は暗くしてあるが縁から白が見えた）。
+   作成欄の中は上の作成ウィンドウと同じ部品なので、そちらの指定がそのまま効く */
+html.gmail-dark-active.gtr-compose-page,
+.gmail-dark-active.gtr-compose-page body {
+  background-color: var(--gtr-dark-page) !important;
+  color-scheme: dark;
+}
+
+.gmail-dark-active.gtr-compose-page .M9 :is(.aoI, .aDg) {
+  background-color: var(--gtr-dark-page) !important;
+}
+
+.gmail-dark-active.gtr-compose-page .M9 .Io {
+  background-color: var(--gtr-dark-surface) !important;
+}
+
+.gmail-dark-active.gtr-compose-page .M9 .Io .aDk {
+  color: var(--gtr-dark-text) !important;
 }
 
 /* 宛先を入力したときの候補一覧（.afC）。作成ウィンドウの外（ページ直下）に作られるため個別に指定する */
@@ -1372,11 +1395,11 @@ html.gmail-dark-active.gtr-popout,
 }
 
 /* 書式バーの右端の「元に戻す／やり直す」（.Bswxkd） */
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .Bswxkd {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .Bswxkd {
   background-color: var(--gtr-dark-raised) !important;
 }
 
-.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"]) .Bswxkd svg {
+.gmail-dark-active :is(.gtr-thread, .Hd[role="dialog"], .gtr-compose-page .M9) .Bswxkd svg {
   fill: var(--gtr-dark-text-muted) !important;
 }
 

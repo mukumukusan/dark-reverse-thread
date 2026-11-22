@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Compose in its own window (?fs=1&tf=cm)</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>body { margin: 0; background: #eeeeee; }</style>
+</head>
+<body>
+  <script src="harness.js"></script>
+  <script>
+// Shift + Compose (or "pop out reply") opens compose as a page of its own. Gmail ignores the theme there:
+// the page is #eee and the compose box white, with no .Hd[role="dialog"] around it (class names as in Gmail)
+history.replaceState(null, '', location.pathname + '?fs=1&tf=cm');
+document.body.insertAdjacentHTML('afterbegin', `
+  <header role="banner" id="header" style="display: none"><a class="FH" role="button" aria-expanded="false">⚙</a></header>
+  <div class="xr tVu25"><div class="nH"><div class="nH" role="main" id="main"><div class="nH"><div class="M9" id="m9">
+    <div class="aoI" role="region" id="region" style="background-color: #ffffff">
+      <div class="Io" id="title-bar" style="background-color: #f2f6fc"><div class="aDk" id="title" style="color: #041e49">New Message</div></div>
+      <table class="aoP aoC" role="presentation"><tbody><tr><td class="I5 bzE">
+        <div class="aoD hl"><div class="aGb RuSUmb" id="subject-field" style="background-color: #ffffff"><input class="agP aFw" id="subject" placeholder="Subject" style="background-color: #ffffff; color: #222"></div></div>
+        <table class="iN"><tbody><tr><td class="GQ"><div class="GP"><div class="qz aiL" id="underlay" style="background-color: #ffffff"><div class="et"><table class="cf An"><tbody><tr>
+          <td class="Ap" id="editor-cell" style="background-color: #ffffff"><div class="Ar Au"><div class="aO7">
+            <div class="Am aiL Al editable" role="textbox" contenteditable="true" id="editor" style="color: #222"><span id="plain">hello</span> <font color="#000000" id="typed-black">black</font></div>
+          </div></div></td>
+        </tr></tbody></table></div></div></div></td></tr></tbody></table>
+        <div class="aDg" id="bottom-frame" style="background-color: #ffffff"><div class="aDj ahe" id="bottom" style="background-color: #ffffff"><table class="IZ"><tbody><tr class="btC" id="toolbar-row"><td class="gU Up"><div role="button">Send</div></td><td class="gU a0z" id="trash-cell"></td></tr></tbody></table></div></div>
+      </td></tr></tbody></table>
+    </div>
+  </div></div></div></div></div>`);
+window.__GTR_MOCK__ = { local: { gmailLightTheme: false } };
+</script>
+  <script src="chrome-mock.js"></script>
+  <script src="../../settings.js"></script>
+  <script src="../../content.js"></script>
+  <script>
+
+const bg = (id) => getComputedStyle(document.getElementById(id)).backgroundColor;
+const color = (id) => getComputedStyle(document.getElementById(id)).color;
+const isDark = (rgb) => { const [r, g, b] = rgb.match(/\d+/g).map(Number); return (r + g + b) / 3 < 80; };
+const isLight = (rgb) => { const [r, g, b] = rgb.match(/\d+/g).map(Number); return (r + g + b) / 3 > 180; };
+
+test('the page is marked as a compose page', async () => {
+  await waitFor(() => html.classList.contains('gmail-dark-active'));
+  assert(html.classList.contains('gtr-compose-page'), `html: ${html.className}`);
+});
+
+test('the page and the compose box are dark', () => {
+  ['region', 'title-bar', 'underlay', 'editor-cell', 'bottom-frame', 'bottom'].forEach((id) => assert(isDark(bg(id)), `${id}: ${bg(id)}`));
+  assert(isDark(getComputedStyle(document.body).backgroundColor), `page: ${getComputedStyle(document.body).backgroundColor}`);
+  assert(!isLight(bg('subject-field')) && !isLight(bg('subject')), `subject field: ${bg('subject-field')} / ${bg('subject')}`);
+});
+
+test('the title, the subject and the body text are light', () => {
+  ['title', 'subject', 'editor', 'plain'].forEach((id) => assert(isLight(color(id)), `${id}: ${color(id)}`));
+});
+
+test('the "show colors as sent" button sits before the trash can, and a black word is shown lighter', async () => {
+  await waitFor(() => document.querySelector('#toolbar-row .gtr-compose-toggle'));
+  const cell = document.querySelector('#toolbar-row .gtr-compose-toggle-cell');
+  assert(cell && cell.nextElementSibling === document.getElementById('trash-cell'), 'toggle before the trash can');
+  await waitFor(() => CSS.highlights.size > 0);
+  assert(CSS.highlights.size > 0, 'the black word gets a display color');
+});
+
+test('the quick bar steps aside, as over a compose window', async () => {
+  await waitFor(() => html.classList.contains('gtr-compose-open'));
+  assert(html.classList.contains('gtr-compose-open'), 'gtr-compose-open on <html>');
+});
+
+test('the white page is never saved as a light Gmail theme', async () => {
+  await sleep(1500);
+  document.body.appendChild(document.createElement('div'));
+  await sleep(1500);
+  assertEqual(gtrStores.local.gmailLightTheme, false, 'the stored dark answer is kept');
+  assert(!document.getElementById('gtr-theme-notice'), 'no theme notice');
+});
+
+runTests();
+
+  </script>
+</body>
+</html>

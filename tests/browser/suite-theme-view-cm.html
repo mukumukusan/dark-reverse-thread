@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Full-page compose is judged like any Gmail page</title>
+  <title>The old compose address (?view=cm) is not judged either</title>
   <link rel="stylesheet" href="../../styles.css">
   <style>body { margin: 0; background: #ffffff; }</style>
 </head>
@@ -13,16 +13,18 @@
 history.replaceState(null, '', location.pathname + '?view=cm&fs=1');
 buildGmail();
 document.getElementById('compose-window').remove();
-window.__GTR_MOCK__ = {};
+// Gmail turns ?view=cm into the same compose page as ?tf=cm, white whatever the theme
+window.__GTR_MOCK__ = { local: { gmailLightTheme: false } };
 </script>
   <script src="chrome-mock.js"></script>
   <script src="../../settings.js"></script>
   <script src="../../content.js"></script>
   <script>
 
-test('only the print view is skipped, not other ?view= pages', async () => {
+test('the compose page is skipped like the print view; other ?view= pages are still judged', async () => {
   await sleep(1500);
-  assertEqual(gtrStores.local.gmailLightTheme, true);
+  assertEqual(gtrStores.local.gmailLightTheme, false, 'the stored dark answer is kept');
+  assert(html.classList.contains('gtr-compose-page'), 'marked as a compose page');
 });
 
 runTests();

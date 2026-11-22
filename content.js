@@ -21,6 +21,16 @@
   // user's theme and draws the toolbar above the thread white; styles.css darkens it there
   if (/\/popout$/.test(location.pathname)) document.documentElement.classList.add('gtr-popout');
 
+  // Compose on a page of its own (Shift + Compose, "pop out reply": ?fs=1&tf=cm; the old ?view=cm turns into
+  // it) ignores the theme the same way. There is no .Hd[role="dialog"] around it, so its box (.M9) counts as
+  // a compose window: styles.css darkens it there and the editor gets the same treatment
+  const pageParams = new URLSearchParams(location.search);
+  if (pageParams.get('tf') === 'cm' || pageParams.get('view') === 'cm') {
+    document.documentElement.classList.add('gtr-compose-page');
+  }
+  // A docked / full screen compose window, or the compose page's box
+  const COMPOSE_AREA = '.Hd[role="dialog"], .gtr-compose-page .M9';
+
   let lastQuickBarState = null;
 
   /**
@@ -895,10 +905,8 @@
    * While a compose window (docked or full screen) is open, the quick bar is hidden (styles.css) so it
    * doesn't cover the minimized compose bar or the send row. Checked on every DOM change; cheap.
    */
-  const COMPOSE_DIALOG = '.Hd[role="dialog"]';
-
   function syncComposeOpen() {
-    const open = document.querySelector(COMPOSE_DIALOG) !== null;
+    const open = document.querySelector(COMPOSE_AREA) !== null;
     const root = document.documentElement;
     if (root.classList.contains('gtr-compose-open') !== open) root.classList.toggle('gtr-compose-open', open);
   }
@@ -918,7 +926,7 @@
    * chosen colors (.gtr-compose-original on the box; no display colors, no underline, no flipped quote).
    */
   // The email body editor; Gmail's "Help me write" prompt (.nHuJb pill) is a textbox too but is not sent
-  const EDITOR_SELECTOR = ':is(.gtr-thread, .Hd[role="dialog"]) :is(.Am.Al.editable, div[role="textbox"]):not(.nHuJb *)';
+  const EDITOR_SELECTOR = `:is(.gtr-thread, ${COMPOSE_AREA}) :is(.Am.Al.editable, div[role="textbox"]):not(.nHuJb *)`;
   const EDITOR_COLORS_STYLE_ID = 'gtr-editor-colors';
   const EDITOR_WARN_HIGHLIGHT = 'gtr-editor-warn';
   const EDITOR_UNREADABLE_CONTRAST = 3;
@@ -1402,7 +1410,7 @@
 
   const inComposeFields = (node) => {
     const el = node && (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement);
-    return !!(el && el.closest('.M9, .Hd[role="dialog"]') && !inEditor(el));
+    return !!(el && el.closest(`.M9, ${COMPOSE_AREA}`) && !inEditor(el));
   };
 
   function originalSelectionMarkup() {
@@ -1543,7 +1551,7 @@
   const MENU_SOURCE_CLASS = 'gtr-menu-source';
   const MENU_SELECTOR = '[role="menu"], .J-M, .tB5Jxf-M-X';
   // thread, compose window, toolbar (left / right part), advanced search panel
-  const DARK_MENU_AREAS = '.gtr-thread, .Hd[role="dialog"], [gh="mtb"], [gh="tm"], .SK.ZF-zT';
+  const DARK_MENU_AREAS = `.gtr-thread, ${COMPOSE_AREA}, [gh="mtb"], [gh="tm"], .SK.ZF-zT`;
 
   // The mail list (its right-click menu) and the sidebar (a label's "⋮" menu) belong to Gmail's frame:
   // their menus are dark only on Gmail's dark theme
@@ -1575,7 +1583,7 @@
    * changes (plus once after the last skipped change), so a theme switch is noticed quickly. Not judged:
    * a page still loading (until Gmail's header exists; if it never does, because Gmail changed its
    * markup, the check runs anyway after THEME_HEADER_WAIT), a page without Gmail's frame (the print
-   * view, a conversation in its own window: white whatever the theme), and a page Dark Reader paints.
+   * view, a conversation or compose in its own window: white whatever the theme), and a page Dark Reader paints.
    * A picture theme (transparent background) is unknown on the page; the class and the last solid
    * answer stay as they were.
    */
@@ -1587,8 +1595,8 @@
   let trailingThemeCheck = null;
   // This page's judgement: true / false, null for a picture theme (unknown), undefined until judged
   let lastGmailLightTheme;
-  const THEMELESS_PAGE = document.documentElement.classList.contains('gtr-popout') ||
-    new URLSearchParams(location.search).get('view') === 'pt';
+  const THEMELESS_PAGE = ['gtr-popout', 'gtr-compose-page'].some((name) => document.documentElement.classList.contains(name)) ||
+    pageParams.get('view') === 'pt';
 
   try {
     chrome.storage.local.get({ gmailLightTheme: null }, ({ gmailLightTheme }) => {
