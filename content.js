@@ -21,11 +21,13 @@
   // user's theme and draws the toolbar above the thread white; styles.css darkens it there
   if (/\/popout$/.test(location.pathname)) document.documentElement.classList.add('gtr-popout');
 
-  // Compose on a page of its own (Shift + Compose, "pop out reply": ?fs=1&tf=cm; the old ?view=cm turns into
-  // it) ignores the theme the same way. There is no .Hd[role="dialog"] around it, so its box (.M9) counts as
-  // a compose window: styles.css darkens it there and the editor gets the same treatment
+  // Compose in a window of its own ignores the theme the same way: the window Shift + Compose (or Shift + full
+  // screen on a reply) opens is /popout#cmid%253D1 (Gmail's own routes are #inbox, #search/...), and opening
+  // ?fs=1&tf=cm (the old ?view=cm turns into it) gives the same page in a tab. There is no .Hd[role="dialog"]
+  // around it, so its box (.M9) counts as a compose window: styles.css darkens it there and the editor gets
+  // the same treatment
   const pageParams = new URLSearchParams(location.search);
-  if (pageParams.get('tf') === 'cm' || pageParams.get('view') === 'cm') {
+  if (location.hash.startsWith('#cmid') || pageParams.get('tf') === 'cm' || pageParams.get('view') === 'cm') {
     document.documentElement.classList.add('gtr-compose-page');
   }
   // A docked / full screen compose window, or the compose page's box

@@ -16,7 +16,7 @@ document.body.insertAdjacentHTML('afterbegin', `
   <header role="banner" id="header" style="display: none"><a class="FH" role="button" aria-expanded="false">⚙</a></header>
   <div class="xr tVu25"><div class="nH"><div class="nH" role="main" id="main"><div class="nH"><div class="M9" id="m9">
     <div class="aoI" role="region" id="region" style="background-color: #ffffff">
-      <div class="Io" id="title-bar" style="background-color: #f2f6fc"><div class="aDk" id="title" style="color: #041e49">New Message</div></div>
+      <div class="Io" id="title-bar" style="background-color: #f2f6fc"><div class="HF" role="button" aria-label="Pop in" id="popin"></div><div class="aDk" id="title" style="color: #041e49">New Message</div></div>
       <table class="aoP aoC" role="presentation"><tbody><tr><td class="I5 bzE">
         <div class="aoD hl"><div class="aGb RuSUmb" id="subject-field" style="background-color: #ffffff"><input class="agP aFw" id="subject" placeholder="Subject" style="background-color: #ffffff; color: #222"></div></div>
         <table class="iN"><tbody><tr><td class="GQ"><div class="GP"><div class="qz aiL" id="underlay" style="background-color: #ffffff"><div class="et"><table class="cf An"><tbody><tr>
@@ -53,6 +53,10 @@ test('the page and the compose box are dark', () => {
 
 test('the title, the subject and the body text are light', () => {
   ['title', 'subject', 'editor', 'plain'].forEach((id) => assert(isLight(color(id)), `${id}: ${color(id)}`));
+});
+
+test('the dark "pop in" icon in the title bar (an image) is drawn light', () => {
+  assert(/invert/.test(getComputedStyle(document.getElementById('popin')).filter), getComputedStyle(document.getElementById('popin')).filter);
 });
 
 test('the "show colors as sent" button sits before the trash can, and a black word is shown lighter', async () => {

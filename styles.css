@@ -791,8 +791,8 @@
   color: var(--gtr-dark-text-subtle) !important;
 }
 
-/* 作成だけの別ウィンドウ（Shift を押しながら「作成」、「返信をポップアウト」。?fs=1&tf=cm、content.js が html に
-   gtr-compose-page を付ける）。Gmail はここでテーマを使わず、ページは明るい灰色（#eee）、作成欄の外枠（.aoI）は白、
+/* 作成だけの別ウィンドウ（Shift を押しながら「作成」、返信の全画面ボタンを Shift を押しながら。/popout#cmid%253D1、
+   アドレスを直接開くと ?fs=1&tf=cm。content.js が html に gtr-compose-page を付ける）。Gmail はここでテーマを使わず、ページは明るい灰色（#eee）、作成欄の外枠（.aoI）は白、
    タイトルバー（.Io）は薄い青、下のツールバーを包む枠（.aDg）も白のまま（中の .aDj は暗くしてあるが縁から白が見えた）。
    作成欄の中は上の作成ウィンドウと同じ部品なので、そちらの指定がそのまま効く */
 html.gmail-dark-active.gtr-compose-page,
@@ -811,6 +811,11 @@ html.gmail-dark-active.gtr-compose-page,
 
 .gmail-dark-active.gtr-compose-page .M9 .Io .aDk {
   color: var(--gtr-dark-text) !important;
+}
+
+/* タイトルバー右上の「ポップイン」（.HF、黒い画像）。差出人の ▾ と同じ明るい灰色に */
+.gmail-dark-active.gtr-compose-page .M9 .Io .HF {
+  filter: brightness(0) invert(.77) !important;
 }
 
 /* 宛先を入力したときの候補一覧（.afC）。作成ウィンドウの外（ページ直下）に作られるため個別に指定する */

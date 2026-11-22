@@ -56,8 +56,9 @@ A screen only shows what is open, so run it once per state. The states that hid 
   directly shows a blank page (it needs the window that opened it). The tab is not quite the real
   window: only the real one gives the scroller Gmail's light scrollbar (`.Qqr4Bd`). To check that,
   keep the window `window.open` returns and read its `document` from the opener tab (same origin)
-- compose on its own page (Shift + Compose, or "pop out reply": `?fs=1&tf=cm`). Unlike /popout, opening
-  the address directly works. Gmail ignores the theme there, and there is no `.Hd[role="dialog"]`: content.js
+- compose in its own window: Shift + Compose, or Shift + the full screen button of a compose / reply window.
+  The real window is `/popout#cmid%253D1` (patch `window.open` as for /popout below to get it as a tab);
+  opening `?fs=1&tf=cm` directly gives the same page in a tab. Gmail ignores the theme there, and there is no `.Hd[role="dialog"]`: content.js
   marks `<html>` with `gtr-compose-page` and the box `.M9` counts as a compose window. Check the page, the
   title bar, the formatting bar and its menus, "⋮", send "▾", ◐, and that the inbox still judges the theme dark
 - settings pages (each tab), the search options panel, the gear's quick settings
